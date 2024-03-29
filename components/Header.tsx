@@ -26,6 +26,13 @@ const Header: React.FC<HeaderProps> = ({ showHeader }) => {
     setMobileMenuOpen((prevState) => !prevState);
   };
 
+  const handleNavigate = (variant: string) => {
+    router.push({
+      pathname: "/auth",
+      query: { variant },
+    });
+  };
+
   if (!showHeader) {
     return null;
   }
@@ -90,13 +97,13 @@ const Header: React.FC<HeaderProps> = ({ showHeader }) => {
         </div>
         <div className="hidden lg:flex flex-wrap">
           <button
-            onClick={() => router.push("/auth")}
+            onClick={() => handleNavigate("register")}
             className="text-gray-800 font-semibold px-4 py-2 rounded focus:outline-none hover:rounded-full   hover:bg-purple-500/30 focus:bg-purple-600/30 focus:rounded-full mr-4"
           >
             Create an account
           </button>
           <button
-            onClick={() => router.push("/auth")}
+            onClick={() => handleNavigate("login")}
             className="text-gray-800 font-semibold px-4 py-2 rounded focus:outline-none hover:rounded-full hover:bg-purple-500/30 focus:bg-purple-600/30 focus:rounded-full "
           >
             Log in

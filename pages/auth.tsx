@@ -10,17 +10,23 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 
 function Auth() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
-  const [variant, setVariant] = useState("login");
+  const { variant } = router.query;
+
+  // const toggleVariant = useCallback(() => {
+  //   setVariant((currentVariant) =>
+  //     currentVariant === "login" ? "register" : "login"
+  //   );
+  // }, []);
 
   const toggleVariant = useCallback(() => {
-    setVariant((currentVariant) =>
-      currentVariant === "login" ? "register" : "login"
-    );
-  }, []);
+    const newVariant = variant === "login" ? "register" : "login";
+    router.push(`/auth?variant=${newVariant}`);
+  }, [variant, router]);
 
   const login = useCallback(async () => {
     try {
@@ -46,8 +52,6 @@ function Auth() {
       console.log(error);
     }
   }, [name, email, password, login]);
-
-  const router = useRouter();
 
   return (
     <>

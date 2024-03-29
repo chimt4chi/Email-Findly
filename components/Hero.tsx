@@ -9,17 +9,28 @@ function Hero() {
 
   const [data, setData] = useState([] as any[]);
 
+  const [inputData, setInputData] = useState("");
   const router = useRouter();
 
   const updateIsShow = (event: React.ChangeEvent<{}>, value: number) => {
     setSelectedTab(value); // Update selected tab index
   };
 
-  const handleClick = () => {
-    fetch("https://fakestoreapi.com/products")
-      .then((res) => res.json())
-      .then((json) => setData(json))
-      .catch((error) => console.error("Error:", error));
+  const handleClick = async () => {
+    // fetch("https://fakestoreapi.com/products")
+    //   .then((res) => res.json())
+    //   .then((json) => setData(json))
+    //   .catch((error) => console.error("Error:", error));
+    try {
+      const response = await fetch("https://fakestoreapi.com/products");
+
+      const data = await response.json();
+      console.log(inputData);
+
+      setData(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -62,6 +73,8 @@ function Hero() {
           <div className="mt-5 flex flex-col sm:flex-row justify-center items-center w-full max-w-md">
             <input
               type="text"
+              onChange={(e) => setInputData(e.target.value)}
+              value={inputData}
               className="form-input mt-4 sm:mt-0 mb-4 sm:mb-0 mr-0 sm:mr-2 py-2 px-4 rounded-lg border border-gray-300 w-full"
               placeholder={selectedTab === 0 ? "Enter URL" : "Enter Email"} // Change placeholder based on selected tab index
             />
