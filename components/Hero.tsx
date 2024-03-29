@@ -2,49 +2,41 @@ import React, { useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Tab, Tabs } from "@mui/material";
-
 import Typewriter from "typewriter-effect";
 
 function Hero() {
-  const [isShow, setIsShow] = useState<boolean>(true);
+  const [selectedTab, setSelectedTab] = useState(0); // State for selected tab index
 
-  const updateIsShow = (event: React.ChangeEvent<{}>, value: number) => {
-    setIsShow(value === 0);
-  };
+  const [data, setData] = useState([] as any[]);
 
   const router = useRouter();
+
+  const updateIsShow = (event: React.ChangeEvent<{}>, value: number) => {
+    setSelectedTab(value); // Update selected tab index
+  };
+
+  const handleClick = () => {
+    fetch("https://fakestoreapi.com/products")
+      .then((res) => res.json())
+      .then((json) => setData(json))
+      .catch((error) => console.error("Error:", error));
+  };
+
   return (
     <div>
       <Head>
         <title>Email Finder | Home</title>
       </Head>
-      <div className="h-screen  text-black">
-        <div className="flex flex-col items-center justify-center">
+      <div className="h-screen text-black">
+        <div className="flex flex-col items-center justify-center h-full">
           <div className="grad-circle"></div>
 
-          <div className="mt-20">
-            <h1 className="text-6xl">
-              {/* <Typewriter
-                options={{
-                  strings: "Email Finder",
-                  autoStart: true,
-                  loop: true,
-                }}
-              /> */}
-              Email Finder
-            </h1>
-            <h3 className="text-6xl text-purple-800">
-              {" "}
-              {/* <Typewriter
-                options={{
-                  strings: "Find the verified email address",
-                  autoStart: true,
-                  loop: true,
-                }}
-              /> */}
+          <div className="mt-10 sm:mt-20 text-center">
+            <h1 className="text-4xl sm:text-6xl">Email Finder</h1>
+            <h3 className="text-4xl sm:text-6xl text-purple-800">
               Find the verified email address{" "}
             </h3>
-            <h3 className="text-6xl">
+            <h3 className="text-4xl sm:text-6xl">
               <Typewriter
                 options={{
                   strings: "of any professional",
@@ -52,49 +44,50 @@ function Hero() {
                   loop: true,
                 }}
               />
-              {/* of any professional */}
             </h3>
           </div>
-          <div className="mt-20">
-            <Tabs onChange={updateIsShow}>
-              <Tab
-                style={{
-                  color: "black",
-                  fontWeight: "bold",
-                }}
-                label="Find email by URL"
-              />
-              <Tab
-                style={{
-                  color: "black",
-                  fontWeight: "bold",
-                }}
-                label="Email verifier"
-              />
-              <Tab
-                style={{
-                  color: "black",
-                  fontWeight: "bold",
-                }}
-                label="Website url"
-              />
+          <div className="mt-10 sm:mt-20 w-full max-w-md">
+            <Tabs
+              value={selectedTab} // Set selected tab index
+              onChange={updateIsShow}
+              centered
+              textColor="secondary"
+            >
+              <Tab label="Email by URL" style={{ fontWeight: "bold" }} />
+              <Tab label="Email verifier" style={{ fontWeight: "bold" }} />
+              {/* <Tab label="Website url" style={{ fontWeight: "bold" }} /> */}
             </Tabs>
           </div>
 
-          <div className="mt-5 flex items-center justify-center">
+          <div className="mt-5 flex flex-col sm:flex-row justify-center items-center w-full max-w-md">
             <input
               type="text"
-              className="form-input mr-2 py-2 px-4 rounded-lg border border-gray-300"
-              placeholder={isShow ? "Enter URL" : "Enter Email"}
+              className="form-input mt-4 sm:mt-0 mb-4 sm:mb-0 mr-0 sm:mr-2 py-2 px-4 rounded-lg border border-gray-300 w-full"
+              placeholder={selectedTab === 0 ? "Enter URL" : "Enter Email"} // Change placeholder based on selected tab index
             />
-            <button className="py-2 px-4 rounded-lg bg-gradient-to-br from-purple-700 to-indigo-800 hover:to-pink-600 text-white font-bold">
+            <button
+              onClick={handleClick}
+              className="py-2 px-4 rounded-lg bg-gradient-to-br from-purple-700 to-indigo-800 hover:to-pink-600 text-white font-bold"
+            >
               Find
             </button>
           </div>
 
-          <div className="flex flex-col justify-center items-center mt-10">
-            Trusted by leading companies
+          {/* {data.map(item => (
+            <p>{item.title}</p>
+          ))} */}
+
+          <div className="overflow-x-auto mt-5 max-w-full">
+            {data.map((item, index) => (
+              <div key={item.id} className="p-2">
+                <p>
+                  {index + 1} {item.title}
+                </p>
+              </div>
+            ))}
           </div>
+
+          <div className="mt-10 text-center">Trusted by leading companies</div>
         </div>
       </div>
     </div>
@@ -102,3 +95,93 @@ function Hero() {
 }
 
 export default Hero;
+
+// import React, { useState } from "react";
+// import Head from "next/head";
+// import { useRouter } from "next/router";
+// import { Tab, Tabs } from "@mui/material";
+// import Typewriter from "typewriter-effect";
+
+// function Hero() {
+//   const tabLabels = ["Find email by URL", "Email verifier", "Website url"];
+//   const [selectedTab, setSelectedTab] = useState(0); // State for selected tab index
+//   const [placeholderText, setPlaceholderText] = useState<string>("Enter URL");
+
+//   const updateIsShow = (event: React.ChangeEvent<{}>, value: number) => {
+//     setSelectedTab(value);
+//     setPlaceholderText(
+//       value === 0
+//         ? "Enter URL"
+//         : value === 1
+//         ? "Enter Email"
+//         : "Enter Website URL"
+//     );
+//   };
+
+//   return (
+//     <div>
+//       <Head>
+//         <title>Email Finder | Home</title>
+//       </Head>
+//       <div className="h-screen text-black">
+//         <div className="flex flex-col items-center justify-center h-full">
+//           <div className="grad-circle"></div>
+
+//           <div className="mt-10 sm:mt-20 text-center">
+//             <h1 className="text-4xl sm:text-6xl">Email Finder</h1>
+//             <h3 className="text-4xl sm:text-6xl text-purple-800">
+//               Find the verified email address{" "}
+//             </h3>
+//             <h3 className="text-4xl sm:text-6xl">
+//               <Typewriter
+//                 options={{
+//                   strings: "of any professional",
+//                   autoStart: true,
+//                   loop: true,
+//                 }}
+//               />
+//             </h3>
+//           </div>
+//           <div className="mt-10 sm:mt-20 w-full max-w-md">
+//             <Tabs
+//               value={selectedTab} // Set selected tab index
+//               onChange={updateIsShow}
+//               centered
+//               textColor="secondary"
+//             >
+//               {tabLabels.map((label, index) => (
+//                 <Tab
+//                   key={index}
+//                   style={{
+//                     color: "black",
+//                     fontWeight: "bold",
+//                   }}
+//                   label={label}
+//                 />
+//               ))}
+//               {/* <Tab label="Email by URL" style={{ fontWeight: "bold" }} />
+//               <Tab label="Email verifier" style={{ fontWeight: "bold" }} /> */}
+//               {/* <Tab label="Website url" style={{ fontWeight: "bold" }} /> */}
+//             </Tabs>
+//           </div>
+
+//           <div className="mt-5 flex flex-col sm:flex-row justify-center items-center w-full max-w-md">
+//             <input
+//               type="text"
+//               className="form-input mt-4 sm:mt-0 mb-4 sm:mb-0 mr-0 sm:mr-2 py-2 px-4 rounded-lg border border-gray-300 w-full"
+//               // placeholder={selectedTab === 0 ? "Enter URL" : "Enter Email"} // Change placeholder based on selected tab index
+//               placeholder={placeholderText}
+//             />
+//             <button className="py-2 px-4 rounded-lg bg-gradient-to-br from-purple-700 to-indigo-800 hover:to-pink-600 text-white font-bold">
+//               Find
+//             </button>
+//           </div>
+
+//           <div className="mt-10 text-center">Trusted by leading companies</div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Hero;

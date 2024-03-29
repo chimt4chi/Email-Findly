@@ -132,6 +132,17 @@ function Auth() {
               <FcGoogle size={30} />
             </div>
           </div>
+          <p className="text-black font-semibold  mt-12 text-center">
+            {variant === "login"
+              ? "First time using Email Findly?"
+              : "Already have and account?"}
+            <span
+              onClick={toggleVariant}
+              className="text-white ml-1 hover:underline hover:underline-offset-8 cursor-pointer"
+            >
+              {variant === "login" ? "Create an Account" : "Login"}
+            </span>
+          </p>
         </div>
       </div>
     </>

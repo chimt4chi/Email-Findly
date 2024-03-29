@@ -32,6 +32,7 @@ export default async function handler(
         hashedPassword,
         image: "",
         emailVerified: new Date(),
+        // credits: 50,
       },
     });
 

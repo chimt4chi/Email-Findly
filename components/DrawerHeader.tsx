@@ -107,6 +107,8 @@ export default function MiniDrawer() {
 
   const { data: user } = useCurrentUser();
 
+  console.log(user);
+
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => !prevMode);
   };

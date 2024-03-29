@@ -38,7 +38,7 @@ function Index() {
             <h3 className="text-6xl"> of any professional</h3>
           </div>
           <div className="mt-20">
-            <Tabs onChange={updateIsShow}>
+            <Tabs onChange={updateIsShow} value={selectedTab}>
               {tabLabels.map((label, index) => (
                 <Tab
                   key={index}
