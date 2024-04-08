@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import cheerio from "cheerio";
-
+//  Todo --> find emails that contains 'at' or 'dot' in it edistrict-grievance[at]supportgov[dot]in
 async function findEmailAddresses(url: string): Promise<string[]> {
   try {
     const response = await fetch(url);
@@ -16,6 +16,14 @@ async function findEmailAddresses(url: string): Promise<string[]> {
         if (word.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/)) {
           emailAddresses.add(word);
         }
+        // with [at][dot]
+        // if (
+        //   word.match(
+        //     /\b[A-Za-z0-9._%+-]+(?:\[at\]|@)[A-Za-z0-9.-]+(?:\[dot\]|.[A-Za-z]{2,})\b/
+        //   )
+        // ) {
+        //   emailAddresses.add(word);
+        // }
       });
     const filteredEmailAddresses = Array.from(emailAddresses).filter(
       (email) => {
@@ -23,6 +31,7 @@ async function findEmailAddresses(url: string): Promise<string[]> {
           ".png",
           ".jpeg",
           ".jpg",
+          ".pdf",
           ".webp",
           ".gif",
           "github.com",

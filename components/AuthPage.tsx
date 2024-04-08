@@ -88,7 +88,7 @@ function AuthPage() {
       </div> */}
       <div className="flex justify-center">
         <div className="bg-gradient-to-t from-purple-500/70 to-pink-500/70 border shadow opacity-90 p-16 self-center mt-2 lg:w-2/5 lg:max-w-md md:max-w-md sm:max-w-md rounded-md w-full">
-          <h2 className="text-black text-4xl mb-8 font-semibold text-center">
+          <h2 className="text-black text-4xl mb-10 font-semibold text-center">
             {variant === "login" ? "Login" : "Register"}
           </h2>
           <div className="flex flex-col gap-4">
@@ -120,20 +120,25 @@ function AuthPage() {
             onClick={variant === "login" ? login : register}
             className=" py-3 text-white rounded-md w-full mt-10  bg-gradient-to-br from-purple-700 to-indigo-800 hover:to-pink-600 transition"
           >
-            {variant === "login" ? "Login" : "Register"}
+            <span className="">
+              {variant === "login" ? "Login" : "Register"}
+            </span>
           </button>
           <div className="flex gap-4 mt-8 justify-center items-center">
-            <div
+            {/* <div
               onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
-              className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
+              // className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
+              className="flex items-center justify-center cursor-pointer py-3 gap-x-2 text-black bg-white rounded-md w-full   transition"
             >
               <FaGithub size={30} />
-            </div>
+            </div> */}
             <div
               onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-              className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
+              // className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
+              className="flex items-center justify-center cursor-pointer py-3 gap-x-2 text-black bg-white rounded-md w-full hover:opacity-80 transition"
             >
               <FcGoogle size={30} />
+              <span>Sign in with Google</span>
             </div>
           </div>
           <p className="text-black font-semibold  mt-12 text-center">

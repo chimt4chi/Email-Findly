@@ -42,7 +42,7 @@ const Header: React.FC<HeaderProps> = ({ showHeader }) => {
   }
 
   return (
-    <div className="my-6 mx-12 py-4 rounded-full bg-gradient-to-t from-purple-500/30 to-pink-500/20">
+    <div className="my-6 mx-12 py-4 lg:rounded-full rounded-md bg-gradient-to-t from-purple-500/30 to-pink-500/20">
       <div className="container mx-auto flex items-center justify-between px-2 flex-wrap ">
         <div className="flex items-center flex-wrap ">
           <div className="flex items-center mr-4 text-gray-600 hover:bg-purple-500/30 focus:bg-purple-600/30 focus:rounded-full hover:rounded-full">
@@ -193,13 +193,13 @@ const Header: React.FC<HeaderProps> = ({ showHeader }) => {
               </div>
             )}
             <button
-              onClick={() => router.push("/auth")}
+              onClick={() => handleNavigate("register")}
               className="text-gray-800 font-semibold px-4 py-2 rounded focus:outline-none hover:rounded-full   hover:bg-purple-500/30 focus:bg-purple-600/30 focus:rounded-full mb-2"
             >
               Create an account
             </button>
             <button
-              onClick={() => router.push("/auth")}
+              onClick={() => handleNavigate("login")}
               className="text-gray-800 font-semibold px-4 py-2 rounded focus:outline-none hover:rounded-full hover:bg-purple-500/30 focus:bg-purple-600/30 focus:rounded-full "
             >
               Log in

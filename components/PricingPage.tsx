@@ -2,6 +2,7 @@ import PricingCard from "@/components/PricingCard";
 import { FormControlLabel, Switch } from "@mui/material";
 import Head from "next/head";
 import React, { useState } from "react";
+
 function PricingPage() {
   const [plan, setPlan] = useState(true);
 
@@ -16,6 +17,7 @@ function PricingPage() {
   const showURL = () => {
     setPlan(false);
   };
+
   return (
     <>
       <main className="mb-20 mt-20">
@@ -28,38 +30,23 @@ function PricingPage() {
             for your business.
           </h3>
           <div className="px-6 py-7 mt-6">
-            <div className="flex gap-2 items-center text-2xl p-2 rounded-md justify-center">
-              {/* <span
-                className={`${plan ? "underline underline-offset-8" : ""}`}
+            <div className="bg-gradient-to-br from-purple-700 to-indigo-800 hover:to-pink-600 flex gap-2 items-center text-xl p-2 rounded-full justify-center">
+              <span
                 onClick={showEmail}
+                className={`cursor-pointer hover:text-white font-bold py-2 px-4 rounded w-full ${
+                  plan ? "text-white " : ""
+                }`}
               >
                 Email
               </span>
-              <Switch
-                checked={!plan}
-                onChange={togglePlan}
-                color="secondary"
-                value="dynamic-class-name"
-                style={{}}
-              />
               <span
-                className={`${plan ? "" : "underline underline-offset-8"}`}
                 onClick={showURL}
+                className={`cursor-pointer hover:text-white font-bold py-2 px-4 rounded w-full ${
+                  !plan ? "text-white" : ""
+                }`}
               >
                 URL
-              </span> */}
-              <button
-                onClick={showEmail}
-                className="bg-gradient-to-br from-purple-700 to-indigo-800 hover:to-pink-600 text-white font-bold py-2 px-4 rounded w-full   "
-              >
-                Email
-              </button>
-              <button
-                onClick={showURL}
-                className="bg-gradient-to-br from-purple-700 to-indigo-800 hover:to-pink-600 text-white font-bold py-2 px-4 rounded w-full"
-              >
-                URL
-              </button>
+              </span>
             </div>
           </div>
         </div>
@@ -71,8 +58,8 @@ function PricingPage() {
               features={
                 plan
                   ? [
-                      "Explore the power of our platform with 25 free credits—only pay if you love it.",
                       "25 credits",
+                      "Explore the power of our platform with 25 free credits—only pay if you love it.",
                     ]
                   : ["25 Free leads"]
               }
@@ -83,9 +70,9 @@ function PricingPage() {
               features={
                 plan
                   ? [
+                      "7,000 credits",
                       "Best for small companies",
                       "Free (Launch Offer)",
-                      "7,000 credits",
                     ]
                   : ["600 Leads [website url + Decision maker LinkedIn ID]"]
               }
@@ -96,18 +83,18 @@ function PricingPage() {
               features={
                 plan
                   ? [
+                      "70,000 credits",
                       "Best for growing companies",
                       "Free (Launch Offer)",
-                      "70,000 credits",
                     ]
                   : ["3000 Leads"]
               }
             />
             <PricingCard
-              title="Professional Plans"
+              title="Pro Plans"
               price="Contact us"
               features={
-                plan ? ["For Bulk needs", "Unlimited Credits"] : ["3000 Leads"]
+                plan ? ["Unlimited Credits", "For Bulk needs"] : ["3000 Leads"]
               }
             />
           </div>
