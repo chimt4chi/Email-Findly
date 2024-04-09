@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import cheerio from "cheerio";
-//  Todo --> find emails that contains 'at' or 'dot' in it edistrict-grievance[at]supportgov[dot]in
+
 async function findEmailAddresses(url: string): Promise<string[]> {
   try {
     const response = await fetch(url);
@@ -16,15 +16,8 @@ async function findEmailAddresses(url: string): Promise<string[]> {
         if (word.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/)) {
           emailAddresses.add(word);
         }
-        // with [at][dot]
-        // if (
-        //   word.match(
-        //     /\b[A-Za-z0-9._%+-]+(?:\[at\]|@)[A-Za-z0-9.-]+(?:\[dot\]|.[A-Za-z]{2,})\b/
-        //   )
-        // ) {
-        //   emailAddresses.add(word);
-        // }
       });
+
     const filteredEmailAddresses = Array.from(emailAddresses).filter(
       (email) => {
         const forbiddenExtensions = [
@@ -64,41 +57,47 @@ async function findEmailAddresses(url: string): Promise<string[]> {
   }
 }
 
-async function crawlWebsite(startUrl: string) {
-  const visited = new Set<string>();
-  const queue: string[] = [startUrl];
-  while (queue.length > 0) {
-    const currentUrl = queue.shift();
-    if (!currentUrl || visited.has(currentUrl)) {
-      continue;
-    }
-    visited.add(currentUrl);
-    try {
-      const emailAddresses = await findEmailAddresses(currentUrl);
+async function crawlWebsite(startUrls: string[]) {
+  const allWebsitesData: any[] = [];
 
-      if (emailAddresses.length > 0) {
-        const websiteData = {
-          mainPageUrl: startUrl,
-          foundEmailsUrls: [{ url: currentUrl, emails: emailAddresses }],
-        };
-        return websiteData;
+  for (const startUrl of startUrls) {
+    const visited = new Set<string>();
+    const queue: string[] = [startUrl];
+
+    while (queue.length > 0) {
+      const currentUrl = queue.shift();
+      if (!currentUrl || visited.has(currentUrl)) {
+        continue;
       }
-      const response = await fetch(currentUrl);
-      const html = await response.text();
-      const $ = cheerio.load(html);
-      const links = $("a[href]");
-      links.each((index, element) => {
-        const absoluteUrl = new URL($(element).attr("href")!, currentUrl).href;
-        queue.push(absoluteUrl);
-      });
-    } catch (error) {
-      console.error(`Error while processing ${currentUrl}: ${error}`);
+      visited.add(currentUrl);
+      try {
+        const emailAddresses = await findEmailAddresses(currentUrl);
+
+        if (emailAddresses.length > 0) {
+          const websiteData = {
+            mainPageUrl: startUrl,
+            foundEmailsUrls: [{ url: currentUrl, emails: emailAddresses }],
+          };
+          allWebsitesData.push(websiteData);
+          break; // Stop crawling this website after finding emails
+        }
+
+        const response = await fetch(currentUrl);
+        const html = await response.text();
+        const $ = cheerio.load(html);
+        const links = $("a[href]");
+        links.each((index, element) => {
+          const absoluteUrl = new URL($(element).attr("href")!, currentUrl)
+            .href;
+          queue.push(absoluteUrl);
+        });
+      } catch (error) {
+        console.error(`Error while processing ${currentUrl}: ${error}`);
+      }
     }
   }
-  return {
-    mainPageUrl: startUrl,
-    foundEmailsUrls: [],
-  };
+
+  return allWebsitesData;
 }
 
 export default async function handler(
@@ -115,15 +114,11 @@ export default async function handler(
     return res.status(400).json({ message: "Starting URLs are required" });
   }
 
-  const allWebsitesData: any[] = [];
-  for (const startUrl of startingUrls) {
-    const remainingWebsites = startingUrls.length - allWebsitesData.length;
-    console.log(
-      `\nSearching for email on ${startUrl} and its linked pages. ${remainingWebsites} websites remaining:`
-    );
-    const websiteData = await crawlWebsite(startUrl as string);
-    allWebsitesData.push(websiteData);
+  try {
+    const allWebsitesData = await crawlWebsite(startingUrls);
+    res.status(200).json({ websites: allWebsitesData });
+  } catch (error) {
+    console.error(`Error while crawling websites: ${error}`);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-
-  res.status(200).json({ websites: allWebsitesData });
 }
