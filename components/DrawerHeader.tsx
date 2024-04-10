@@ -259,12 +259,8 @@ export default function MiniDrawer() {
         <Divider />
         <List>
           {routes.map((text, index) => (
-            <Link href={text.path}>
-              <ListItem
-                key={text.label}
-                disablePadding
-                sx={{ display: "block" }}
-              >
+            <Link href={text.path} key={text.label}>
+              <ListItem disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
