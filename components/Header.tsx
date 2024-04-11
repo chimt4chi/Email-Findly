@@ -175,19 +175,19 @@ const Header: React.FC<HeaderProps> = ({ showHeader }) => {
                   <div className="absolute bg-purple-500/30 rounded-md shadow mt-2 w-full">
                     <button
                       onClick={() =>
-                        handleDropdownItemClick("/product/category1")
+                        handleDropdownItemClick("/product/emailFinder")
                       }
                       className="block px-4 py-2 text-gray-800 hover:bg-purple-500/30 hover:rounded-md w-full text-left"
                     >
-                      Category 1
+                      Email Finder
                     </button>
                     <button
                       onClick={() =>
-                        handleDropdownItemClick("/product/category2")
+                        handleDropdownItemClick("/product/bulkUpload")
                       }
                       className="block px-4 py-2 text-gray-800 hover:bg-purple-500/30 hover:rounded-md w-full text-left"
                     >
-                      Category 2
+                      Bulk Upload
                     </button>
                   </div>
                 )}

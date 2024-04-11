@@ -250,7 +250,7 @@ export default function TestComp() {
     //   {error && <div>{error}</div>}
     // </div>
 
-    <div className="mb-12">
+    <div className="mb-64">
       <input
         type="file"
         accept=".xlsx, .xls"

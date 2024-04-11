@@ -3,7 +3,7 @@ import Head from "next/head";
 import axios from "axios";
 import { Tab, Tabs, CircularProgress } from "@mui/material";
 import Typewriter from "typewriter-effect";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 interface WebsiteData {
   mainPageUrl: string;
@@ -35,10 +35,10 @@ function Hero() {
 
   const suggestTexts = useCallback(() => {
     // Predefined list of suggestions
-    const predefinedSuggestions = [
+    const predefinedSuggestions: string[] = [
       "dtu.ac.in",
       "aryabhattacollege.ac.in",
-      "Example 3",
+      "google.com",
     ];
     // Filter suggestions based on the current input value
     const filteredSuggestions = predefinedSuggestions.filter((text) =>
@@ -50,81 +50,56 @@ function Hero() {
     setShowSuggestions(filteredSuggestions.length > 0);
   }, [urlInput]);
 
-  // const suggestTexts = useCallback(async () => {
-  //   if (!urlInput.trim()) {
-  //     setSuggestedTexts([]);
-  //     setShowSuggestions(false);
-  //     return;
-  //   }
+  const sendData = useCallback(
+    async (inputText: string) => {
+      if (!inputText.trim() && !domainExtension) return;
+      setLoading(true);
+      try {
+        if (requestCount >= 2) {
+          setError(
+            "You have reached the request limit. Please login or register to continue."
+          );
+          return;
+        }
 
-  //   try {
-  //     const apiKey = "AIzaSyBJaRPFl7AdAn_iSmif5uPj4URexVOo5YY"; // Replace with your actual API key
-  //     const searchEngineId = "e3efb19f21e6a4eef"; // Replace with your actual search engine ID
-  //     const query = urlInput.trim();
+        const processedUrlInput =
+          inputText.trim().startsWith("http://") ||
+          inputText.trim().startsWith("https://")
+            ? inputText.trim()
+            : `http://${inputText.trim()}`;
 
-  //     const response = await axios.get(
-  //       `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${searchEngineId}&q=${query}`
-  //     );
-  //     console.log("API Response:", response.data);
-
-  //     const searchResults = response.data.items.map((item: any) => item.title);
-  //     console.log("Search Results:", searchResults);
-  //     setSuggestedTexts(searchResults);
-  //     setShowSuggestions(true);
-  //   } catch (error) {
-  //     console.error("Error fetching suggestions:", error);
-  //     setSuggestedTexts([]);
-  //     setShowSuggestions(false);
-  //   }
-  // }, [urlInput]);
-
-  const sendData = useCallback(async () => {
-    if (!urlInput.trim() && !domainExtension) return;
-    setLoading(true);
-    try {
-      if (requestCount >= 2) {
-        setError(
-          "You have reached the request limit. Please login or register to continue."
-        );
-        return;
-      }
-
-      const processedUrlInput =
-        urlInput.trim().startsWith("http://") ||
-        urlInput.trim().startsWith("https://")
-          ? urlInput.trim()
-          : `http://${urlInput.trim()}`;
-
-      const response = await axios.post<{ websites: WebsiteData[] }>(
-        "/api/apiData",
-        {
-          startingUrls: [`${processedUrlInput}${domainExtension}`],
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+        const response = await axios.post<{ websites: WebsiteData[] }>(
+          "/api/apiData",
+          {
+            startingUrls: [`${processedUrlInput}${domainExtension}`],
           },
-        }
-      );
-      console.log(`Send Req ----> ${response}`);
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(`Send Req ----> ${response}`);
 
-      setResponseData(response.data.websites);
-      setError(null);
-      setRequestCount((prevCount) => {
-        const newCount = prevCount + 1;
-        if (typeof localStorage !== "undefined") {
-          localStorage.setItem("requestCount", String(newCount));
-        }
-        return newCount;
-      });
-      setShowSuggestions(false); // Close suggestions when data is fetched
-    } catch (error) {
-      console.error("Error:", error);
-      setError("An error occurred. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, [urlInput, domainExtension, requestCount]);
+        setResponseData(response.data.websites);
+        setError(null);
+        setRequestCount((prevCount) => {
+          const newCount = prevCount + 1;
+          if (typeof localStorage !== "undefined") {
+            localStorage.setItem("requestCount", String(newCount));
+          }
+          return newCount;
+        });
+        setShowSuggestions(false); // Close suggestions when data is fetched
+      } catch (error) {
+        console.error("Error:", error);
+        setError("An error occurred. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [domainExtension, requestCount]
+  );
 
   const router = useRouter();
 
@@ -169,7 +144,17 @@ function Hero() {
                     disabled={loading || requestCount >= 2}
                     onChange={(e) => {
                       setUrlInput(e.target.value);
-                      suggestTexts(); // Suggest texts on input change
+                      if (e.target.value.trim() === "") {
+                        setShowSuggestions(false); // Hide suggestions when input is cleared
+                      } else {
+                        suggestTexts();
+                      }
+                    }}
+                    onBlur={(e) => {
+                      if (e.target.value.trim() === "") {
+                        setUrlInput("");
+                        setShowSuggestions(false); // Hide suggestions when input is cleared
+                      }
                     }}
                     value={urlInput}
                     className="form-input py-2 px-4 rounded-md border border-gray-300 w-full"
@@ -183,7 +168,8 @@ function Hero() {
                           className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                           onClick={() => {
                             setUrlInput(text);
-                            setShowSuggestions(false); // Close suggestions on click
+                            setShowSuggestions(false);
+                            sendData(text);
                           }}
                         >
                           {text}
@@ -191,20 +177,8 @@ function Hero() {
                       ))}
                     </div>
                   )}
-                  {/* <select
-                    className="form-select py-2 px-4 rounded-r-lg border border-l-0 border-gray-300 bg-white mr-2"
-                    onChange={(e) => setDomainExtension(e.target.value)}
-                    value={domainExtension}
-                  >
-                    <option value="">Select</option>
-                    {suggestedTexts.map((extension, index) => (
-                      <option key={index} value={extension}>
-                        {extension}
-                      </option>
-                    ))}
-                  </select> */}
                   <button
-                    onClick={sendData}
+                    onClick={() => sendData(urlInput)}
                     disabled={loading || requestCount >= 2}
                     type="button"
                     className="py-2 px-4 rounded-lg bg-gradient-to-br from-purple-700 to-indigo-800 hover:to-pink-600 text-white font-bold"
