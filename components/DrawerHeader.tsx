@@ -127,8 +127,8 @@ export default function MiniDrawer() {
 
   const routes = [
     // { label: "Home", path: "/dashboard" },
-    { label: "Upload", path: "/dashboard/upload" },
     { label: "Email Finder", path: "/dashboard/emailFinder" },
+    { label: "Upload", path: "/dashboard/upload" },
     // { label: "Home", path: "/dashboard" },
   ];
 
@@ -286,7 +286,7 @@ export default function MiniDrawer() {
             </Link>
           ))}
         </List>
-        <Divider style={{ marginTop: "15rem" }} />
+        {/* <Divider style={{ marginTop: "15rem" }} />
         <List>
           {["All mail", "Trash", "Spam"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
@@ -310,7 +310,7 @@ export default function MiniDrawer() {
               </ListItemButton>
             </ListItem>
           ))}
-        </List>
+        </List> */}
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />

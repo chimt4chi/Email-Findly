@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Tab, Tabs } from "@mui/material";
 import Head from "next/head";
 import MiniDrawer from "@/components/DrawerHeader";
+import Hero from "@/components/Hero";
 
 const tabLabels = ["Find email by URL", "Email verifier", "Website url"];
 
@@ -26,7 +27,7 @@ function Index() {
         <title>Email Finder</title>
       </Head>
       <MiniDrawer />
-      <div className="h-screen text-black">
+      {/* <div className="h-screen text-black">
         <div className="flex flex-col items-center justify-center">
           <div className="grad-circle"></div>
 
@@ -67,7 +68,9 @@ function Index() {
             Trusted by leading companies
           </div>
         </div>
-      </div>
+      </div> */}
+      {/* Changes -> Added Hero and commented previous code */}
+      <Hero />
     </div>
   );
 }

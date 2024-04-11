@@ -3,6 +3,7 @@ import Head from "next/head";
 import axios from "axios";
 import { Tab, Tabs, CircularProgress } from "@mui/material";
 import Typewriter from "typewriter-effect";
+import { useRouter } from "next/navigation";
 
 interface WebsiteData {
   mainPageUrl: string;
@@ -11,17 +12,15 @@ interface WebsiteData {
 
 function Hero() {
   const [urlInput, setUrlInput] = useState<string>("");
-  const [suggestedExtensions, setSuggestedExtensions] = useState<string[]>([]);
+  const [suggestedTexts, setSuggestedTexts] = useState<string[]>([]);
   const [domainExtension, setDomainExtension] = useState<string>("");
   const [responseData, setResponseData] = useState<WebsiteData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [requestCount, setRequestCount] = useState<number>(0);
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false); // State for showing/hiding suggestions
 
-  const [selectedTab, setSelectedTab] = useState<number>(0); // State for selected tab index
-  const updateIsShow = (event: React.ChangeEvent<{}>, value: number) => {
-    setSelectedTab(value); // Update selected tab index
-  };
+  const [selectedTab, setSelectedTab] = useState<number>(0);
 
   useEffect(() => {
     console.log("responseData:", responseData);
@@ -34,17 +33,50 @@ function Hero() {
     }
   }, []);
 
-  const suggestDomainExtension = useCallback(async () => {
-    if (!urlInput.trim()) return;
-
-    const suggestedExtensions = [".com", ".in", ".ac.in", ".org"]; // Add more extensions as needed
-    setSuggestedExtensions(suggestedExtensions);
+  const suggestTexts = useCallback(() => {
+    // Predefined list of suggestions
+    const predefinedSuggestions = [
+      "dtu.ac.in",
+      "aryabhattacollege.ac.in",
+      "Example 3",
+    ];
+    // Filter suggestions based on the current input value
+    const filteredSuggestions = predefinedSuggestions.filter((text) =>
+      text.toLowerCase().includes(urlInput.toLowerCase())
+    );
+    // Set the filtered suggestions
+    setSuggestedTexts(filteredSuggestions);
+    // Show suggestions only if there are filtered suggestions
+    setShowSuggestions(filteredSuggestions.length > 0);
   }, [urlInput]);
 
-  const handleExtensionClick = (extension: string) => {
-    setDomainExtension(extension);
-    setSuggestedExtensions([]);
-  };
+  // const suggestTexts = useCallback(async () => {
+  //   if (!urlInput.trim()) {
+  //     setSuggestedTexts([]);
+  //     setShowSuggestions(false);
+  //     return;
+  //   }
+
+  //   try {
+  //     const apiKey = "AIzaSyBJaRPFl7AdAn_iSmif5uPj4URexVOo5YY"; // Replace with your actual API key
+  //     const searchEngineId = "e3efb19f21e6a4eef"; // Replace with your actual search engine ID
+  //     const query = urlInput.trim();
+
+  //     const response = await axios.get(
+  //       `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${searchEngineId}&q=${query}`
+  //     );
+  //     console.log("API Response:", response.data);
+
+  //     const searchResults = response.data.items.map((item: any) => item.title);
+  //     console.log("Search Results:", searchResults);
+  //     setSuggestedTexts(searchResults);
+  //     setShowSuggestions(true);
+  //   } catch (error) {
+  //     console.error("Error fetching suggestions:", error);
+  //     setSuggestedTexts([]);
+  //     setShowSuggestions(false);
+  //   }
+  // }, [urlInput]);
 
   const sendData = useCallback(async () => {
     if (!urlInput.trim() && !domainExtension) return;
@@ -57,7 +89,6 @@ function Hero() {
         return;
       }
 
-      // Preprocess URL input to include 'http://' if it's missing
       const processedUrlInput =
         urlInput.trim().startsWith("http://") ||
         urlInput.trim().startsWith("https://")
@@ -67,8 +98,7 @@ function Hero() {
       const response = await axios.post<{ websites: WebsiteData[] }>(
         "/api/apiData",
         {
-          startingUrls: [`${processedUrlInput}${domainExtension}`], // Pass an array directly
-          // startingUrls: ["http://dtu.ac.in", "http://aryabhattacollege.ac.in"], // Pass an array directly
+          startingUrls: [`${processedUrlInput}${domainExtension}`],
         },
         {
           headers: {
@@ -87,6 +117,7 @@ function Hero() {
         }
         return newCount;
       });
+      setShowSuggestions(false); // Close suggestions when data is fetched
     } catch (error) {
       console.error("Error:", error);
       setError("An error occurred. Please try again.");
@@ -94,6 +125,8 @@ function Hero() {
       setLoading(false);
     }
   }, [urlInput, domainExtension, requestCount]);
+
+  const router = useRouter();
 
   return (
     <div>
@@ -121,36 +154,55 @@ function Hero() {
           <div className="mt-10 sm:mt-20 w-full max-w-md">
             <Tabs
               value={selectedTab}
-              onChange={updateIsShow}
+              onChange={(_, value) => setSelectedTab(value)}
               centered
               textColor="secondary"
             >
               <Tab label="Email by URL" style={{ fontWeight: "bold" }} />
               <Tab label="Website url" style={{ fontWeight: "bold" }} />
             </Tabs>
-            <div className="mt-5 px-4 flex justify-center items-start w-full max-w-md">
+            <div className="mt-5 px-4 flex justify-center items-start w-full max-w-md relative">
               <div className="flex flex-col w-full">
-                <div className="flex">
+                <div className="flex relative w-full gap-2">
                   <input
                     type="text"
-                    onChange={(e) => setUrlInput(e.target.value)}
+                    disabled={loading || requestCount >= 2}
+                    onChange={(e) => {
+                      setUrlInput(e.target.value);
+                      suggestTexts(); // Suggest texts on input change
+                    }}
                     value={urlInput}
-                    onBlur={suggestDomainExtension}
-                    className="form-input py-2 px-4 rounded-l-lg border border-gray-300 w-full"
+                    className="form-input py-2 px-4 rounded-md border border-gray-300 w-full"
                     placeholder={"Enter URL (e.g. example.com)"}
                   />
-                  <select
+                  {showSuggestions && (
+                    <div className="absolute top-12 left-0 bg-white w-full border border-gray-300 rounded-lg z-10">
+                      {suggestedTexts.map((text, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                          onClick={() => {
+                            setUrlInput(text);
+                            setShowSuggestions(false); // Close suggestions on click
+                          }}
+                        >
+                          {text}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {/* <select
                     className="form-select py-2 px-4 rounded-r-lg border border-l-0 border-gray-300 bg-white mr-2"
                     onChange={(e) => setDomainExtension(e.target.value)}
                     value={domainExtension}
                   >
                     <option value="">Select</option>
-                    {suggestedExtensions.map((extension, index) => (
+                    {suggestedTexts.map((extension, index) => (
                       <option key={index} value={extension}>
                         {extension}
                       </option>
                     ))}
-                  </select>
+                  </select> */}
                   <button
                     onClick={sendData}
                     disabled={loading || requestCount >= 2}
@@ -171,8 +223,21 @@ function Hero() {
           <div className="mt-5 max-w-full">
             {requestCount >= 2 && (
               <p className="text-red-500 text-sm text-center">
-                Free request limit reached. Please login or register to
-                continue.
+                Free request limit reached. Please{" "}
+                <span
+                  className="cursor-pointer hover:underline hover:underline-offset-8 text-purple-800"
+                  onClick={() => router.push("auth?variant=login")}
+                >
+                  Login
+                </span>{" "}
+                or{" "}
+                <span
+                  className="cursor-pointer hover:underline hover:underline-offset-8 text-purple-800"
+                  onClick={() => router.push("auth?variant=register")}
+                >
+                  Register
+                </span>{" "}
+                to continue.
               </p>
             )}
             {error ? (

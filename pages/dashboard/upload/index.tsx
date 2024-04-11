@@ -2,6 +2,7 @@
 
 import Dash from "@/components/Dash";
 import MiniDrawer from "@/components/DrawerHeader";
+import TestComp from "@/components/TestComp";
 import { NextPageContext } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
@@ -72,7 +73,7 @@ function Index() {
         </Head>
       </div>
       <MiniDrawer />
-      <div className="p-4 flex justify-between items-center">
+      {/* <div className="p-4 flex justify-between items-center">
         <h5 className="text-4xl text-purple-800 font-mono font-bold">
           BULK EMAIL VERIFICATION
         </h5>
@@ -134,7 +135,10 @@ function Index() {
             ))}
           </ul>
         </div>
-      )}
+      )} */}
+      {/* Changes -> Added TestComp and commented previous code */}
+
+      <TestComp />
     </>
   );
 }

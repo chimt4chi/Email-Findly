@@ -1,3 +1,4 @@
+import TestComp from "@/components/TestComp";
 import Head from "next/head";
 import React from "react";
 
@@ -5,9 +6,10 @@ function category2() {
   return (
     <div>
       <Head>
-        <title>Category 2</title>
+        <title>Email Findly | Bulk Upload</title>
       </Head>
-      <div className="h-screen">category2</div>
+      {/* <div className="h-screen">Bulk Upload</div> */}
+      <TestComp />
     </div>
   );
 }

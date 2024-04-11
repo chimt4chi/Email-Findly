@@ -79,19 +79,19 @@ const Header: React.FC<HeaderProps> = ({ showHeader }) => {
                   <div className="absolute bg-purple-500/30 rounded-md shadow mt-4 w-48">
                     <button
                       onClick={() =>
-                        handleDropdownItemClick("/product/category1")
+                        handleDropdownItemClick("/product/emailFinder")
                       }
-                      className="block px-4 py-2 text-gray-800 hover:bg-purple-500/30 hover:rounded-md w-full text-left"
+                      className="block px-4 py-2 text-gray-800 hover:bg-purple-500/30 hover:rounded-md w-full text-center"
                     >
-                      Category 1
+                      Email Finder
                     </button>
                     <button
                       onClick={() =>
-                        handleDropdownItemClick("/product/category2")
+                        handleDropdownItemClick("/product/bulkUpload")
                       }
-                      className="block px-4 py-2 text-gray-800 hover:bg-purple-500/30 hover:rounded-md w-full text-left"
+                      className="block px-4 py-2 text-gray-800 hover:bg-purple-500/30 hover:rounded-md w-full text-center"
                     >
-                      Category 2
+                      Bulk Upload
                     </button>
                   </div>
                 )}
@@ -109,7 +109,8 @@ const Header: React.FC<HeaderProps> = ({ showHeader }) => {
                 </button>
               </div>
             )}
-            {router.pathname !== "/auth" && (
+            {/* Changes --> Commented the text comp */}
+            {/* {router.pathname !== "/auth" && (
               <div className="text-gray-600 hover:bg-purple-500/30 focus:bg-purple-600/30 focus:rounded-full mr-2 text-md hover:rounded-full focus:outline-none">
                 <button
                   onClick={() => router.push("/test")}
@@ -120,7 +121,7 @@ const Header: React.FC<HeaderProps> = ({ showHeader }) => {
                   Test
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
         <div className="hidden lg:flex flex-wrap">

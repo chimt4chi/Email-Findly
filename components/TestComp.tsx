@@ -250,7 +250,7 @@ export default function TestComp() {
     //   {error && <div>{error}</div>}
     // </div>
 
-    <div className="h-screen">
+    <div className="mb-12">
       <input
         type="file"
         accept=".xlsx, .xls"
@@ -292,41 +292,41 @@ export default function TestComp() {
             Bulk website extraction supports .XLS, CSV and TXT file formats.
           </p>
         </div>
+        {responseWebsites.map((websiteData, index) => (
+          <div
+            key={index}
+            className="mb-8 bg-gradient-to-t from-purple-500/30 to-pink-500/20 border border-black-500 rounded-lg shadow-md p-4 mt-8"
+          >
+            <h2 className="text-2xl font-bold mb-4 text-center">
+              Main Page URL: {websiteData.mainPageUrl}
+            </h2>
+            {websiteData.foundEmailsUrls.map(
+              (foundEmailsUrl, foundEmailsUrlIndex) => (
+                <div key={foundEmailsUrlIndex} className="mb-4">
+                  <h3 className="text-lg font-semibold mb-2">
+                    {/* Found on: {foundEmailsUrl.url} */}
+                  </h3>
+                  {foundEmailsUrl.emails.map((email, emailIndex) => (
+                    <div
+                      key={emailIndex}
+                      className="bg-pink-500/20 border border-black-500 rounded-lg shadow-md p-4 mb-4 flex flex-col items-center justify-between"
+                    >
+                      <p className="text-purple-800 ">
+                        {email.includes("mailto:")
+                          ? email.split("mailto:")[1].split("?")[0]
+                          : email}
+                      </p>
+                      <span className="text-gray-500">
+                        {/* (Found on: {foundEmailsUrl.url}) */}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )
+            )}
+          </div>
+        ))}
       </div>
-      {responseWebsites.map((websiteData, index) => (
-        <div
-          key={index}
-          className="mb-8 bg-gradient-to-t from-purple-500/30 to-pink-500/20 border border-black-500 rounded-lg shadow-md p-4 mt-8"
-        >
-          <h2 className="text-2xl font-bold mb-4">
-            Main Page URL: {websiteData.mainPageUrl}
-          </h2>
-          {websiteData.foundEmailsUrls.map(
-            (foundEmailsUrl, foundEmailsUrlIndex) => (
-              <div key={foundEmailsUrlIndex} className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">
-                  {/* Found on: {foundEmailsUrl.url} */}
-                </h3>
-                {foundEmailsUrl.emails.map((email, emailIndex) => (
-                  <div
-                    key={emailIndex}
-                    className="bg-pink-500/20 border border-black-500 rounded-lg shadow-md p-4 mb-4 flex flex-col items-center justify-between"
-                  >
-                    <p className="text-purple-800 ">
-                      {email.includes("mailto:")
-                        ? email.split("mailto:")[1].split("?")[0]
-                        : email}
-                    </p>
-                    <span className="text-gray-500">
-                      {/* (Found on: {foundEmailsUrl.url}) */}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )
-          )}
-        </div>
-      ))}
     </div>
   );
 }
