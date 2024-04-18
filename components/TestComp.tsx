@@ -292,6 +292,11 @@ export default function TestComp() {
             Bulk website extraction supports .XLS, CSV and TXT file formats.
           </p>
         </div>
+        {loading && (
+          <div className="flex justify-center items-center h-20">
+            <CircularProgress color="primary" />
+          </div>
+        )}
         {responseWebsites.map((websiteData, index) => (
           <div
             key={index}
