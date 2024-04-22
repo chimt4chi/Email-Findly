@@ -66,7 +66,7 @@ function Index() {
   };
 
   return (
-    <>
+    <div className="">
       <div>
         <Head>
           <title>Bulk Email Verification | Upload Bulk Emails</title>
@@ -139,7 +139,7 @@ function Index() {
       {/* Changes -> Added TestComp and commented previous code */}
 
       <TestComp />
-    </>
+    </div>
   );
 }
 

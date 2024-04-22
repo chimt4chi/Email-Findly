@@ -250,7 +250,7 @@ export default function TestComp() {
     //   {error && <div>{error}</div>}
     // </div>
 
-    <div className="mb-64">
+    <div className="mb-64 ">
       <input
         type="file"
         accept=".xlsx, .xls"
@@ -259,7 +259,7 @@ export default function TestComp() {
         className="hidden"
       />
       <div className="p-4 flex justify-evenly">
-        <h5 className="inline-block m-0 text-4xl text-purple-800 font-mono font-bold">
+        <h5 className="inline-block m-0 text-4xl text-purple-800  font-bold">
           Bulk Website Extraction
         </h5>
       </div>
