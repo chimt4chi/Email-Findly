@@ -585,8 +585,9 @@ function Hero() {
                     Say goodbye to tedious research and hello to streamlined
                     efficiency with Emailfindingly. Our innovative platform
                     offers a unique feature: extract emails directly by entering
-                    a company's URL. It's as easy as a click, instantly
-                    providing access to accurate and verified email addresses.
+                    a company&apos;s URL. It&apos;s as easy as a click&lsquo;
+                    instantly providing access to accurate and verified email
+                    addresses.
                   </p>
                 </div>
                 <div
