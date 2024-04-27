@@ -9,7 +9,7 @@ interface WebsiteData {
   foundEmailsUrls: { url: string; emails: string[] }[];
 }
 
-function category2() {
+function Category2() {
   const isValidUrl = (url: string) => {
     // Your URL validation logic goes here
     return true; // Placeholder for demonstration
@@ -175,4 +175,4 @@ function category2() {
   );
 }
 
-export default category2;
+export default Category2;
