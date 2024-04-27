@@ -27,32 +27,3 @@ html {
 
 .header {
 }
-
-/* width */
-::-webkit-scrollbar {
-  width: 15px;
-  height: 15px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: rgb(151, 123, 168);
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  /* background: rgb(247 171 10 / 0.4); */
-  /* background-image: linear-gradient(
-    to right,
-    rgba(138, 43, 226, 0.5),
-    rgba(219, 112, 147, 0.5)
-  ); */
-  background: #df6dafc0;
-  border-radius: 30px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #8b3c6bc0;
-  /* background: #4a1c86; */
-}
