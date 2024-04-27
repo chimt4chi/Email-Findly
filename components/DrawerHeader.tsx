@@ -25,6 +25,9 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import { useRouter } from "next/router";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { RiArrowDropDownLine } from "react-icons/ri";
+
+import Sidebar2 from "@/components/Sidebar2";
+
 import Link from "next/link";
 
 const drawerWidth = 240;
@@ -133,188 +136,192 @@ export default function MiniDrawer() {
   ];
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar
-          style={{
-            justifyContent: "space-between",
-            // background: "linear-gradient(to top, #c471f5 0%, #fa71cd 100%)",
-            // padding: "25px",
-            // background: "rgb(236 72 153 / 0.2) rgb(168 85 247 / 0.3)",
-            background:
-              "linear-gradient(to top, rgba(196, 113, 245, 1) 0%, rgba(250, 113, 205, 1) 100%)",
-          }}
-          // className="bg-gradient-to-t from-purple-500/30 to-pink-500/20"
-        >
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Link href={"/dashboard"}>
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              style={{ cursor: "pointer" }}
-            >
-              Email Findly
-            </Typography>
-          </Link>
+    // <Box >
+    //   <CssBaseline />
+    //   <AppBar position="fixed" open={open}>
+    //     <Toolbar
+    //       style={{
+    //         justifyContent: "space-between",
+    //         // background: "linear-gradient(to top, #c471f5 0%, #fa71cd 100%)",
+    //         // padding: "25px",
+    //         // background: "rgb(236 72 153 / 0.2) rgb(168 85 247 / 0.3)",
+    //         background:
+    //           "linear-gradient(to top, rgba(196, 113, 245, 1) 0%, rgba(250, 113, 205, 1) 100%)",
+    //       }}
+    //       // className="bg-gradient-to-t from-purple-500/30 to-pink-500/20"
+    //     >
+    //       <IconButton
+    //         color="inherit"
+    //         aria-label="open drawer"
+    //         onClick={handleDrawerOpen}
+    //         edge="start"
+    //         sx={{
+    //           marginRight: 5,
+    //           ...(open && { display: "none" }),
+    //         }}
+    //       >
+    //         <MenuIcon />
+    //       </IconButton>
+    //       <Link href={"/dashboard"}>
+    //         <Typography
+    //           variant="h6"
+    //           noWrap
+    //           component="div"
+    //           style={{ cursor: "pointer" }}
+    //         >
+    //           Email Findly
+    //         </Typography>
+    //       </Link>
 
-          <div className="rounded-full flex items-center ">
-            <div className="flex items-center flex-row gap-4">
-              {/* <div className="flex items-center hover:bg-gray-500 rounded-full h-10 w-10 justify-center">
-                {darkMode ? (
-                  <button onClick={toggleDarkMode}>
-                    <FaSun size={20} />
-                  </button>
-                ) : (
-                  <button onClick={toggleDarkMode}>
-                    <FaMoon size={20} />
-                  </button>
-                )}
-              </div> */}
-              <div
-                className="cursor-pointer flex items-center rounded-full"
-                onClick={toggleUserOptions}
-              >
-                {user?.image ? (
-                  <img
-                    className="hover:bg-gray-500 h-8 w-8 rounded-full"
-                    src={user?.image}
-                    alt=""
-                  />
-                ) : (
-                  <div className="hover:bg-gray-500 rounded-full h-10 w-10 flex items-center justify-center">
-                    <AiOutlineUser size={25} />
-                  </div>
-                )}
-                <div className="rounded-full hover:bg-purple-600/30">
-                  <RiArrowDropDownLine size={25} />
-                </div>
-              </div>
-              {showUserOptions && (
-                <div className="absolute top-20 right-0  w-48 text-black bg-gradient-to-t from-purple-500 to-pink-500 rounded-md shadow-xl z-10">
-                  <List>
-                    <ListItem className="cursor-pointer rounded-md hover:bg-purple-600/30">
-                      <ListItemIcon>
-                        {user?.image ? (
-                          <img
-                            className=" h-8 w-8 rounded-full"
-                            src={user?.image}
-                            alt=""
-                          />
-                        ) : (
-                          <div className=" h-10 w-10 flex items-center justify-center">
-                            <AiOutlineUser size={25} />
-                          </div>
-                        )}
-                      </ListItemIcon>
-                      <ListItemText primary={user?.name} />
-                    </ListItem>
-                    <ListItem
-                      className="cursor-pointer  hover:bg-purple-600/30 rounded-md"
-                      onClick={() => signOut()}
-                    >
-                      <ListItemIcon>
-                        <div className="h-10 w-10 flex items-center justify-center">
-                          <PiSignOut size={25} />
-                        </div>
-                      </ListItemIcon>
-                      <ListItemText primary="Sign Out" />
-                    </ListItem>
-                  </List>
-                </div>
-              )}
-            </div>
-          </div>
-        </Toolbar>
-      </AppBar>
+    //       <div className="rounded-full flex items-center ">
+    //         <div className="flex items-center flex-row gap-4">
+    //           {/* <div className="flex items-center hover:bg-gray-500 rounded-full h-10 w-10 justify-center">
+    //             {darkMode ? (
+    //               <button onClick={toggleDarkMode}>
+    //                 <FaSun size={20} />
+    //               </button>
+    //             ) : (
+    //               <button onClick={toggleDarkMode}>
+    //                 <FaMoon size={20} />
+    //               </button>
+    //             )}
+    //           </div> */}
+    //           <div
+    //             className="cursor-pointer flex items-center rounded-full"
+    //             onClick={toggleUserOptions}
+    //           >
+    //             {user?.image ? (
+    //               <img
+    //                 className="hover:bg-gray-500 h-8 w-8 rounded-full"
+    //                 src={user?.image}
+    //                 alt=""
+    //               />
+    //             ) : (
+    //               <div className="hover:bg-gray-500 rounded-full h-10 w-10 flex items-center justify-center">
+    //                 <AiOutlineUser size={25} />
+    //               </div>
+    //             )}
+    //             <div className="rounded-full hover:bg-purple-600/30">
+    //               <RiArrowDropDownLine size={25} />
+    //             </div>
+    //           </div>
+    //           {showUserOptions && (
+    //             <div className="absolute top-20 right-0  w-48 text-black bg-gradient-to-t from-purple-500 to-pink-500 rounded-md shadow-xl z-10">
+    //               <List>
+    //                 <ListItem className="cursor-pointer rounded-md hover:bg-purple-600/30">
+    //                   <ListItemIcon>
+    //                     {user?.image ? (
+    //                       <img
+    //                         className=" h-8 w-8 rounded-full"
+    //                         src={user?.image}
+    //                         alt=""
+    //                       />
+    //                     ) : (
+    //                       <div className=" h-10 w-10 flex items-center justify-center">
+    //                         <AiOutlineUser size={25} />
+    //                       </div>
+    //                     )}
+    //                   </ListItemIcon>
+    //                   <ListItemText primary={user?.name} />
+    //                 </ListItem>
+    //                 <ListItem
+    //                   className="cursor-pointer  hover:bg-purple-600/30 rounded-md"
+    //                   onClick={() => signOut()}
+    //                 >
+    //                   <ListItemIcon>
+    //                     <div className="h-10 w-10 flex items-center justify-center">
+    //                       <PiSignOut size={25} />
+    //                     </div>
+    //                   </ListItemIcon>
+    //                   <ListItemText primary="Sign Out" />
+    //                 </ListItem>
+    //               </List>
+    //             </div>
+    //           )}
+    //         </div>
+    //       </div>
+    //     </Toolbar>
+    //   </AppBar>
 
-      <Drawer
-        style={{ backgroundColor: "red" }}
-        variant="permanent"
-        open={open}
-        className="test"
-        // style={{ border: "none", backgroundColor: "#4e49af" }}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {routes.map((text, index) => (
-            <Link href={text.path} key={text.label}>
-              <ListItem disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={text.label}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            </Link>
-          ))}
-        </List>
-        {/* <Divider style={{ marginTop: "15rem" }} />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List> */}
-      </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-      </Box>
-    </Box>
+    //   <Drawer
+    //     style={{ backgroundColor: "red" }}
+    //     variant="permanent"
+    //     open={open}
+    //     className="test"
+    //     // style={{ border: "none", backgroundColor: "#4e49af" }}
+    //   >
+    //     <DrawerHeader>
+    //       <IconButton onClick={handleDrawerClose}>
+    //         {theme.direction === "rtl" ? (
+    //           <ChevronRightIcon />
+    //         ) : (
+    //           <ChevronLeftIcon />
+    //         )}
+    //       </IconButton>
+    //     </DrawerHeader>
+    //     <Divider />
+    //     <List>
+    //       {routes.map((text, index) => (
+    //         <Link href={text.path} key={text.label}>
+    //           <ListItem disablePadding sx={{ display: "block" }}>
+    //             <ListItemButton
+    //               sx={{
+    //                 minHeight: 48,
+    //                 justifyContent: open ? "initial" : "center",
+    //                 px: 2.5,
+    //               }}
+    //             >
+    //               <ListItemIcon
+    //                 sx={{
+    //                   minWidth: 0,
+    //                   mr: open ? 3 : "auto",
+    //                   justifyContent: "center",
+    //                 }}
+    //               >
+    //                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+    //               </ListItemIcon>
+    //               <ListItemText
+    //                 primary={text.label}
+    //                 sx={{ opacity: open ? 1 : 0 }}
+    //               />
+    //             </ListItemButton>
+    //           </ListItem>
+    //         </Link>
+    //       ))}
+    //     </List>
+    //     {/* <Divider style={{ marginTop: "15rem" }} />
+    //     <List>
+    //       {["All mail", "Trash", "Spam"].map((text, index) => (
+    //         <ListItem key={text} disablePadding sx={{ display: "block" }}>
+    //           <ListItemButton
+    //             sx={{
+    //               minHeight: 48,
+    //               justifyContent: open ? "initial" : "center",
+    //               px: 2.5,
+    //             }}
+    //           >
+    //             <ListItemIcon
+    //               sx={{
+    //                 minWidth: 0,
+    //                 mr: open ? 3 : "auto",
+    //                 justifyContent: "center",
+    //               }}
+    //             >
+    //               {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+    //             </ListItemIcon>
+    //             <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+    //           </ListItemButton>
+    //         </ListItem>
+    //       ))}
+    //     </List> */}
+    //   </Drawer>
+    //   <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+    //     <DrawerHeader />
+    //   </Box>
+    // </Box>
+
+    <div className="flex">
+      <Sidebar2 currentUser="Rohit" />
+    </div>
   );
 }

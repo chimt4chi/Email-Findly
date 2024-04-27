@@ -13,9 +13,9 @@ function test() {
     <>
       {/* <NewHero /> */}
       {/* <Grade /> */}
-      {/* <div className="flex">
+      <div className="flex">
         <Sidebar2 currentUser="Rohit" />
-      </div> */}
+      </div>
       {/* <Globe data={[]} /> */}
     </>
   );

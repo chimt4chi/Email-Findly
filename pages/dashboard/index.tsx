@@ -38,7 +38,7 @@ function dashboard() {
       </div> */}
       {/* <Dash title="home" /> */}
       <h1>Dashboard Home</h1>
-      <MiniDrawer />
+      {/* <MiniDrawer /> */}
     </div>
   );
 }
