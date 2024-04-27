@@ -409,11 +409,14 @@ function Hero() {
       <div className="h-full text-black">
         <div className="flex flex-col items-center justify-center">
           <div className="mt-10 sm:mt-20 text-center">
-            <h1 className="text-4xl sm:text-6xl">Email Findly</h1>
-            <h3 className="text-4xl sm:text-6xl text-purple-800">
+            {/* <h1 className="text-4xl sm:text-6xl">Email Findly</h1> */}
+            <h1 className="text-sm font-semibold leading-6 sm:text-6xl">
+              Email Findly
+            </h1>
+            <h3 className="text-sm font-semibold leading-6 sm:text-6xl text-purple-800">
               Empower Growth. Drive Success.
             </h3>
-            <h3 className="text-4xl sm:text-6xl">
+            <h3 className="text-sm font-semibold leading-6 sm:text-6xl">
               <Typewriter
                 options={{
                   strings: "Unleash Your Business Potential",
