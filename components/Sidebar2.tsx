@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
 interface UserDashboardProps {
@@ -6,6 +6,8 @@ interface UserDashboardProps {
 }
 
 const UserDashboard: React.FC<UserDashboardProps> = ({ currentUser }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   const sidebarItems = [
     { label: "Dashboard", href: "/" },
     { label: "Team", href: "/team" },
@@ -19,21 +21,24 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ currentUser }) => {
     { label: "Settings", href: "/settings" },
   ];
 
+  const toggleSidebar = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
-    <div className="bg-slate-800 text-white h-screen p-4 flex flex-col ">
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-full rounded-md bg-blue-700 text-white px-4 py-2"
-        />
-      </div>
+    <div
+      className={`bg-slate-800 text-white h-screen p-4 flex flex-col ${
+        isExpanded ? "w-64" : "w-16"
+      }`}
+    >
       <div className="flex-grow">
         {sidebarItems.map((item) => (
           <Link
             key={item.label}
             href={item.href}
-            className="block py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+            className={`block py-2 px-4 rounded-md hover:bg-blue-600 transition-colors ${
+              isExpanded ? "" : "hidden"
+            }`}
           >
             {item.label}
           </Link>
