@@ -42,7 +42,8 @@ const Header: React.FC<HeaderProps> = ({ showHeader }) => {
   }
 
   return (
-    <div className="my-6 mx-12 py-4 lg:rounded-full rounded-md bg-gradient-to-t from-purple-500/30 to-pink-500/20">
+    // bg-gradient-to-t from-purple-500/30 to-pink-500/20
+    <div className="my-6 mx-12 py-4 lg:rounded-full rounded-md ">
       <div className="container mx-auto flex items-center justify-between px-2 flex-wrap ">
         <div className="flex items-center flex-wrap ">
           <div className="flex items-center mr-4 text-gray-600 hover:bg-purple-500/30 focus:bg-purple-600/30 focus:rounded-full hover:rounded-full">

@@ -15,6 +15,7 @@ import { ChartPieIcon, CursorArrowRaysIcon } from "@heroicons/react/24/outline";
 
 import { MdOutlineContentCopy } from "react-icons/md";
 import { SiGmail } from "react-icons/si";
+import Link from "next/link";
 
 interface FoundEmails {
   url: string;
@@ -29,7 +30,7 @@ interface WebsiteData {
 }
 const navigation = [
   { name: "Product", href: "#" },
-  { name: "Features", href: "#" },
+  { name: "Pricing", href: "/pricing" },
 ];
 
 const products = [
@@ -399,22 +400,30 @@ function Hero() {
                 <div className="-my-6 divide-y divide-gray-500/10">
                   <div className="space-y-2 py-6">
                     {navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
                         href={item.href}
                         className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                   <div className="py-6">
-                    <a
-                      href="#"
+                    <button
+                      type="button"
+                      onClick={() => handleNavigate("register")}
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    >
+                      Register
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleNavigate("login")}
                       className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                     >
                       Log in
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
