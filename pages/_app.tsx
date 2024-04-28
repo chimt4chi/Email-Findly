@@ -20,7 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       {/* {showHeader && <Header showHeader={showHeader} />} */}
       <Component {...pageProps} />
-      {showFooter && <Footer showHeader={showHeader} />}
+      {/* {showFooter && <Footer showHeader={showHeader} />} */}
     </>
   );
 }
