@@ -2,20 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  /* @apply h-full overflow-x-hidden; */
-  /* background-color: black; */
-  /* --tw-bg-opacity: 1;
-  background-color: rgb(17 24 39 / var(--tw-bg-opacity)); */
-  /* background: linear-gradient(
+/* body {
+  @apply h-full overflow-x-hidden;
+  background-color: black;
+  --tw-bg-opacity: 1;
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+  background: linear-gradient(
     104.3deg,
     rgb(226, 202, 220) 10.9%,
     rgb(248, 231, 231) 27.8%,
     rgb(160, 112, 161) 101.7%
-  ); */
+  );
 
-  /* background: linear-gradient(to top, #dfe9f3 0%, white 100%); */
-}
+  background: linear-gradient(to top, #dfe9f3 0%, white 100%);
+} */
 
 /* #__next {
   @apply h-full;
@@ -25,5 +25,5 @@ html {
   @apply h-full;
 } */
 
-.header {
-}
+/* .header {
+} */

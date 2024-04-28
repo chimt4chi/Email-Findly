@@ -363,7 +363,7 @@ function Hero() {
               </button>
               <button
                 onClick={() => handleNavigate("login")}
-                className="text-sm font-semibold leading-6 text-white bg-indigo-600 p-2 rounded-md"
+                className="text-sm font-semibold leading-6 text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 p-2 rounded-md"
               >
                 Log in <span aria-hidden="true">&rarr;</span>
               </button>
@@ -452,14 +452,14 @@ function Hero() {
               fugiat aliqua.
             </p>
             <div className="mt-10  ">
-              <div className="relative flex items-center justify-center gap-x-2">
+              <div className="relative flex items-center gap-x-2">
                 <input
                   type="text"
                   disabled={loading || requestCount >= 100}
                   onChange={(e) => {
                     setUrlInput(e.target.value);
                     if (e.target.value.trim() === "") {
-                      setShowSuggestions(false); // Hide suggestions when input is cleared
+                      setShowSuggestions(false);
                     } else {
                       suggestTexts();
                     }
@@ -467,31 +467,31 @@ function Hero() {
                   onBlur={(e) => {
                     if (e.target.value.trim() === "") {
                       setUrlInput("");
-                      setShowSuggestions(false); // Hide suggestions when input is cleared
+                      setShowSuggestions(false);
                     }
                   }}
                   value={urlInput}
-                  className="form-input py-2 px-4 rounded-md border border-gray-300 flex-grow relative focus:outline-none"
-                  placeholder={"Enter URL (e.g. example.com)"}
+                  className="form-input py-2 px-4 rounded-md border border-gray-300 flex-grow focus:outline-none focus:border-indigo-500"
+                  placeholder="Enter URL (e.g. example.com)"
                 />
                 {urlInput && (
-                  <IconButton
+                  <button
                     onClick={() => setUrlInput("")}
-                    className="absolute right-12 top-5 transform -translate-y-1/2"
-                    size="small"
+                    className="absolute right-20 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
                   >
-                    <ClearIcon />
-                  </IconButton>
+                    <ClearIcon className="h-6 w-6 text-gray-500" />
+                  </button>
                 )}
                 <button
                   onClick={() => sendData(urlInput)}
                   disabled={loading || requestCount >= 100}
                   type="button"
-                  className="rounded-md bg-indigo-600  text-sm font-semibold py-3 px-5 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 "
+                  className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   Find
                 </button>
               </div>
+
               <div className="relative">
                 {showSuggestions && (
                   <div className="absolute top-4 left-0 bg-white w-full border border-gray-300 rounded-lg z-10">
@@ -557,46 +557,48 @@ function Hero() {
                               </h3>
                               {foundEmailsUrl.emails.map(
                                 (email, emailIndex) => (
-                                  <div
-                                    key={emailIndex}
-                                    className="bg-white border border-black-500 rounded-lg shadow-md p-4 mb-4 flex items-center gap-4"
-                                  >
-                                    <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300">
-                                      <img
-                                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                                        alt=""
-                                        className="h-10 w-10"
-                                      />
-                                    </div>
-                                    <div className="flex-grow flex justify-between items-center">
-                                      <div className="flex gap-2 flex-col items-start">
-                                        <p className="text-indigo-600 ">
-                                          {email.includes("mailto:")
-                                            ? email
-                                                .split("mailto:")[1]
-                                                .split("?")[0]
-                                            : email}
-                                        </p>
-                                        <span className="text-gray-500">
-                                          (Found on: {foundEmailsUrl.url})
-                                        </span>
+                                  <div className="flex flex-wrap">
+                                    <div
+                                      key={emailIndex}
+                                      className="bg-white border border-black-500 rounded-lg shadow-md p-4 mb-4 flex items-center gap-4 flex-grow"
+                                    >
+                                      <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300">
+                                        <img
+                                          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                                          alt=""
+                                          className="h-8 w-8 md:h-10 md:w-10"
+                                        />
                                       </div>
-                                      <div className="flex gap-4 items-center">
-                                        <div className="bg-gray-300 rounded-full cursor-pointer">
-                                          <img
-                                            src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png"
-                                            alt="LinkedIn"
-                                            className="h-6 w-6"
+                                      <div className="flex flex-grow justify-between items-center">
+                                        <div className="flex gap-2 flex-col items-start">
+                                          <p className="text-indigo-600 ">
+                                            {email.includes("mailto:")
+                                              ? email
+                                                  .split("mailto:")[1]
+                                                  .split("?")[0]
+                                              : email}
+                                          </p>
+                                          <span className="text-gray-500">
+                                            (Found on: {foundEmailsUrl.url})
+                                          </span>
+                                        </div>
+                                        <div className="flex gap-2 items-center">
+                                          <div className="bg-gray-300 rounded-full cursor-pointer">
+                                            <img
+                                              src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png"
+                                              alt="LinkedIn"
+                                              className="h-6 w-6 md:h-8 md:w-8"
+                                            />
+                                          </div>
+                                          <MdOutlineContentCopy
+                                            className="cursor-pointer"
+                                            size={16}
+                                          />
+                                          <SiGmail
+                                            className="cursor-pointer"
+                                            size={16}
                                           />
                                         </div>
-                                        <MdOutlineContentCopy
-                                          className="cursor-pointer"
-                                          size={16}
-                                        />
-                                        <SiGmail
-                                          className="cursor-pointer"
-                                          size={16}
-                                        />
                                       </div>
                                     </div>
                                   </div>
