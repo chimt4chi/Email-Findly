@@ -557,11 +557,11 @@ function Hero() {
                               </h3>
                               {foundEmailsUrl.emails.map(
                                 (email, emailIndex) => (
-                                  <div className="flex flex-wrap">
-                                    <div
-                                      key={emailIndex}
-                                      className="bg-white border border-black-500 rounded-lg shadow-md p-4 mb-4 flex items-center gap-4 flex-grow"
-                                    >
+                                  <div
+                                    key={emailIndex}
+                                    className="flex flex-wrap"
+                                  >
+                                    <div className="bg-white border border-black-500 rounded-lg shadow-md p-4 mb-4 flex items-center gap-4 flex-grow">
                                       <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300">
                                         <img
                                           src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
