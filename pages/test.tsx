@@ -1,3 +1,4 @@
+import Dashboard from "@/components/Dashboard";
 import { Globe } from "@/components/Globe";
 import Grade from "@/components/Grade";
 import InputData from "@/components/InputData";
@@ -13,10 +14,11 @@ function test() {
     <>
       {/* <NewHero /> */}
       {/* <Grade /> */}
-      <div className="flex">
+      {/* <div className="flex">
         <Sidebar2 currentUser="Rohit" />
-      </div>
+      </div> */}
       {/* <Globe data={[]} /> */}
+      <Dashboard />
     </>
   );
 }
