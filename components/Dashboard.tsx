@@ -1,7 +1,6 @@
 import { useState } from "react";
-// import "style.";
 
-const Dashboard = () => {
+const NavBar = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isFooterOpen, setIsFooterOpen] = useState(false);
 
@@ -111,4 +110,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default NavBar;
