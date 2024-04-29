@@ -28,6 +28,7 @@ interface WebsiteData {
   foundEmailsUrls: FoundEmails[];
   error?: string; // Add error field to WebsiteData interface
 }
+
 const navigation = [
   { name: "Product", href: "#" },
   { name: "Pricing", href: "/pricing" },
@@ -61,6 +62,15 @@ function Hero() {
   const [error, setError] = useState<string | null>(null);
   const [requestCount, setRequestCount] = useState<number>(0);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false); // State for showing/hiding suggestions
+
+  const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
+
+  const copyToClipboard = (emailToCopy: string) => {
+    navigator.clipboard.writeText(emailToCopy);
+    setCopiedEmail(emailToCopy);
+    // Remove the animation class after 2 seconds
+    setTimeout(() => setCopiedEmail(null), 2000);
+  };
 
   useEffect(() => {
     console.log("responseData:", responseData);
@@ -592,7 +602,16 @@ function Hero() {
                                           </span>
                                         </div>
                                         <div className="flex gap-2 items-center">
-                                          <div className="bg-gray-300 rounded-full cursor-pointer">
+                                          <div
+                                            className={`bg-gray-300 rounded-full cursor-pointer ${
+                                              copiedEmail
+                                                ? "copied-animation"
+                                                : ""
+                                            }`}
+                                            onClick={() =>
+                                              copyToClipboard(email)
+                                            }
+                                          >
                                             <img
                                               src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png"
                                               alt="LinkedIn"
@@ -600,12 +619,32 @@ function Hero() {
                                             />
                                           </div>
                                           <MdOutlineContentCopy
-                                            className="cursor-pointer"
+                                            className={`cursor-pointer ${
+                                              copiedEmail
+                                                ? "copied-animation"
+                                                : ""
+                                            }`}
                                             size={16}
+                                            onClick={() =>
+                                              copyToClipboard(
+                                                email.includes("mailto:")
+                                                  ? email
+                                                      .split("mailto:")[1]
+                                                      .split("?")[0]
+                                                  : email
+                                              )
+                                            }
                                           />
                                           <SiGmail
-                                            className="cursor-pointer"
+                                            className={`cursor-pointer ${
+                                              copiedEmail
+                                                ? "copied-animation"
+                                                : ""
+                                            }`}
                                             size={16}
+                                            onClick={() =>
+                                              copyToClipboard(email)
+                                            }
                                           />
                                         </div>
                                       </div>
