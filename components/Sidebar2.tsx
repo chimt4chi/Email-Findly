@@ -36,7 +36,7 @@ const Sidebar2 = () => {
 
     const arrow = document.querySelectorAll(".arrow");
     arrow.forEach((item) => {
-      item.addEventListener("click", handleArrowClick);
+      item.addEventListener("click", handleArrowClick as EventListener);
     });
 
     const sidebarBtn = document.querySelector(".bx-menu");
@@ -47,7 +47,7 @@ const Sidebar2 = () => {
     return () => {
       // Clean up event listeners
       arrow.forEach((item) => {
-        item.removeEventListener("click", handleArrowClick);
+        item.removeEventListener("click", handleArrowClick as EventListener);
       });
       if (sidebarBtn) {
         sidebarBtn.removeEventListener("click", handleSidebarBtnClick);
