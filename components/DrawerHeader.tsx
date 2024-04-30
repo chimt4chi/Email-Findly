@@ -321,7 +321,7 @@ export default function MiniDrawer() {
     // </Box>
 
     <div className="flex">
-      <Sidebar2 currentUser="Rohit" />
+      <Sidebar2 />
     </div>
   );
 }
