@@ -5,6 +5,7 @@ import Why from "@/components/Why";
 import WhoUses from "@/components/WhoUses";
 import Footer2 from "@/components/Footer2";
 import Header from "@/components/Header";
+import { IndiaFirst } from "@/components/IndiaFirst";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       {/* <Header /> */}
       <Hero />
       <Logo />
+      <IndiaFirst />
       <Features />
       <Why />
       <WhoUses />

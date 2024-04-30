@@ -461,15 +461,14 @@ function Hero() {
             }}
           >
             <h1 className="text-4xl font-bold tracking-tight text-indigo-600 sm:text-6xl">
-              Email Findly
+              Find Emails, LinkedIn
             </h1>
             <span className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              Empower Growth Drive Success.
+              in One Click. 10X Your Sales!{" "}
             </span>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui
-              lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat
-              fugiat aliqua.
+              Find emails, linkedIn of your ideal client website and close them
+              for more sales and revenue.
             </p>
             <div className="mt-10  ">
               <div className="relative flex items-center gap-x-2">

@@ -19,13 +19,13 @@ export default function WhoUses() {
     <div className="relative isolate overflow-hidden bg-gray-900 py-16 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-2">
-          <div className="max-w-xl lg:max-w-lg">
+          <div className="max-w-xl lg:max-w-lg my-auto">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Who uses Email Findly?
             </h2>
             <p className="mt-4 text-lg leading-8 text-gray-300">
-              Nostrud amet eu ullamco nisi aute in ad minim nostrud adipisicing
-              velit quis. Duis tempor incididunt dolore.
+              Who dont love building connection with leads!You got it right, no
+              one..
             </p>
             <div className="mt-6 flex max-w-md gap-x-4">
               <label htmlFor="email-address" className="sr-only">
@@ -56,10 +56,10 @@ export default function WhoUses() {
                   aria-hidden="true"
                 />
               </div>
-              <dt className="mt-4 font-semibold text-white">Weekly articles</dt>
+              <dt className="mt-4 font-semibold text-white">Agencies</dt>
               <dd className="mt-2 leading-7 text-gray-400">
-                Non laboris consequat cupidatat laborum magna. Eiusmod non irure
-                cupidatat duis commodo amet.
+                Just a few clicks to access valuable contact information for
+                potential clients and key decision-makers.
               </dd>
             </div>
             <div className="flex flex-col items-start">
@@ -69,10 +69,12 @@ export default function WhoUses() {
                   aria-hidden="true"
                 />
               </div>
-              <dt className="mt-4 font-semibold text-white">Weekly articles</dt>
+              <dt className="mt-4 font-semibold text-white">
+                Business Development Professionals{" "}
+              </dt>
               <dd className="mt-2 leading-7 text-gray-400">
-                Non laboris consequat cupidatat laborum magna. Eiusmod non irure
-                cupidatat duis commodo amet.
+                Streamline prospecting efforts and focus on what truly matters:
+                cultivating meaningful connections for your business.
               </dd>
             </div>
             <div className="flex flex-col items-start">
@@ -82,10 +84,12 @@ export default function WhoUses() {
                   aria-hidden="true"
                 />
               </div>
-              <dt className="mt-4 font-semibold text-white">Weekly articles</dt>
+              <dt className="mt-4 font-semibold text-white">
+                Freelancers and Consultants
+              </dt>
               <dd className="mt-2 leading-7 text-gray-400">
-                Non laboris consequat cupidatat laborum magna. Eiusmod non irure
-                cupidatat duis commodo amet.
+                Effortlessly uncover email addresses and LinkedIn pages
+                associated with any companys website!
               </dd>
             </div>
             <div className="flex flex-col items-start">
@@ -95,10 +99,11 @@ export default function WhoUses() {
                   aria-hidden="true"
                 />
               </div>
-              <dt className="mt-4 font-semibold text-white">No spam</dt>
+              <dt className="mt-4 font-semibold text-white">Job Seekers</dt>
               <dd className="mt-2 leading-7 text-gray-400">
-                Officia excepteur ullamco ut sint duis proident non adipisicing.
-                Voluptate incididunt anim.
+                Extract email of your dream companies. One step ahead of the
+                competition, making meaningful connections and landing
+                interviews with ease.
               </dd>
             </div>
           </dl>
