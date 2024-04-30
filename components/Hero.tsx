@@ -590,7 +590,10 @@ function Hero() {
                               </h3>
                               {foundEmailsUrl.emails.map(
                                 (email, emailIndex) => (
-                                  <div className="flex flex-wrap ">
+                                  <div
+                                    key={emailIndex}
+                                    className="flex flex-wrap "
+                                  >
                                     <div className="w-full p-2">
                                       <div className="bg-white rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
                                         <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300 mb-4 md:mb-0">
