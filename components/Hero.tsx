@@ -89,25 +89,30 @@ function Hero() {
 
   const suggestTexts = useCallback(() => {
     // Predefined list of suggestions
-    const predefinedSuggestions: string[] = [
+    const predefinedSuggestions = [
       "dtu.ac.in",
       "aryabhattacollege.ac.in",
       "google.com",
       "growthsay.com",
     ];
-    // Filter suggestions based on the current input value
-    const filteredSuggestions = predefinedSuggestions.filter((text) =>
-      text.toLowerCase().includes(urlInput.toLowerCase())
+
+    // Check if the input exactly matches any predefined suggestion
+    const isMatchingInput = predefinedSuggestions.some(
+      (text) => text.toLowerCase() === urlInput.toLowerCase()
     );
+
     // Set the filtered suggestions
-    const isMatchingInput = predefinedSuggestions.some((text) =>
-      text.toLowerCase().includes(urlInput.toLowerCase())
+    setSuggestedTexts(
+      isMatchingInput
+        ? []
+        : predefinedSuggestions.filter((text) =>
+            text.toLowerCase().includes(urlInput.toLowerCase())
+          )
     );
-    // Set the filtered suggestions
-    setSuggestedTexts(filteredSuggestions);
-    // Show suggestions only if there are filtered suggestions and the current input matches any suggestion
-    setShowSuggestions(filteredSuggestions.length > 0 && isMatchingInput);
-  }, [urlInput]);
+
+    // Show suggestions only if there are filtered suggestions and the current input doesn't exactly match any suggestion
+    setShowSuggestions(isMatchingInput ? false : suggestedTexts.length > 0);
+  }, [urlInput, suggestedTexts]);
 
   const sendData = useCallback(
     async (inputText: string) => {
@@ -538,7 +543,10 @@ function Hero() {
                   </button>
                 )}
                 <button
-                  onClick={() => sendData(urlInput)}
+                  onClick={() => {
+                    sendData(urlInput);
+                    setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
+                  }}
                   disabled={loading || requestCount >= 100}
                   type="button"
                   className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
