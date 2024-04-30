@@ -119,6 +119,7 @@ function Hero() {
       if (!inputText.trim() && !domainExtension) return;
       setLoading(true);
       setResponseData([]); // Clear previous result
+      setError(null); // Clear previous error
       try {
         if (requestCount >= 100) {
           setError(
@@ -146,10 +147,12 @@ function Hero() {
         );
 
         if (response.data.websites.length === 0) {
-          setError("Please check the URL or the server is busy.");
+          setError(
+            "Please check the URL, Make sure the website is up an running."
+          );
         } else {
           setResponseData(response.data.websites);
-          setError(null);
+          setShowSuggestions(false); // Close suggestions when data is fetched
           setRequestCount((prevCount) => {
             if (prevCount < 2) {
               const newCount = prevCount + 1;
@@ -160,7 +163,6 @@ function Hero() {
             }
             return prevCount;
           });
-          setShowSuggestions(false); // Close suggestions when data is fetched
         }
       } catch (error) {
         console.error("Error:", error);
