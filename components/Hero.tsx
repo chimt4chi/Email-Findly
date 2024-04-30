@@ -119,7 +119,6 @@ function Hero() {
       if (!inputText.trim() && !domainExtension) return;
       setLoading(true);
       setResponseData([]); // Clear previous result
-      setError(null); // Clear previous error
       try {
         if (requestCount >= 100) {
           setError(
@@ -152,7 +151,7 @@ function Hero() {
           );
         } else {
           setResponseData(response.data.websites);
-          setShowSuggestions(false); // Close suggestions when data is fetched
+          setError(null);
           setRequestCount((prevCount) => {
             if (prevCount < 2) {
               const newCount = prevCount + 1;
@@ -163,6 +162,7 @@ function Hero() {
             }
             return prevCount;
           });
+          setShowSuggestions(false); // Close suggestions when data is fetched
         }
       } catch (error) {
         console.error("Error:", error);

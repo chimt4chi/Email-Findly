@@ -2,6 +2,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import cheerio from "cheerio";
 
+function joinUrl(base: string, relative: string): string {
+  const url = new URL(relative, base);
+  return url.toString();
+}
+
 async function findEmailAddresses(url: string): Promise<string[]> {
   try {
     const response = await fetch(url);
@@ -59,6 +64,30 @@ async function findEmailAddresses(url: string): Promise<string[]> {
   }
 }
 
+async function findLinkedinUrls(url: string): Promise<string[]> {
+  try {
+    const response = await axios.get(url);
+
+    if (response.status === 200) {
+      const $ = cheerio.load(response.data);
+      const linkedinUrls: string[] = [];
+
+      $("a[href]").each((index, element) => {
+        const absoluteUrl = joinUrl(url, $(element).attr("href") || "");
+        if (absoluteUrl.includes("linkedin.com/company/")) {
+          linkedinUrls.push(absoluteUrl);
+        }
+      });
+
+      return linkedinUrls;
+    }
+  } catch (error) {
+    console.error(`Error while processing ${url}: ${error}`);
+  }
+
+  return [];
+}
+
 async function crawlWebsite(startUrls: string[]) {
   const allWebsitesData: any[] = [];
 
@@ -74,15 +103,31 @@ async function crawlWebsite(startUrls: string[]) {
       visited.add(currentUrl);
       try {
         const emailAddresses = await findEmailAddresses(currentUrl);
+        const linkedinUrls = await findLinkedinUrls(currentUrl);
 
-        if (emailAddresses.length > 0) {
+        if (emailAddresses.length && linkedinUrls.length > 0) {
           const websiteData = {
             mainPageUrl: startUrl,
-            foundEmailsUrls: [{ url: currentUrl, emails: emailAddresses }],
+            foundEmailsUrls: [
+              {
+                url: currentUrl,
+                emails: emailAddresses,
+                linkedinUrls: linkedinUrls,
+              },
+            ],
           };
           allWebsitesData.push(websiteData);
           break; // Stop crawling this website after finding emails
         }
+
+        // if (linkedinUrls.length > 0) {
+        //   const websiteData = {
+        //     mainPageUrl: startUrl,
+        //     linkedinUrls: linkedinUrls,
+        //   };
+        //   allWebsitesData.push(websiteData);
+        //   break; // Stop crawling this website after finding LinkedIn URLs
+        // }
 
         const response = await fetch(currentUrl);
         const html = await response.text();

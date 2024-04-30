@@ -14,7 +14,7 @@ export function IndiaFirst() {
           duration: 0.8,
           ease: "easeInOut",
         }}
-        className="text-white mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl font-familiy-inter"
+        className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl font-familiy-inter"
       >
         India&apos;s 1st <br /> Email & LinkedIn finder Tool!
       </motion.h1>
