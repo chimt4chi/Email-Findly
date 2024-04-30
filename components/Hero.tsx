@@ -16,6 +16,7 @@ import { ChartPieIcon, CursorArrowRaysIcon } from "@heroicons/react/24/outline";
 import { MdOutlineContentCopy } from "react-icons/md";
 import { SiGmail } from "react-icons/si";
 import Link from "next/link";
+import { FaLinkedin, FaLinkedinIn } from "react-icons/fa";
 
 interface FoundEmails {
   url: string;
@@ -555,7 +556,20 @@ function Hero() {
 
                 {loading && (
                   <div className="flex justify-center items-center h-20">
-                    <CircularProgress color="primary" />
+                    <div
+                      role="status"
+                      className="max-w-md p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                          <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                        </div>
+                        <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                      </div>
+
+                      <span className="sr-only">Loading...</span>
+                    </div>
                   </div>
                 )}
 
@@ -576,54 +590,32 @@ function Hero() {
                               </h3>
                               {foundEmailsUrl.emails.map(
                                 (email, emailIndex) => (
-                                  <div
-                                    key={emailIndex}
-                                    className="flex flex-wrap"
-                                  >
-                                    <div className="bg-white border border-black-500 rounded-lg shadow-md p-4 mb-4 flex items-center gap-4 flex-grow">
-                                      <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300">
-                                        <img
-                                          src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                                          alt=""
-                                          className="h-8 w-8 md:h-10 md:w-10"
-                                        />
-                                      </div>
-                                      <div className="flex flex-grow justify-between items-center">
+                                  <div className="flex flex-wrap ">
+                                    <div className="w-full p-2">
+                                      <div className="bg-white rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                                        <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300 mb-4 md:mb-0">
+                                          <img
+                                            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                                            alt=""
+                                            className="h-8 w-8 md:h-10 md:w-10"
+                                          />
+                                        </div>
                                         <div className="flex gap-2 flex-col items-start">
-                                          <p className="text-indigo-600 ">
+                                          <p className="text-indigo-600">
                                             {email.includes("mailto:")
                                               ? email
                                                   .split("mailto:")[1]
                                                   .split("?")[0]
                                               : email}
                                           </p>
-                                          <span className="text-gray-500">
-                                            (Found on: {foundEmailsUrl.url})
-                                          </span>
                                         </div>
                                         <div className="flex gap-2 items-center">
-                                          <div
-                                            className={`bg-gray-300 rounded-full cursor-pointer ${
-                                              copiedEmail
-                                                ? "copied-animation"
-                                                : ""
-                                            }`}
-                                            onClick={() =>
-                                              copyToClipboard(email)
-                                            }
-                                          >
-                                            <img
-                                              src="https://cdn1.iconfinder.com/data/icons/logotypes/32/circle-linkedin-512.png"
-                                              alt="LinkedIn"
-                                              className="h-6 w-6 md:h-8 md:w-8"
-                                            />
-                                          </div>
+                                          <FaLinkedinIn
+                                            size={16}
+                                            className="cursor-pointer"
+                                          />
                                           <MdOutlineContentCopy
-                                            className={`cursor-pointer ${
-                                              copiedEmail
-                                                ? "copied-animation"
-                                                : ""
-                                            }`}
+                                            className="cursor-pointer"
                                             size={16}
                                             onClick={() =>
                                               copyToClipboard(
@@ -636,15 +628,8 @@ function Hero() {
                                             }
                                           />
                                           <SiGmail
-                                            className={`cursor-pointer ${
-                                              copiedEmail
-                                                ? "copied-animation"
-                                                : ""
-                                            }`}
+                                            className="cursor-pointer"
                                             size={16}
-                                            onClick={() =>
-                                              copyToClipboard(email)
-                                            }
                                           />
                                         </div>
                                       </div>

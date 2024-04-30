@@ -18,7 +18,9 @@ function test() {
         <Sidebar2 currentUser="Rohit" />
       </div> */}
       {/* <Globe data={[]} /> */}
-      <Dashboard />
+      {/* <Dashboard /> */}
+      <Sidebar2 />
+      {/* <h1>hey</h1> */}
     </>
   );
 }

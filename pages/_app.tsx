@@ -1,5 +1,6 @@
 import Footer2 from "@/components/Footer2";
 import Header from "@/components/Header";
+import Sidebar2 from "@/components/Sidebar2";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
@@ -21,6 +22,7 @@ export default function App({ Component, pageProps }: AppProps) {
       {/* {showHeader && <Header showHeader={showHeader} />} */}
       <Component {...pageProps} />
       {showFooter && <Footer2 showHeader={showHeader} />}
+      {/* {showFooter && <Sidebar2 showHeader={showHeader} />} */}
     </>
   );
 }
