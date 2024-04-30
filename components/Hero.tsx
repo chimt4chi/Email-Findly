@@ -4,6 +4,7 @@ import axios from "axios";
 import { CircularProgress, IconButton } from "@mui/material";
 import { useRouter } from "next/router";
 import ClearIcon from "@mui/icons-material/Clear";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Bars3Icon,
   ChevronDownIcon,
@@ -16,7 +17,7 @@ import { ChartPieIcon, CursorArrowRaysIcon } from "@heroicons/react/24/outline";
 import { MdOutlineContentCopy } from "react-icons/md";
 import { SiGmail } from "react-icons/si";
 import Link from "next/link";
-import { FaLinkedin, FaLinkedinIn } from "react-icons/fa";
+import { FaLinkedinIn } from "react-icons/fa";
 
 interface FoundEmails {
   url: string;
@@ -66,6 +67,8 @@ function Hero() {
 
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const copyToClipboard = (emailToCopy: string) => {
     navigator.clipboard.writeText(emailToCopy);
     setCopiedEmail(emailToCopy);
@@ -97,11 +100,14 @@ function Hero() {
       text.toLowerCase().includes(urlInput.toLowerCase())
     );
     // Set the filtered suggestions
+    const isMatchingInput = predefinedSuggestions.some((text) =>
+      text.toLowerCase().includes(urlInput.toLowerCase())
+    );
+    // Set the filtered suggestions
     setSuggestedTexts(filteredSuggestions);
-    // Show suggestions only if there are filtered suggestions
-    setShowSuggestions(filteredSuggestions.length > 0);
+    // Show suggestions only if there are filtered suggestions and the current input matches any suggestion
+    setShowSuggestions(filteredSuggestions.length > 0 && isMatchingInput);
   }, [urlInput]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const sendData = useCallback(
     async (inputText: string) => {
@@ -466,7 +472,7 @@ function Hero() {
             <span className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
               in One Click. 10X Your Sales!{" "}
             </span>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
+            <p className="mt-6 text-lg leading-8 text-gray-600 p-4">
               Find emails, linkedIn of your ideal client website and close them
               for more sales and revenue.
             </p>
@@ -554,20 +560,18 @@ function Hero() {
                 )}
 
                 {loading && (
-                  <div className="flex justify-center items-center h-20">
-                    <div
-                      role="status"
-                      className="max-w-md p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
-                          <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
-                        </div>
-                        <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                  <div className="w-full mx-2">
+                    <div className="mt-20 bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                      <Skeleton className="bg-indigo-600 h-12 w-12 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="bg-indigo-600 h-6 w-[250px]" />
+                        {/* <Skeleton className="h-4 w-[250px]" /> */}
                       </div>
-
-                      <span className="sr-only">Loading...</span>
+                      <div className="flex gap-2">
+                        <Skeleton className="bg-indigo-600 h-4 w-4 rounded-full" />
+                        <Skeleton className="bg-indigo-600 h-4 w-4 rounded-full" />
+                        <Skeleton className="bg-indigo-600 h-4 w-4 rounded-full" />
+                      </div>
                     </div>
                   </div>
                 )}
