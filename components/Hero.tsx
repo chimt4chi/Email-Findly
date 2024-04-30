@@ -470,8 +470,8 @@ function Hero() {
               Find emails, linkedIn of your ideal client website and close them
               for more sales and revenue.
             </p>
-            <div className="mt-10  ">
-              <div className="relative flex items-center gap-x-2">
+            <div className="mt-10  p-4">
+              <div className="relative flex flex-col">
                 <input
                   type="text"
                   disabled={loading || requestCount >= 100}
@@ -490,13 +490,13 @@ function Hero() {
                     }
                   }}
                   value={urlInput}
-                  className="form-input py-2 px-4 rounded-md border border-gray-300 flex-grow focus:outline-none focus:border-indigo-500"
+                  className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
                   placeholder="Enter URL (e.g. example.com)"
                 />
                 {urlInput && (
                   <button
                     onClick={() => setUrlInput("")}
-                    className="absolute right-20 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
+                    className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
                   >
                     <ClearIcon className="h-6 w-6 text-gray-500" />
                   </button>
@@ -505,7 +505,7 @@ function Hero() {
                   onClick={() => sendData(urlInput)}
                   disabled={loading || requestCount >= 100}
                   type="button"
-                  className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
                 >
                   Find
                 </button>
@@ -594,7 +594,7 @@ function Hero() {
                                     className="flex flex-wrap "
                                   >
                                     <div className="w-full p-2">
-                                      <div className="bg-white rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                                      <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
                                         <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300 mb-4 md:mb-0">
                                           <img
                                             src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
