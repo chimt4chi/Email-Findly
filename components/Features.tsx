@@ -1,6 +1,7 @@
 import {
   CloudArrowUpIcon,
   LockClosedIcon,
+  MagnifyingGlassIcon,
   ServerIcon,
 } from "@heroicons/react/20/solid";
 
@@ -9,25 +10,25 @@ const features = [
     name: "Find verified emails",
     description:
       "Get quality emails you can reach out to close them as customer for your service or product.",
-    icon: CloudArrowUpIcon,
+    icon: MagnifyingGlassIcon,
   },
   {
     name: "Find company LinkedIn.",
     description:
       "It also finds company LinkedIn to help you perfect your reachout and drive sales..",
-    icon: LockClosedIcon,
+    icon: MagnifyingGlassIcon,
   },
   {
     name: "Find emails in bulk.",
     description:
       "Want emails of multiple websites? No problem! Upload websites in csv,excel and get it as output.",
-    icon: ServerIcon,
+    icon: MagnifyingGlassIcon,
   },
   {
     name: "Find company LinkedIn in bulk",
     description:
       "Want LinkedIn of multiple websites? No problem! Upload websites in csv,excel and get it as output.",
-    icon: ServerIcon,
+    icon: MagnifyingGlassIcon,
   },
 ];
 export default function Features() {

@@ -1,74 +1,38 @@
-import React, { useCallback, useEffect, useState, Fragment } from "react";
-import Head from "next/head";
+import React from "react";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
-import { CircularProgress, IconButton } from "@mui/material";
-import { useRouter } from "next/router";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Bars3Icon,
-  ChevronDownIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-
-import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
-import { ChartPieIcon, CursorArrowRaysIcon } from "@heroicons/react/24/outline";
-
-import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
-import { SiGmail } from "react-icons/si";
+import Head from "next/head";
+import { useCallback, useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import Link from "next/link";
+import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
+import { Skeleton } from "./ui/skeleton";
+import { SiGmail } from "react-icons/si";
 import { FaLinkedinIn } from "react-icons/fa";
-
-interface FoundEmails {
-  url: string;
-  emails: string[];
-  error?: string; // Add error field to FoundEmails interface
-  linkedinUrls?: string[];
-}
 
 interface WebsiteData {
   mainPageUrl: string;
-  foundEmailsUrls: FoundEmails[];
-  error?: string; // Add error field to WebsiteData interface
+  foundEmailsUrls: {
+    url: string;
+    emails: string[];
+    linkedinUrls: string[];
+    error?: string;
+  }[];
+  // Add error field to FoundEmails interface
 }
 
-const navigation = [
-  { name: "Product", href: "#" },
-  { name: "Pricing", href: "/pricing" },
-];
+function BulkUpload() {
+  const isValidUrl = (url: string) => {
+    // Your URL validation logic goes here
+    return true; // Placeholder for demonstration
+  };
 
-const products = [
-  {
-    name: "Bulk Email Finder",
-    description: "Get a better understanding of your traffic",
-    href: "/product/bulkUpload",
-    icon: ChartPieIcon,
-  },
-  {
-    name: "Linkedin Finder",
-    description: "Speak directly to your customers",
-    href: "#",
-    icon: CursorArrowRaysIcon,
-  },
-];
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
-function Hero() {
-  const [urlInput, setUrlInput] = useState<string>("");
-  const [suggestedTexts, setSuggestedTexts] = useState<string[]>([]);
-  const [domainExtension, setDomainExtension] = useState<string>("");
-  const [responseData, setResponseData] = useState<WebsiteData[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [websites, setWebsites] = useState<string[]>([]);
+  const [responseWebsites, setResponseWebsites] = useState<WebsiteData[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [requestCount, setRequestCount] = useState<number>(0);
-  const [showSuggestions, setShowSuggestions] = useState<boolean>(false); // State for showing/hiding suggestions
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
-
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const copyToClipboard = (emailToCopy: string) => {
     navigator.clipboard.writeText(emailToCopy);
@@ -77,123 +41,73 @@ function Hero() {
     setTimeout(() => setCopiedEmail(null), 3000); // Change the timeout to 3000 milliseconds (3 seconds)
   };
 
-  useEffect(() => {
-    console.log("responseData:", responseData);
-  }, [responseData]);
+  const handleUploadButtonClick = () => {
+    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+    fileInput.click();
+  };
 
-  useEffect(() => {
-    const storedRequestCount = localStorage.getItem("requestCount");
-    if (storedRequestCount) {
-      setRequestCount(Number(storedRequestCount));
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const data = event.target?.result;
+        if (typeof data === "string" || data instanceof ArrayBuffer) {
+          const workbook = XLSX.read(data, { type: "binary" });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const parsedData: any[] = XLSX.utils.sheet_to_json(sheet);
+
+          const extractedWebsites: string[] = [];
+
+          parsedData.forEach((obj) => {
+            for (const key in obj) {
+              const value = obj[key];
+              if (typeof value === "string" && isValidUrl(value)) {
+                extractedWebsites.push(value);
+              }
+            }
+          });
+
+          setWebsites(extractedWebsites);
+          sendData(extractedWebsites);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+  };
+
+  const sendData = useCallback(async (extractedWebsites: string[]) => {
+    if (!extractedWebsites.length) return;
+    setLoading(true);
+
+    try {
+      const response = await axios.post<{ websites: WebsiteData[] }>(
+        "/api/apiData",
+        {
+          startingUrls: extractedWebsites,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Response:", response);
+
+      setResponseWebsites(response.data.websites);
+      setError(null);
+    } catch (error) {
+      console.error("Error:", error);
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }, []);
-
-  const suggestTexts = useCallback(() => {
-    // Predefined list of suggestions
-    const predefinedSuggestions = [
-      "dtu.ac.in",
-      "aryabhattacollege.ac.in",
-      "google.com",
-      "growthsay.com",
-    ];
-
-    // Check if the input exactly matches any predefined suggestion
-    const isMatchingInput = predefinedSuggestions.some(
-      (text) => text.toLowerCase() === urlInput.toLowerCase()
-    );
-
-    // Set the filtered suggestions
-    setSuggestedTexts(
-      isMatchingInput
-        ? []
-        : predefinedSuggestions.filter((text) =>
-            text.toLowerCase().includes(urlInput.toLowerCase())
-          )
-    );
-
-    // Show suggestions only if there are filtered suggestions and the current input doesn't exactly match any suggestion
-    setShowSuggestions(isMatchingInput ? false : suggestedTexts.length > 0);
-  }, [urlInput, suggestedTexts]);
-
-  const sendData = useCallback(
-    async (inputText: string) => {
-      if (!inputText.trim() && !domainExtension) return;
-      setLoading(true);
-      setResponseData([]); // Clear previous result
-      try {
-        if (requestCount >= 100) {
-          setError(
-            "You have reached the request limit. Please login or register to continue."
-          );
-          return;
-        }
-
-        const processedUrlInput =
-          inputText.trim().startsWith("http://") ||
-          inputText.trim().startsWith("https://")
-            ? inputText.trim()
-            : `http://${inputText.trim()}`;
-
-        const response = await axios.post<{ websites: WebsiteData[] }>(
-          "/api/apiData",
-          {
-            startingUrls: [`${processedUrlInput}${domainExtension}`],
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.data.websites.length === 0) {
-          setError(
-            "Please check the URL, Make sure the website is up an running."
-          );
-        } else {
-          setResponseData(response.data.websites);
-          setError(null);
-          setRequestCount((prevCount) => {
-            if (prevCount < 2) {
-              const newCount = prevCount + 1;
-              if (typeof localStorage !== "undefined") {
-                localStorage.setItem("requestCount", String(newCount));
-              }
-              return newCount;
-            }
-            return prevCount;
-          });
-          setShowSuggestions(false); // Close suggestions when data is fetched
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setError("An error occurred. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [domainExtension, requestCount]
-  );
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      sendData(urlInput);
-    }
-  };
-
-  const router = useRouter();
-
-  const handleNavigate = (variant: string) => {
-    router.push({
-      pathname: "/auth",
-      query: { variant },
-    });
-  };
-
   return (
-    <>
+    <div>
       <Head>
-        <title>Email Finder | Home</title>
+        <title>Email Findly | Bulk Upload</title>
       </Head>
       <div className="min-h-screen">
         <div
@@ -228,90 +142,24 @@ function Hero() {
             <div className="mt-10  p-4">
               <div className="relative flex flex-col">
                 <input
-                  type="text"
-                  onKeyDown={handleKeyDown}
-                  disabled={loading || requestCount >= 100}
-                  onChange={(e) => {
-                    setUrlInput(e.target.value);
-                    if (e.target.value.trim() === "") {
-                      setShowSuggestions(false);
-                    } else {
-                      suggestTexts();
-                    }
-                  }}
-                  onBlur={(e) => {
-                    if (e.target.value.trim() === "") {
-                      setUrlInput("");
-                      setShowSuggestions(false);
-                    }
-                  }}
-                  value={urlInput}
+                  type="file"
+                  accept=".xlsx, .xls"
+                  onChange={handleFileUpload}
+                  id="fileInput"
                   className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
                   placeholder="Enter URL (e.g. example.com)"
                 />
-                {urlInput && (
-                  <button
-                    onClick={() => setUrlInput("")}
-                    className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
-                  >
-                    <ClearIcon className="h-6 w-6 text-gray-500" />
-                  </button>
-                )}
                 <button
-                  onClick={() => {
-                    sendData(urlInput);
-                    setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
-                  }}
-                  disabled={loading || requestCount >= 100}
+                  onClick={handleUploadButtonClick}
                   type="button"
                   className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
                 >
-                  Find
+                  Upload
                 </button>
-              </div>
-
-              <div className="relative">
-                {showSuggestions && (
-                  <div className="absolute top-4 left-0 bg-white w-full border border-gray-300 rounded-lg z-10">
-                    {suggestedTexts.map((text, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                        onClick={() => {
-                          setUrlInput(text);
-                          setShowSuggestions(false);
-                          sendData(text);
-                        }}
-                      >
-                        {text}
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
             <main>
               <div className="mt-5 max-w-full">
-                {requestCount >= 100 && (
-                  <p className="text-red-500 text-sm text-center">
-                    Free request limit reached. Please{" "}
-                    <span
-                      className="cursor-pointer hover:underline hover:underline-offset-8 text-purple-800"
-                      onClick={() => router.push("auth?variant=login")}
-                    >
-                      Login
-                    </span>{" "}
-                    or{" "}
-                    <span
-                      className="cursor-pointer hover:underline hover:underline-offset-8 text-purple-800"
-                      onClick={() => router.push("auth?variant=register")}
-                    >
-                      Register
-                    </span>{" "}
-                    to continue.
-                  </p>
-                )}
-
                 {loading && (
                   <div className="w-full mx-2">
                     <div className="mt-20 bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -322,7 +170,6 @@ function Hero() {
                       </div>
                       <div className="flex gap-2">
                         <Skeleton className="bg-gray-400 h-4 w-4 rounded-full" />
-                        <Skeleton className="bg-gray-400 h-4 w-4 rounded-full" />
                       </div>
                     </div>
                   </div>
@@ -332,11 +179,8 @@ function Hero() {
                   <p className="text-red-500">{error}</p>
                 ) : (
                   <>
-                    {responseData.map((websiteData, index) => (
+                    {responseWebsites.map((websiteData, index) => (
                       <div key={index} className="mb-8  p-4 mt-8">
-                        <h2 className="text-2xl font-bold mb-4">
-                          {websiteData.error}
-                        </h2>
                         {websiteData.foundEmailsUrls.map(
                           (foundEmailsUrl, foundEmailsUrlIndex) => (
                             <div key={foundEmailsUrlIndex} className="mb-4">
@@ -437,8 +281,8 @@ function Hero() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
-export default Hero;
+export default BulkUpload;

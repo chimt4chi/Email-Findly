@@ -58,35 +58,8 @@ function AuthPage() {
       <Head>
         <title>Email Hunter | Login/Signup</title>
       </Head>
-      {/* <div className="bg-gradient-to-t from-purple-500/30 to-pink-500/20 my-6 mx-12 py-4 rounded-full">
-        <div className="mx-auto flex items-center justify-between px-10">
-          <div className="flex items-center">
-            <div className="flex items-center mr-4 text-gray-600 hover:bg-purple-500/30 focus:bg-purple-600/30 focus:rounded-full hover:rounded-full">
-              <button
-                onClick={() => router.push("/")}
-                className="  font-semibold px-4 py-2  focus:outline-none"
-              >
-                Email Findly
-              </button>
-            </div>
-          </div>
-          <div className="auth">
-            <button
-              onClick={() => setVariant("register")}
-              className="text-black font-semibold px-4 py-2 rounded focus:outline-none focus:bg-purple-600/30 focus:rounded-full hover:underline hover:underline-offset-8"
-            >
-              Create an account
-            </button>
-            <button
-              onClick={() => setVariant("login")}
-              className="text-black font-semibold px-4 py-2 rounded focus:outline-none focus:bg-purple-600/30 focus:rounded-full hover:underline underline-offset-8"
-            >
-              Log in
-            </button>
-          </div>
-        </div>
-      </div> */}
-      <div className="flex justify-center">
+
+      <div className="min-h-screen mt-20 flex justify-center">
         <div className="bg-gradient-to-t from-purple-500/70 to-pink-500/70 border shadow opacity-90 p-16 self-center mt-2 lg:w-2/5 lg:max-w-md md:max-w-md sm:max-w-md rounded-md w-full">
           <h2 className="text-black text-4xl mb-10 font-semibold text-center">
             {variant === "login" ? "Login" : "Register"}

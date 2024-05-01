@@ -56,7 +56,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-function Hero() {
+const LinkedinFinder = () => {
   const [urlInput, setUrlInput] = useState<string>("");
   const [suggestedTexts, setSuggestedTexts] = useState<string[]>([]);
   const [domainExtension, setDomainExtension] = useState<string>("");
@@ -193,7 +193,7 @@ function Hero() {
   return (
     <>
       <Head>
-        <title>Email Finder | Home</title>
+        <title>Email Finder | Linkedin Finder</title>
       </Head>
       <div className="min-h-screen">
         <div
@@ -266,7 +266,7 @@ function Hero() {
                   type="button"
                   className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
                 >
-                  Find
+                  Find Linkedin
                 </button>
               </div>
 
@@ -322,7 +322,6 @@ function Hero() {
                       </div>
                       <div className="flex gap-2">
                         <Skeleton className="bg-gray-400 h-4 w-4 rounded-full" />
-                        <Skeleton className="bg-gray-400 h-4 w-4 rounded-full" />
                       </div>
                     </div>
                   </div>
@@ -360,11 +359,12 @@ function Hero() {
                                         </div>
                                         <div className="flex gap-2 flex-col items-start">
                                           <p className="text-indigo-600 flex items-center gap-2">
-                                            {email.includes("mailto:")
-                                              ? email
-                                                  .split("mailto:")[1]
-                                                  .split("?")[0]
-                                              : email}
+                                            <Link
+                                              href={`${foundEmailsUrl.linkedinUrls}`}
+                                              target="_blank"
+                                            >
+                                              {foundEmailsUrl.linkedinUrls}
+                                            </Link>
                                             {copiedEmail ? (
                                               <MdCheckCircle
                                                 aria-placeholder="Copy Url"
@@ -392,16 +392,6 @@ function Hero() {
                                           </p>
                                         </div>
                                         <div className="flex gap-2 items-center">
-                                          <Link
-                                            href={`${foundEmailsUrl.linkedinUrls}`}
-                                            target="_blank"
-                                          >
-                                            <FaLinkedinIn
-                                              size={16}
-                                              className="cursor-pointer hover:text-indigo-600"
-                                              aria-placeholder="Linkedin Url"
-                                            />
-                                          </Link>
                                           <SiGmail
                                             className="cursor-pointer hover:text-indigo-600"
                                             size={16}
@@ -439,6 +429,6 @@ function Hero() {
       </div>
     </>
   );
-}
+};
 
-export default Hero;
+export default LinkedinFinder;

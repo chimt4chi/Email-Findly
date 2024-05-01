@@ -1,3 +1,4 @@
+import BulkUpload from "@/components/BulkUpload";
 import Dashboard from "@/components/Dashboard";
 import { Globe } from "@/components/Globe";
 import Grade from "@/components/Grade";
@@ -19,7 +20,8 @@ function test() {
       </div> */}
       {/* <Globe data={[]} /> */}
       {/* <Dashboard /> */}
-      <Sidebar2 />
+      {/* <Sidebar2 /> */}
+      <BulkUpload />
       {/* <h1>hey</h1> */}
     </>
   );
