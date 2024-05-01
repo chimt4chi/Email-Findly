@@ -648,12 +648,36 @@ function Hero() {
                                           />
                                         </div>
                                         <div className="flex gap-2 flex-col items-start">
-                                          <p className="text-indigo-600">
+                                          <p className="text-indigo-600 flex items-center gap-2">
                                             {email.includes("mailto:")
                                               ? email
                                                   .split("mailto:")[1]
                                                   .split("?")[0]
                                               : email}
+                                            {copiedEmail ? (
+                                              <MdCheckCircle
+                                                aria-placeholder="Copy Url"
+                                                className="cursor-pointer text-green-500"
+                                                size={16}
+                                                onClick={() =>
+                                                  setCopiedEmail(null)
+                                                }
+                                              />
+                                            ) : (
+                                              <MdOutlineContentCopy
+                                                className="cursor-pointer text-black hover:text-indigo-600"
+                                                size={16}
+                                                onClick={() =>
+                                                  copyToClipboard(
+                                                    email.includes("mailto:")
+                                                      ? email
+                                                          .split("mailto:")[1]
+                                                          .split("?")[0]
+                                                      : email
+                                                  )
+                                                }
+                                              />
+                                            )}
                                           </p>
                                         </div>
                                         <div className="flex gap-2 items-center">
@@ -664,34 +688,13 @@ function Hero() {
                                             <FaLinkedinIn
                                               size={16}
                                               className="cursor-pointer hover:text-indigo-600"
+                                              aria-placeholder="Linkedin Url"
                                             />
                                           </Link>
-                                          {copiedEmail ? (
-                                            <MdCheckCircle
-                                              className="cursor-pointer text-green-500"
-                                              size={16}
-                                              onClick={() =>
-                                                setCopiedEmail(null)
-                                              }
-                                            />
-                                          ) : (
-                                            <MdOutlineContentCopy
-                                              className="cursor-pointer hover:text-indigo-600"
-                                              size={16}
-                                              onClick={() =>
-                                                copyToClipboard(
-                                                  email.includes("mailto:")
-                                                    ? email
-                                                        .split("mailto:")[1]
-                                                        .split("?")[0]
-                                                    : email
-                                                )
-                                              }
-                                            />
-                                          )}
                                           <SiGmail
                                             className="cursor-pointer hover:text-indigo-600"
                                             size={16}
+                                            aria-placeholder="Send emails to your gmail"
                                           />
                                         </div>
                                       </div>
