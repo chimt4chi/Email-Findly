@@ -14,7 +14,7 @@ import {
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
 import { ChartPieIcon, CursorArrowRaysIcon } from "@heroicons/react/24/outline";
 
-import { MdOutlineContentCopy } from "react-icons/md";
+import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
 import { SiGmail } from "react-icons/si";
 import Link from "next/link";
 import { FaLinkedinIn } from "react-icons/fa";
@@ -23,6 +23,7 @@ interface FoundEmails {
   url: string;
   emails: string[];
   error?: string; // Add error field to FoundEmails interface
+  linkedinUrls?: string[];
 }
 
 interface WebsiteData {
@@ -73,7 +74,7 @@ function Hero() {
     navigator.clipboard.writeText(emailToCopy);
     setCopiedEmail(emailToCopy);
     // Remove the animation class after 2 seconds
-    setTimeout(() => setCopiedEmail(null), 2000);
+    setTimeout(() => setCopiedEmail(null), 3000); // Change the timeout to 3000 milliseconds (3 seconds)
   };
 
   useEffect(() => {
@@ -602,15 +603,15 @@ function Hero() {
                 {loading && (
                   <div className="w-full mx-2">
                     <div className="mt-20 bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
-                      <Skeleton className="bg-indigo-600 h-12 w-12 rounded-full" />
+                      <Skeleton className="bg-gray-400 h-12 w-12 rounded-full" />
                       <div className="space-y-2">
-                        <Skeleton className="bg-indigo-600 h-6 w-[250px]" />
+                        <Skeleton className="bg-gray-400 h-6 w-[250px]" />
                         {/* <Skeleton className="h-4 w-[250px]" /> */}
                       </div>
                       <div className="flex gap-2">
-                        <Skeleton className="bg-indigo-600 h-4 w-4 rounded-full" />
-                        <Skeleton className="bg-indigo-600 h-4 w-4 rounded-full" />
-                        <Skeleton className="bg-indigo-600 h-4 w-4 rounded-full" />
+                        <Skeleton className="bg-gray-400 h-4 w-4 rounded-full" />
+                        <Skeleton className="bg-gray-400 h-4 w-4 rounded-full" />
+                        <Skeleton className="bg-gray-400 h-4 w-4 rounded-full" />
                       </div>
                     </div>
                   </div>
@@ -656,25 +657,40 @@ function Hero() {
                                           </p>
                                         </div>
                                         <div className="flex gap-2 items-center">
-                                          <FaLinkedinIn
-                                            size={16}
-                                            className="cursor-pointer"
-                                          />
-                                          <MdOutlineContentCopy
-                                            className="cursor-pointer"
-                                            size={16}
-                                            onClick={() =>
-                                              copyToClipboard(
-                                                email.includes("mailto:")
-                                                  ? email
-                                                      .split("mailto:")[1]
-                                                      .split("?")[0]
-                                                  : email
-                                              )
-                                            }
-                                          />
+                                          <Link
+                                            href={`${foundEmailsUrl.linkedinUrls}`}
+                                            target="_blank"
+                                          >
+                                            <FaLinkedinIn
+                                              size={16}
+                                              className="cursor-pointer hover:text-indigo-600"
+                                            />
+                                          </Link>
+                                          {copiedEmail ? (
+                                            <MdCheckCircle
+                                              className="cursor-pointer text-green-500"
+                                              size={16}
+                                              onClick={() =>
+                                                setCopiedEmail(null)
+                                              }
+                                            />
+                                          ) : (
+                                            <MdOutlineContentCopy
+                                              className="cursor-pointer hover:text-indigo-600"
+                                              size={16}
+                                              onClick={() =>
+                                                copyToClipboard(
+                                                  email.includes("mailto:")
+                                                    ? email
+                                                        .split("mailto:")[1]
+                                                        .split("?")[0]
+                                                    : email
+                                                )
+                                              }
+                                            />
+                                          )}
                                           <SiGmail
-                                            className="cursor-pointer"
+                                            className="cursor-pointer hover:text-indigo-600"
                                             size={16}
                                           />
                                         </div>
