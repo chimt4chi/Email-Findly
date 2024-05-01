@@ -175,6 +175,12 @@ function Hero() {
     [domainExtension, requestCount]
   );
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      sendData(urlInput);
+    }
+  };
+
   const router = useRouter();
 
   const handleNavigate = (variant: string) => {
@@ -518,6 +524,7 @@ function Hero() {
               <div className="relative flex flex-col">
                 <input
                   type="text"
+                  onKeyDown={handleKeyDown}
                   disabled={loading || requestCount >= 100}
                   onChange={(e) => {
                     setUrlInput(e.target.value);
