@@ -2,6 +2,9 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import "./style.module.css";
+import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 // Define the type for the menuStates object
 type MenuStates = {
@@ -54,10 +57,18 @@ const Sidebar2 = () => {
       }
     };
   }, []);
+
+  const { data: user } = useCurrentUser();
+
+  const router = useRouter();
+
   return (
     <div>
       <div className="sidebar close">
-        <div className="logo-details">
+        <div
+          className="logo-details cursor-pointer"
+          onClick={() => router.push("/")}
+        >
           <i className="bx bxl-c-plus-plus"></i>
           <span className="logo_name">Email Findly</span>
         </div>
@@ -218,20 +229,35 @@ const Sidebar2 = () => {
           <li>
             <div className="profile-details">
               <div className="profile-content">
-                {/* <!--<img src="image/profile.jpg" alt="profileImg">--> */}
+                <img src={user?.image} alt="profileImg" />
               </div>
               <div className="name-job">
-                <div className="profile_name">Rohit Singh</div>
+                <div className="profile_name">{user?.name}</div>
                 <div className="job">Web Dev</div>
               </div>
-              <i className="bx bx-log-out"></i>
+              <i className="bx bx-log-out" onClick={() => signOut()}></i>
             </div>
           </li>
         </ul>
       </div>
       <section className="home-section">
-        <div className="home-content">
+        <div className="home-content flex justify-between">
           <i className="bx bx-menu"></i>
+          {/* <h1 className="flex justify-end">hey</h1> */}
+          <div className="profile-details flex">
+            <div className="profile-content">
+              <img
+                className="h-10 w-10 rounded-full"
+                src={user?.image}
+                alt="profileImg"
+              />
+            </div>
+            <div className="name-job">
+              <div className="profile_name">{user?.name}</div>
+              <div className="job">Web Dev</div>
+            </div>
+            <i className="bx bx-log-out" onClick={() => signOut()}></i>
+          </div>
           {/* <span className="text">Drop Down Sidebar</span> */}
         </div>
       </section>

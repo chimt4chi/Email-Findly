@@ -18,6 +18,13 @@ import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
 import { SiGmail } from "react-icons/si";
 import Link from "next/link";
 import { FaLinkedinIn } from "react-icons/fa";
+import LabTabs from "./Tabs";
+
+import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
 
 interface FoundEmails {
   url: string;
@@ -31,6 +38,12 @@ interface WebsiteData {
   foundEmailsUrls: FoundEmails[];
   error?: string; // Add error field to WebsiteData interface
 }
+
+// type WebsiteData = {
+//   mainPageUrl: string;
+//   foundEmailsUrls?: { url: string; emails: string[]; linkedinUrls: string[] }[];
+//   linkedinUrls?: string[];
+// };
 
 const navigation = [
   { name: "Product", href: "#" },
@@ -69,6 +82,12 @@ function Hero() {
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const [value, setValue] = React.useState("1");
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
 
   const copyToClipboard = (emailToCopy: string) => {
     navigator.clipboard.writeText(emailToCopy);
@@ -115,69 +134,60 @@ function Hero() {
     setShowSuggestions(isMatchingInput ? false : suggestedTexts.length > 0);
   }, [urlInput, suggestedTexts]);
 
-  const sendData = useCallback(
-    async (inputText: string) => {
-      if (!inputText.trim() && !domainExtension) return;
-      setLoading(true);
-      setResponseData([]); // Clear previous result
-      try {
-        if (requestCount >= 100) {
-          setError(
-            "You have reached the request limit. Please login or register to continue."
-          );
-          return;
-        }
-
-        const processedUrlInput =
-          inputText.trim().startsWith("http://") ||
-          inputText.trim().startsWith("https://")
-            ? inputText.trim()
-            : `http://${inputText.trim()}`;
-
-        const response = await axios.post<{ websites: WebsiteData[] }>(
-          "/api/apiData",
-          {
-            startingUrls: [`${processedUrlInput}${domainExtension}`],
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+  const sendData = async (
+    inputText: string,
+    searchType: "email" | "linkedin" | "both"
+  ) => {
+    if (!inputText.trim() && !domainExtension) return;
+    setLoading(true);
+    setResponseData([]); // Clear previous result
+    try {
+      if (requestCount >= 100) {
+        setError(
+          "You have reached the request limit. Please login or register to continue."
         );
-
-        if (response.data.websites.length === 0) {
-          setError(
-            "Please check the URL, Make sure the website is up an running."
-          );
-        } else {
-          setResponseData(response.data.websites);
-          setError(null);
-          setRequestCount((prevCount) => {
-            if (prevCount < 2) {
-              const newCount = prevCount + 1;
-              if (typeof localStorage !== "undefined") {
-                localStorage.setItem("requestCount", String(newCount));
-              }
-              return newCount;
-            }
-            return prevCount;
-          });
-          setShowSuggestions(false); // Close suggestions when data is fetched
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setError("An error occurred. Please try again.");
-      } finally {
-        setLoading(false);
+        return;
       }
-    },
-    [domainExtension, requestCount]
-  );
+
+      const processedUrlInput =
+        inputText.trim().startsWith("http://") ||
+        inputText.trim().startsWith("https://")
+          ? inputText.trim()
+          : `http://${inputText.trim()}`;
+
+      const response = await axios.post("/api/combinedExtraction", {
+        url: processedUrlInput,
+        searchType: searchType,
+      });
+
+      if (response.data.error) {
+        setError(response.data.error);
+      } else {
+        setResponseData(response.data.data);
+        setError(null);
+        setRequestCount((prevCount) => {
+          if (prevCount < 2) {
+            const newCount = prevCount + 1;
+            if (typeof localStorage !== "undefined") {
+              localStorage.setItem("requestCount", String(newCount));
+            }
+            return newCount;
+          }
+          return prevCount;
+        });
+        setShowSuggestions(false); // Close suggestions when data is fetched
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      sendData(urlInput);
+      sendData(urlInput, "both");
     }
   };
 
@@ -225,70 +235,145 @@ function Hero() {
               Find emails, linkedIn of your ideal client website and close them
               for more sales and revenue.
             </p>
-            <div className="mt-10  p-4">
-              <div className="relative flex flex-col">
-                <input
-                  type="text"
-                  onKeyDown={handleKeyDown}
-                  disabled={loading || requestCount >= 100}
-                  onChange={(e) => {
-                    setUrlInput(e.target.value);
-                    if (e.target.value.trim() === "") {
-                      setShowSuggestions(false);
-                    } else {
-                      suggestTexts();
-                    }
-                  }}
-                  onBlur={(e) => {
-                    if (e.target.value.trim() === "") {
-                      setUrlInput("");
-                      setShowSuggestions(false);
-                    }
-                  }}
-                  value={urlInput}
-                  className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
-                  placeholder="Enter URL (e.g. example.com)"
-                />
-                {urlInput && (
-                  <button
-                    onClick={() => setUrlInput("")}
-                    className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
+            <div className="mt-3  p-4">
+              <Box sx={{ width: "100%", typography: "body1" }}>
+                <TabContext value={value}>
+                  <Box
+                    sx={{
+                      textAlign: "center",
+                    }}
                   >
-                    <ClearIcon className="h-6 w-6 text-gray-500" />
-                  </button>
-                )}
-                <button
-                  onClick={() => {
-                    sendData(urlInput);
-                    setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
-                  }}
-                  disabled={loading || requestCount >= 100}
-                  type="button"
-                  className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
-                >
-                  Find
-                </button>
-              </div>
-
-              <div className="relative">
-                {showSuggestions && (
-                  <div className="absolute top-4 left-0 bg-white w-full border border-gray-300 rounded-lg z-10">
-                    {suggestedTexts.map((text, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                        onClick={() => {
-                          setUrlInput(text);
-                          setShowSuggestions(false);
-                          sendData(text);
-                        }}
-                      >
-                        {text}
+                    <TabList
+                      onChange={handleChange}
+                      aria-label="lab API tabs example"
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        "& .MuiTabs-flexContainer": {
+                          justifyContent: "center",
+                        },
+                      }}
+                    >
+                      <Tab label="Item One" value="1" />
+                      <Tab label="Item Two" value="2" />
+                    </TabList>
+                  </Box>
+                  <div>
+                    <TabPanel value="1">
+                      <div className="flex flex-col">
+                        <input
+                          type="text"
+                          onKeyDown={handleKeyDown}
+                          disabled={loading || requestCount >= 100}
+                          onChange={(e) => {
+                            setUrlInput(e.target.value);
+                            if (e.target.value.trim() === "") {
+                              setShowSuggestions(false);
+                            } else {
+                              suggestTexts();
+                            }
+                          }}
+                          onBlur={(e) => {
+                            if (e.target.value.trim() === "") {
+                              setUrlInput("");
+                              setShowSuggestions(false);
+                            }
+                          }}
+                          value={urlInput}
+                          className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
+                          placeholder="Find Email"
+                        />
+                        {urlInput && (
+                          <button
+                            onClick={() => setUrlInput("")}
+                            className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
+                          >
+                            <ClearIcon className="h-6 w-6 text-gray-500" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            sendData(urlInput, "email");
+                            setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
+                          }}
+                          disabled={loading || requestCount >= 100}
+                          type="button"
+                          className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
+                        >
+                          Find
+                        </button>
                       </div>
-                    ))}
+                    </TabPanel>
+                    <TabPanel value="2">
+                      <div className="flex flex-col">
+                        <input
+                          type="text"
+                          onKeyDown={handleKeyDown}
+                          disabled={loading || requestCount >= 100}
+                          onChange={(e) => {
+                            setUrlInput(e.target.value);
+                            if (e.target.value.trim() === "") {
+                              setShowSuggestions(false);
+                            } else {
+                              suggestTexts();
+                            }
+                          }}
+                          onBlur={(e) => {
+                            if (e.target.value.trim() === "") {
+                              setUrlInput("");
+                              setShowSuggestions(false);
+                            }
+                          }}
+                          value={urlInput}
+                          className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
+                          placeholder="Find Linkedin"
+                        />
+                        {urlInput && (
+                          <button
+                            onClick={() => setUrlInput("")}
+                            className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
+                          >
+                            <ClearIcon className="h-6 w-6 text-gray-500" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            sendData(urlInput, "linkedin");
+                            setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
+                          }}
+                          disabled={loading || requestCount >= 100}
+                          type="button"
+                          className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
+                        >
+                          Find
+                        </button>
+                      </div>
+                    </TabPanel>
                   </div>
-                )}
-              </div>
+                </TabContext>
+
+                <div className="relative">
+                  {showSuggestions && (
+                    <div className="absolute top-full left-0 bg-white w-full border border-gray-300 rounded-lg z-10">
+                      {suggestedTexts.map((text, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                          onClick={() => {
+                            setUrlInput(text);
+                            setShowSuggestions(false);
+                            sendData(text, "both");
+                          }}
+                          style={{ minWidth: "calc(100% - 8px)" }}
+                        >
+                          {text}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </Box>
             </div>
             <main>
               <div className="mt-5 max-w-full">
@@ -337,85 +422,74 @@ function Hero() {
                         <h2 className="text-2xl font-bold mb-4">
                           {websiteData.error}
                         </h2>
-                        {websiteData.foundEmailsUrls.map(
-                          (foundEmailsUrl, foundEmailsUrlIndex) => (
-                            <div key={foundEmailsUrlIndex} className="mb-4">
-                              <h3 className="text-xl font-semibold mb-2">
-                                {foundEmailsUrl.error}
-                              </h3>
-                              {foundEmailsUrl.emails.map(
-                                (email, emailIndex) => (
-                                  <div
-                                    key={emailIndex}
-                                    className="flex flex-wrap "
-                                  >
-                                    <div className="w-full p-2">
-                                      <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
-                                        <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300 mb-4 md:mb-0">
-                                          <img
-                                            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                                            alt=""
-                                            className="h-8 w-8 md:h-10 md:w-10"
-                                          />
-                                        </div>
-                                        <div className="flex gap-2 flex-col items-start">
-                                          <p className="text-indigo-600 flex items-center gap-2">
-                                            {email.includes("mailto:")
-                                              ? email
-                                                  .split("mailto:")[1]
-                                                  .split("?")[0]
-                                              : email}
-                                            {copiedEmail ? (
-                                              <MdCheckCircle
-                                                aria-placeholder="Copy Url"
-                                                className="cursor-pointer text-green-500"
-                                                size={16}
-                                                onClick={() =>
-                                                  setCopiedEmail(null)
-                                                }
+                        {responseData.map((websiteData, index) => (
+                          <div key={index}>
+                            {websiteData.foundEmailsUrls.map(
+                              (foundEmailsUrl, foundEmailsUrlIndex) => (
+                                <div key={foundEmailsUrlIndex} className="mb-4">
+                                  <h3 className="text-xl font-semibold mb-2">
+                                    {foundEmailsUrl.error}
+                                  </h3>
+                                  {foundEmailsUrl.emails.map(
+                                    (email, emailIndex) => (
+                                      <div
+                                        key={emailIndex}
+                                        className="flex flex-wrap"
+                                      >
+                                        <div className="w-full p-2">
+                                          <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                                            <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300 mb-4 md:mb-0">
+                                              <img
+                                                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                                                alt=""
+                                                className="h-8 w-8 md:h-10 md:w-10"
                                               />
-                                            ) : (
-                                              <MdOutlineContentCopy
-                                                className="cursor-pointer text-black hover:text-indigo-600"
-                                                size={16}
-                                                onClick={() =>
-                                                  copyToClipboard(
-                                                    email.includes("mailto:")
-                                                      ? email
-                                                          .split("mailto:")[1]
-                                                          .split("?")[0]
-                                                      : email
+                                            </div>
+                                            <div className="flex gap-2 flex-col items-start">
+                                              <p className="text-indigo-600 flex items-center gap-2">
+                                                {email.includes("mailto:")
+                                                  ? email
+                                                      .split("mailto:")[1]
+                                                      .split("?")[0]
+                                                  : email}
+                                              </p>
+                                            </div>
+                                            <div className="flex gap-2 items-center">
+                                              {foundEmailsUrl.linkedinUrls &&
+                                                foundEmailsUrl.linkedinUrls.map(
+                                                  (
+                                                    linkedinUrl,
+                                                    linkedinIndex
+                                                  ) => (
+                                                    <Link
+                                                      key={linkedinIndex}
+                                                      href={linkedinUrl}
+                                                      target="_blank"
+                                                    >
+                                                      <FaLinkedinIn
+                                                        size={16}
+                                                        className="cursor-pointer hover:text-indigo-600"
+                                                        aria-placeholder="Linkedin Url"
+                                                      />
+                                                    </Link>
                                                   )
-                                                }
+                                                )}
+                                              <SiGmail
+                                                className="cursor-pointer hover:text-indigo-600"
+                                                size={16}
+                                                aria-placeholder="Send emails to your gmail"
                                               />
-                                            )}
-                                          </p>
-                                        </div>
-                                        <div className="flex gap-2 items-center">
-                                          <Link
-                                            href={`${foundEmailsUrl.linkedinUrls}`}
-                                            target="_blank"
-                                          >
-                                            <FaLinkedinIn
-                                              size={16}
-                                              className="cursor-pointer hover:text-indigo-600"
-                                              aria-placeholder="Linkedin Url"
-                                            />
-                                          </Link>
-                                          <SiGmail
-                                            className="cursor-pointer hover:text-indigo-600"
-                                            size={16}
-                                            aria-placeholder="Send emails to your gmail"
-                                          />
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </div>
-                                )
-                              )}
-                            </div>
-                          )
-                        )}
+                                    )
+                                  )}
+                                </div>
+                              )
+                            )}
+                          </div>
+                        ))}
                       </div>
                     ))}
                   </>

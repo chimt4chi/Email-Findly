@@ -7,6 +7,7 @@ import React from "react";
 import Dash from "@/components/Dash";
 import Head from "next/head";
 import MiniDrawer from "@/components/DrawerHeader";
+import Sidebar2 from "@/components/Sidebar2";
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
@@ -37,8 +38,9 @@ function dashboard() {
         <Dash title="Upload Page" />
       </div> */}
       {/* <Dash title="home" /> */}
-      <h1>Dashboard Home</h1>
+      {/* <h1>Dashboard Home</h1> */}
       {/* <MiniDrawer /> */}
+      <Sidebar2 />
     </div>
   );
 }

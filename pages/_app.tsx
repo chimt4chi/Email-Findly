@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const excludeHeaderPages = [
     // "/auth",
-    // "/test",
+    "/test",
     "/rough",
     "/dashboard",
     "/dashboard/upload",

@@ -20,8 +20,8 @@ function test() {
       </div> */}
       {/* <Globe data={[]} /> */}
       {/* <Dashboard /> */}
-      {/* <Sidebar2 /> */}
-      <BulkUpload />
+      <Sidebar2 />
+      {/* <BulkUpload /> */}
       {/* <h1>hey</h1> */}
     </>
   );
