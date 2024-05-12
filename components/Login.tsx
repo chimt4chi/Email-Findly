@@ -1,4 +1,5 @@
 import { signIn } from "next-auth/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
@@ -10,6 +11,11 @@ export default function Login2() {
   const [password, setPassword] = useState("");
 
   const { variant } = router.query;
+
+  const toggleVariant = useCallback(() => {
+    const newVariant = variant === "login" ? "register" : "login";
+    router.push(`/auth?variant=${newVariant}`);
+  }, [variant, router]);
 
   const login = useCallback(async () => {
     try {
@@ -25,6 +31,9 @@ export default function Login2() {
 
   return (
     <>
+      <Head>
+        <title>Email Hunter | Login/Signup</title>
+      </Head>
       <div className="flex min-h-screen items-center justify-center mt-10">
         <div
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -62,9 +71,10 @@ export default function Login2() {
                 Email address
               </label>
               <input
-                id="email"
+                id="username"
+                type="username"
                 name="email"
-                type="email"
+                value={email}
                 autoComplete="email"
                 required
                 className="mt-1 h-9 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
@@ -90,6 +100,8 @@ export default function Login2() {
                 id="password"
                 name="password"
                 type="password"
+                onChange={(e: any) => setPassword(e.target.value)}
+                value={password}
                 autoComplete="current-password"
                 required
                 className="mt-1 block h-9 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"

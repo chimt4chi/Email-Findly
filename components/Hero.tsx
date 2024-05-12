@@ -1,30 +1,21 @@
-import React, { useCallback, useEffect, useState, Fragment } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import axios from "axios";
-import { CircularProgress, IconButton } from "@mui/material";
 import { useRouter } from "next/router";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Bars3Icon,
-  ChevronDownIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
 
-import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
-import { ChartPieIcon, CursorArrowRaysIcon } from "@heroicons/react/24/outline";
-
-import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
 import { SiGmail } from "react-icons/si";
 import Link from "next/link";
 import { FaLinkedinIn } from "react-icons/fa";
-import LabTabs from "./Tabs";
 
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 interface FoundEmails {
   url: string;
@@ -39,49 +30,22 @@ interface WebsiteData {
   error?: string; // Add error field to WebsiteData interface
 }
 
-// type WebsiteData = {
-//   mainPageUrl: string;
-//   foundEmailsUrls?: { url: string; emails: string[]; linkedinUrls: string[] }[];
-//   linkedinUrls?: string[];
-// };
-
-const navigation = [
-  { name: "Product", href: "#" },
-  { name: "Pricing", href: "/pricing" },
-];
-
-const products = [
-  {
-    name: "Bulk Email Finder",
-    description: "Get a better understanding of your traffic",
-    href: "/product/bulkUpload",
-    icon: ChartPieIcon,
-  },
-  {
-    name: "Linkedin Finder",
-    description: "Speak directly to your customers",
-    href: "#",
-    icon: CursorArrowRaysIcon,
-  },
-];
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
 function Hero() {
   const [urlInput, setUrlInput] = useState<string>("");
+  const [emailInput, setEmailInput] = useState<string>("");
+  const [linkedinInput, setLinkedinInput] = useState<string>("");
   const [suggestedTexts, setSuggestedTexts] = useState<string[]>([]);
   const [domainExtension, setDomainExtension] = useState<string>("");
   const [responseData, setResponseData] = useState<WebsiteData[]>([]);
+  const [linkedinResponseData, setLinkedinResponseData] = useState<
+    WebsiteData[]
+  >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [requestCount, setRequestCount] = useState<number>(0);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false); // State for showing/hiding suggestions
 
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
-
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [value, setValue] = React.useState("1");
 
@@ -93,7 +57,7 @@ function Hero() {
     navigator.clipboard.writeText(emailToCopy);
     setCopiedEmail(emailToCopy);
     // Remove the animation class after 2 seconds
-    setTimeout(() => setCopiedEmail(null), 3000); // Change the timeout to 3000 milliseconds (3 seconds)
+    setTimeout(() => setCopiedEmail(null), 800); // Change the timeout to 3000 milliseconds (1 seconds)
   };
 
   useEffect(() => {
@@ -118,7 +82,7 @@ function Hero() {
 
     // Check if the input exactly matches any predefined suggestion
     const isMatchingInput = predefinedSuggestions.some(
-      (text) => text.toLowerCase() === urlInput.toLowerCase()
+      (text) => text.toLowerCase() === emailInput.toLowerCase()
     );
 
     // Set the filtered suggestions
@@ -126,68 +90,130 @@ function Hero() {
       isMatchingInput
         ? []
         : predefinedSuggestions.filter((text) =>
-            text.toLowerCase().includes(urlInput.toLowerCase())
+            text.toLowerCase().includes(emailInput.toLowerCase())
           )
     );
 
     // Show suggestions only if there are filtered suggestions and the current input doesn't exactly match any suggestion
     setShowSuggestions(isMatchingInput ? false : suggestedTexts.length > 0);
-  }, [urlInput, suggestedTexts]);
+  }, [emailInput, suggestedTexts]);
 
-  const sendData = async (
-    inputText: string,
-    searchType: "email" | "linkedin" | "both"
-  ) => {
-    if (!inputText.trim() && !domainExtension) return;
-    setLoading(true);
-    setResponseData([]); // Clear previous result
-    try {
-      if (requestCount >= 100) {
-        setError(
-          "You have reached the request limit. Please login or register to continue."
-        );
-        return;
-      }
+  const sendData = useCallback(
+    async (inputText: string) => {
+      if (!inputText.trim() && !domainExtension) return;
+      setLoading(true);
+      setResponseData([]); // Clear previous result
+      setLinkedinResponseData([]);
+      try {
+        if (requestCount >= 100) {
+          setError(
+            "You have reached the request limit. Please login or register to continue."
+          );
+          return;
+        }
 
-      const processedUrlInput =
-        inputText.trim().startsWith("http://") ||
-        inputText.trim().startsWith("https://")
-          ? inputText.trim()
-          : `http://${inputText.trim()}`;
+        const processedUrlInput =
+          inputText.trim().startsWith("http://") ||
+          inputText.trim().startsWith("https://")
+            ? inputText.trim()
+            : `http://${inputText.trim()}`;
 
-      const response = await axios.post("/api/combinedExtraction", {
-        url: processedUrlInput,
-        searchType: searchType,
-      });
-
-      if (response.data.error) {
-        setError(response.data.error);
-      } else {
-        setResponseData(response.data.data);
-        setError(null);
-        setRequestCount((prevCount) => {
-          if (prevCount < 2) {
-            const newCount = prevCount + 1;
-            if (typeof localStorage !== "undefined") {
-              localStorage.setItem("requestCount", String(newCount));
-            }
-            return newCount;
+        const response = await axios.post<{ websites: WebsiteData[] }>(
+          "/api/apiData",
+          {
+            startingUrls: [`${processedUrlInput}${domainExtension}`],
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-          return prevCount;
-        });
-        setShowSuggestions(false); // Close suggestions when data is fetched
+        );
+
+        if (response.data.websites.length === 0) {
+          setError(
+            "Please check the URL, Make sure the website is up an running."
+          );
+        } else {
+          setResponseData(response.data.websites);
+          setError(null);
+          setRequestCount((prevCount) => {
+            if (prevCount < 2) {
+              const newCount = prevCount + 1;
+              if (typeof localStorage !== "undefined") {
+                localStorage.setItem("requestCount", String(newCount));
+              }
+              return newCount;
+            }
+            return prevCount;
+          });
+          setShowSuggestions(false); // Close suggestions when data is fetched
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setError("An error occurred. Please try again.");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error:", error);
-      setError("An error occurred. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [domainExtension, requestCount]
+  );
+
+  const sendLinkedinData = useCallback(
+    async (inputText: string) => {
+      if (!inputText.trim() && !domainExtension) return;
+      setLoading(true);
+      setResponseData([]);
+      setLinkedinResponseData([]); // Clear previous result
+      try {
+        const processedUrlInput =
+          inputText.trim().startsWith("http://") ||
+          inputText.trim().startsWith("https://")
+            ? inputText.trim()
+            : `http://${inputText.trim()}`;
+
+        const response = await axios.post<{ linkedinUrls: WebsiteData[] }>(
+          "/api/linkedinExtraction",
+          {
+            url: processedUrlInput, // Pass the processed URL input
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.data.linkedinUrls.length === 0) {
+          setError(
+            "Please check the URL, Make sure the website is up an running."
+          );
+        } else {
+          setLinkedinResponseData(response.data.linkedinUrls);
+          setError(null);
+          setShowSuggestions(false); // Close suggestions when data is fetched
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setError("An error occurred. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [domainExtension, requestCount]
+  );
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      sendData(urlInput, "both");
+      sendData(emailInput);
+    }
+  };
+
+  const handleLinkedinKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      sendLinkedinData(linkedinInput);
     }
   };
 
@@ -199,6 +225,8 @@ function Hero() {
       query: { variant },
     });
   };
+
+  const { data: user } = useCurrentUser();
 
   return (
     <>
@@ -253,21 +281,29 @@ function Hero() {
                         "& .MuiTabs-flexContainer": {
                           justifyContent: "center",
                         },
+                        "& .MuiButtonBase-root": {
+                          color: "#3949AB",
+                          fontWeight: "600",
+                          fontFamily: "poppins",
+                        },
+                        "& .MuiTabs-indicator": {
+                          backgroundColor: "#3949AB",
+                        },
                       }}
                     >
-                      <Tab label="Item One" value="1" />
-                      <Tab label="Item Two" value="2" />
+                      <Tab label="Email" value="1" />
+                      <Tab label="Linkedin" value="2" />
                     </TabList>
                   </Box>
                   <div>
                     <TabPanel value="1">
-                      <div className="flex flex-col">
+                      <div className="relative flex flex-col">
                         <input
                           type="text"
-                          onKeyDown={handleKeyDown}
+                          onKeyDown={handleLinkedinKeyDown}
                           disabled={loading || requestCount >= 100}
                           onChange={(e) => {
-                            setUrlInput(e.target.value);
+                            setEmailInput(e.target.value);
                             if (e.target.value.trim() === "") {
                               setShowSuggestions(false);
                             } else {
@@ -276,17 +312,17 @@ function Hero() {
                           }}
                           onBlur={(e) => {
                             if (e.target.value.trim() === "") {
-                              setUrlInput("");
+                              setEmailInput("");
                               setShowSuggestions(false);
                             }
                           }}
-                          value={urlInput}
+                          value={emailInput}
                           className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
-                          placeholder="Find Email"
+                          placeholder="Enter URL (e.g. http://example.com)"
                         />
-                        {urlInput && (
+                        {emailInput && (
                           <button
-                            onClick={() => setUrlInput("")}
+                            onClick={() => setEmailInput("")}
                             className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
                           >
                             <ClearIcon className="h-6 w-6 text-gray-500" />
@@ -294,7 +330,7 @@ function Hero() {
                         )}
                         <button
                           onClick={() => {
-                            sendData(urlInput, "email");
+                            sendData(emailInput);
                             setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
                           }}
                           disabled={loading || requestCount >= 100}
@@ -306,13 +342,13 @@ function Hero() {
                       </div>
                     </TabPanel>
                     <TabPanel value="2">
-                      <div className="flex flex-col">
+                      <div className="relative flex flex-col">
                         <input
                           type="text"
-                          onKeyDown={handleKeyDown}
+                          onKeyDown={handleLinkedinKeyDown}
                           disabled={loading || requestCount >= 100}
                           onChange={(e) => {
-                            setUrlInput(e.target.value);
+                            setLinkedinInput(e.target.value);
                             if (e.target.value.trim() === "") {
                               setShowSuggestions(false);
                             } else {
@@ -321,17 +357,17 @@ function Hero() {
                           }}
                           onBlur={(e) => {
                             if (e.target.value.trim() === "") {
-                              setUrlInput("");
+                              setLinkedinInput("");
                               setShowSuggestions(false);
                             }
                           }}
-                          value={urlInput}
+                          value={linkedinInput}
                           className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
-                          placeholder="Find Linkedin"
+                          placeholder="Enter URL (e.g. http://example.com)"
                         />
-                        {urlInput && (
+                        {emailInput && (
                           <button
-                            onClick={() => setUrlInput("")}
+                            onClick={() => setLinkedinInput("")}
                             className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
                           >
                             <ClearIcon className="h-6 w-6 text-gray-500" />
@@ -339,7 +375,7 @@ function Hero() {
                         )}
                         <button
                           onClick={() => {
-                            sendData(urlInput, "linkedin");
+                            sendLinkedinData(linkedinInput);
                             setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
                           }}
                           disabled={loading || requestCount >= 100}
@@ -361,9 +397,9 @@ function Hero() {
                           key={index}
                           className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                           onClick={() => {
-                            setUrlInput(text);
+                            setEmailInput(text);
                             setShowSuggestions(false);
-                            sendData(text, "both");
+                            sendData(text);
                           }}
                           style={{ minWidth: "calc(100% - 8px)" }}
                         >
@@ -452,33 +488,49 @@ function Hero() {
                                                       .split("mailto:")[1]
                                                       .split("?")[0]
                                                   : email}
+                                                {copiedEmail ? (
+                                                  <div className="cursor-pointer text-green-500 flex items-center gap-1">
+                                                    <MdCheckCircle
+                                                      aria-placeholder="Copy Url"
+                                                      size={16}
+                                                      onClick={() =>
+                                                        setCopiedEmail(null)
+                                                      }
+                                                    />
+                                                    <span>copied</span>
+                                                  </div>
+                                                ) : (
+                                                  <MdOutlineContentCopy
+                                                    className="cursor-pointer text-black hover:text-indigo-600"
+                                                    size={16}
+                                                    onClick={() =>
+                                                      copyToClipboard(
+                                                        email.includes(
+                                                          "mailto:"
+                                                        )
+                                                          ? email
+                                                              .split(
+                                                                "mailto:"
+                                                              )[1]
+                                                              .split("?")[0]
+                                                          : email
+                                                      )
+                                                    }
+                                                  />
+                                                )}
                                               </p>
                                             </div>
                                             <div className="flex gap-2 items-center">
-                                              {foundEmailsUrl.linkedinUrls &&
-                                                foundEmailsUrl.linkedinUrls.map(
-                                                  (
-                                                    linkedinUrl,
-                                                    linkedinIndex
-                                                  ) => (
-                                                    <Link
-                                                      key={linkedinIndex}
-                                                      href={linkedinUrl}
-                                                      target="_blank"
-                                                    >
-                                                      <FaLinkedinIn
-                                                        size={16}
-                                                        className="cursor-pointer hover:text-indigo-600"
-                                                        aria-placeholder="Linkedin Url"
-                                                      />
-                                                    </Link>
-                                                  )
-                                                )}
-                                              <SiGmail
-                                                className="cursor-pointer hover:text-indigo-600"
-                                                size={16}
-                                                aria-placeholder="Send emails to your gmail"
-                                              />
+                                              <Link
+                                                href={`mailto:${user?.email}`}
+                                                target="_blank"
+                                              >
+                                                <SiGmail
+                                                  className="cursor-pointer hover:text-indigo-600"
+                                                  size={16}
+                                                  aria-placeholder="Send emails to your gmail"
+                                                />
+                                              </Link>
                                             </div>
                                           </div>
                                         </div>
@@ -488,6 +540,72 @@ function Hero() {
                                 </div>
                               )
                             )}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                    {linkedinResponseData.map((websiteData, index) => (
+                      <div key={index} className="mb-8  p-4 mt-8">
+                        <h2 className="text-2xl font-bold mb-4">
+                          {websiteData.error}
+                        </h2>
+                        {linkedinResponseData.map((websiteData, index) => (
+                          <div key={index}>
+                            <div className="mb-4">
+                              <h3 className="text-xl font-semibold mb-2">
+                                {websiteData.error}
+                              </h3>
+                              <div className="flex flex-wrap">
+                                <div className="w-full p-2">
+                                  <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                                    <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300 mb-4 md:mb-0">
+                                      <img
+                                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                                        alt=""
+                                        className="h-8 w-8 md:h-10 md:w-10"
+                                      />
+                                    </div>
+                                    <div className="flex gap-2 flex-col items-start">
+                                      <p className="text-indigo-600 flex items-center gap-2">
+                                        {`${websiteData}`}
+                                        {copiedEmail ? (
+                                          <div className="cursor-pointer text-green-500 flex items-center gap-1">
+                                            <MdCheckCircle
+                                              aria-placeholder="Copy Url"
+                                              size={16}
+                                              onClick={() =>
+                                                setCopiedEmail(null)
+                                              }
+                                            />
+                                            <span>copied</span>
+                                          </div>
+                                        ) : (
+                                          <MdOutlineContentCopy
+                                            className="cursor-pointer text-black hover:text-indigo-600"
+                                            size={16}
+                                            onClick={() =>
+                                              copyToClipboard(`${websiteData}`)
+                                            }
+                                          />
+                                        )}
+                                      </p>
+                                    </div>
+                                    <div className="flex gap-2 items-center">
+                                      <Link
+                                        href={`mailto:${user?.email}`}
+                                        target="_blank"
+                                      >
+                                        <SiGmail
+                                          className="cursor-pointer hover:text-indigo-600"
+                                          size={16}
+                                          aria-placeholder="Send emails to your gmail"
+                                        />
+                                      </Link>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         ))}
                       </div>

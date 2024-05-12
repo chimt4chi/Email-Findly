@@ -1,6 +1,5 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import cheerio from "cheerio";
 import axios from "axios";
+import cheerio from "cheerio";
 
 function joinUrl(base: string, relative: string): string {
   const url = new URL(relative, base);
@@ -29,27 +28,4 @@ export async function findLinkedinUrls(url: string): Promise<string[]> {
   }
 
   return [];
-}
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method Not Allowed" });
-  }
-
-  const { url } = req.body;
-
-  if (!url || typeof url !== "string") {
-    return res.status(400).json({ message: "URL is required" });
-  }
-
-  try {
-    const linkedinUrls = await findLinkedinUrls(url);
-    res.status(200).json({ linkedinUrls });
-  } catch (error) {
-    console.error(`Error while extracting LinkedIn URLs from ${url}: ${error}`);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
 }

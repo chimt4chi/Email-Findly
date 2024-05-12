@@ -137,21 +137,21 @@ export default function TestComp() {
   //       </h5>
   //     </div>
   //     <div
-  //       className="bg-gradient-to-t from-purple-500/10 to-pink-500/10 rounded px-8 pt-6 pb-8 mb-4"
+  //       className="bg-gradient-to-t from-purple-500/10 to-indigo-500/10 rounded px-8 pt-6 pb-8 mb-4"
   //       style={{ maxWidth: "70%", margin: "0 auto" }}
   //     >
   //       <p className="text-black text-base mb-4 " style={{ fontSize: "1.1em" }}>
   //         Extract website URLs in bulk from the uploaded file.
   //       </p>
   //       <div
-  //         className="bg-pink-300/30 rounded-lg p-8 text-center"
+  //         className="bg-indigo-300/30 rounded-lg p-8 text-center"
   //         style={{ height: "170px" }}
   //       >
   //         <h5 className="mb-4">Upload or drop a file here</h5>
   //         <label htmlFor="fileInput" className="cursor-pointer">
   //           <button
   //             type="button"
-  //             className="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+  //             className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
   //             onClick={handleUploadButtonClick}
   //           >
   //             Upload
@@ -250,7 +250,7 @@ export default function TestComp() {
     //   {error && <div>{error}</div>}
     // </div>
 
-    <div className="mb-64 ">
+    <div className="mb-64 " style={{ marginTop: "-90px" }}>
       <input
         type="file"
         accept=".xlsx, .xls"
@@ -258,27 +258,20 @@ export default function TestComp() {
         id="fileInput"
         className="hidden"
       />
-      <div className="p-4 flex justify-evenly">
-        <h5 className="inline-block m-0 text-4xl text-purple-800  font-bold">
-          Bulk Website Extraction
-        </h5>
-      </div>
+      <div className="p-4 flex justify-evenly"></div>
       <div
-        className="bg-gradient-to-t from-purple-500/10 to-pink-500/10 rounded px-8 pt-6 pb-8 mb-4"
+        // className="bg-gradient-to-t from-purple-500/10 to-indigo-500/10 rounded px-8 pt-6 pb-8 mb-4"
         style={{ maxWidth: "70%", margin: "0 auto" }}
       >
-        <p className="text-black text-base mb-4 " style={{ fontSize: "1.1em" }}>
-          Extract website URLs in bulk from the uploaded file.
-        </p>
         <div
-          className="bg-pink-300/30 rounded-lg p-8 text-center"
+          className="bg-indigo-300/30 rounded-lg p-8 text-center"
           style={{ height: "170px" }}
         >
           <h5 className="mb-4">Upload or drop a file here</h5>
           <label htmlFor="fileInput" className="cursor-pointer">
             <button
               type="button"
-              className="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
               onClick={handleUploadButtonClick}
             >
               {loading ? (
@@ -300,7 +293,7 @@ export default function TestComp() {
         {responseWebsites.map((websiteData, index) => (
           <div
             key={index}
-            className="mb-8 bg-gradient-to-t from-purple-500/30 to-pink-500/20 border border-black-500 rounded-lg shadow-md p-4 mt-8"
+            className="mb-8 bg-gradient-to-t from-indigo-500/30 to-indigo-500/20 border border-black-500 rounded-lg shadow-md p-4 mt-8"
           >
             <h2 className="text-2xl font-bold mb-4 text-center">
               Main Page URL: {websiteData.mainPageUrl}
@@ -314,7 +307,7 @@ export default function TestComp() {
                   {foundEmailsUrl.emails.map((email, emailIndex) => (
                     <div
                       key={emailIndex}
-                      className="bg-pink-500/20 border border-black-500 rounded-lg shadow-md p-4 mb-4 flex flex-col items-center justify-between"
+                      className="bg-indigo-500/20 border border-black-500 rounded-lg shadow-md p-4 mb-4 flex flex-col items-center justify-between"
                     >
                       <p className="text-purple-800 ">
                         {email.includes("mailto:")

@@ -17,12 +17,6 @@ function AuthPage() {
 
   const { variant } = router.query;
 
-  // const toggleVariant = useCallback(() => {
-  //   setVariant((currentVariant) =>
-  //     currentVariant === "login" ? "register" : "login"
-  //   );
-  // }, []);
-
   const toggleVariant = useCallback(() => {
     const newVariant = variant === "login" ? "register" : "login";
     router.push(`/auth?variant=${newVariant}`);
@@ -59,9 +53,24 @@ function AuthPage() {
         <title>Email Hunter | Login/Signup</title>
       </Head>
 
-      <div className="min-h-screen mt-20 flex justify-center">
-        <div className="bg-gradient-to-t from-purple-500/70 to-pink-500/70 border shadow opacity-90 p-16 self-center mt-2 lg:w-2/5 lg:max-w-md md:max-w-md sm:max-w-md rounded-md w-full">
-          <h2 className="text-black text-4xl mb-10 font-semibold text-center">
+      <div className="flex min-h-screen items-center justify-center mt-10">
+        <div
+          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+          aria-hidden="true"
+        >
+          <div
+            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+            style={{
+              clipPath:
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+            }}
+          />
+        </div>
+        <div
+          className=" p-6 bg-gray-100 shadow-md rounded-lg"
+          style={{ width: "400px" }}
+        >
+          <h2 className="text-black tracking-tight text-4xl mb-10 font-semibold text-center">
             {variant === "login" ? "Login" : "Register"}
           </h2>
           <div className="flex flex-col gap-4">
@@ -91,23 +100,15 @@ function AuthPage() {
           </div>
           <button
             onClick={variant === "login" ? login : register}
-            className=" py-3 text-white rounded-md w-full mt-10  bg-gradient-to-br from-purple-700 to-indigo-800 hover:to-pink-600 transition"
+            className=" py-3 text-white rounded-md w-full mt-10   bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 p-2"
           >
             <span className="">
               {variant === "login" ? "Login" : "Register"}
             </span>
           </button>
           <div className="flex gap-4 mt-8 justify-center items-center">
-            {/* <div
-              onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
-              // className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
-              className="flex items-center justify-center cursor-pointer py-3 gap-x-2 text-black bg-white rounded-md w-full   transition"
-            >
-              <FaGithub size={30} />
-            </div> */}
             <div
               onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-              // className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
               className="flex items-center justify-center cursor-pointer py-3 gap-x-2 text-black bg-white rounded-md w-full hover:opacity-80 transition"
             >
               <FcGoogle size={30} />
@@ -120,11 +121,23 @@ function AuthPage() {
               : "Already have and account?"}
             <span
               onClick={toggleVariant}
-              className="text-white ml-1 hover:underline hover:underline-offset-8 cursor-pointer"
+              className="text-indigo-600 ml-1 hover:underline hover:underline-offset-8 cursor-pointer "
             >
               {variant === "login" ? "Create an Account" : "Login"}
             </span>
           </p>
+          <div
+            className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+            aria-hidden="true"
+          >
+            <div
+              className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
+              style={{
+                clipPath:
+                  "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+              }}
+            />
+          </div>
         </div>
       </div>
     </>

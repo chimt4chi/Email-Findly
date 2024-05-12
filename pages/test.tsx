@@ -1,3 +1,4 @@
+import BulkEmail from "@/components/BulkEmail";
 import BulkUpload from "@/components/BulkUpload";
 import Dashboard from "@/components/Dashboard";
 import { Globe } from "@/components/Globe";
@@ -20,9 +21,11 @@ function test() {
       </div> */}
       {/* <Globe data={[]} /> */}
       {/* <Dashboard /> */}
-      <Sidebar2 />
+      {/* <Sidebar2 /> */}
       {/* <BulkUpload /> */}
       {/* <h1>hey</h1> */}
+      {/* <NewHero /> */}
+      <BulkEmail />
     </>
   );
 }

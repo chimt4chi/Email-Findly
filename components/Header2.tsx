@@ -20,7 +20,7 @@ interface HeaderProps {
 
 const navigation = [
   { name: "Product", href: "#" },
-  { name: "Pricing", href: "/pricing" },
+  { name: "Pricing (coming soon)", href: "#" },
 ];
 
 const products = [
@@ -163,10 +163,13 @@ const Header2: React.FC<HeaderProps> = ({ showHeader }) => {
                   Features
                 </a>
                 <button
-                  onClick={() => router.push("/pricing")}
+                  onClick={() => router.push("/#")}
                   className="text-sm font-semibold leading-6 text-gray-900"
                 >
-                  Pricing
+                  Pricing{" "}
+                  <span className="text-gray-600 font-thin">
+                    (coming soon..)
+                  </span>
                 </button>
               </Popover.Group>
             </nav>

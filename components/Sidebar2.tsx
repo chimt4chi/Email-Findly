@@ -5,6 +5,9 @@ import "./style.module.css";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import BulkUpload from "./BulkUpload";
+import Hero from "./Hero";
+import BulkEmail from "./BulkEmail";
 
 // Define the type for the menuStates object
 type MenuStates = {
@@ -21,6 +24,7 @@ type MenuStates = {
 //   }
 
 const Sidebar2 = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   useEffect(() => {
     const handleArrowClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -97,132 +101,17 @@ const Sidebar2 = () => {
             <ul className="sub-menu">
               <li>
                 <a className="link_name" href="#">
-                  Category
+                  Products
                 </a>
               </li>
               <li>
-                <a href="#">HTML & CSS</a>
+                <a href="/dashboard/emailFinder#">Email Finder</a>
               </li>
               <li>
-                <a href="#">JavaScript</a>
+                <a href="/dashboard/upload">Bulk Upload</a>
               </li>
               <li>
-                <a href="#">PHP & MySQL</a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <div className="iocn-link">
-              <a href="#">
-                <i className="bx bx-book-alt"></i>
-                <span className="link_name">Posts</span>
-              </a>
-              <i className="bx bxs-chevron-down arrow"></i>
-            </div>
-            <ul className="sub-menu">
-              <li>
-                <a className="link_name" href="#">
-                  Posts
-                </a>
-              </li>
-              <li>
-                <a href="#">Web Design</a>
-              </li>
-              <li>
-                <a href="#">Login Form</a>
-              </li>
-              <li>
-                <a href="#">Card Design</a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="#">
-              <i className="bx bx-pie-chart-alt-2"></i>
-              <span className="link_name">Analytics</span>
-            </a>
-            <ul className="sub-menu blank">
-              <li>
-                <a className="link_name" href="#">
-                  Analytics
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="#">
-              <i className="bx bx-line-chart"></i>
-              <span className="link_name">Chart</span>
-            </a>
-            <ul className="sub-menu blank">
-              <li>
-                <a className="link_name" href="#">
-                  Chart
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <div className="iocn-link">
-              <a href="#">
-                <i className="bx bx-plug"></i>
-                <span className="link_name">Plugins</span>
-              </a>
-              <i className="bx bxs-chevron-down arrow"></i>
-            </div>
-            <ul className="sub-menu">
-              <li>
-                <a className="link_name" href="#">
-                  Plugins
-                </a>
-              </li>
-              <li>
-                <a href="#">UI Face</a>
-              </li>
-              <li>
-                <a href="#">Pigments</a>
-              </li>
-              <li>
-                <a href="#">Box Icons</a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="#">
-              <i className="bx bx-compass"></i>
-              <span className="link_name">Explore</span>
-            </a>
-            <ul className="sub-menu blank">
-              <li>
-                <a className="link_name" href="#">
-                  Explore
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="#">
-              <i className="bx bx-history"></i>
-              <span className="link_name">History</span>
-            </a>
-            <ul className="sub-menu blank">
-              <li>
-                <a className="link_name" href="#">
-                  History
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="#">
-              <i className="bx bx-cog"></i>
-              <span className="link_name">Setting</span>
-            </a>
-            <ul className="sub-menu blank">
-              <li>
-                <a className="link_name" href="#">
-                  Setting
-                </a>
+                <a href="#">Email Verifier (coming soon)</a>
               </li>
             </ul>
           </li>
@@ -242,26 +131,40 @@ const Sidebar2 = () => {
       </div>
       <section className="home-section">
         <div className="home-content flex justify-between">
-          <i className="bx bx-menu"></i>
-          {/* <h1 className="flex justify-end">hey</h1> */}
-          <div className="profile-details flex">
-            <div className="profile-content">
+          <i className="bx bx-menu "></i>
+          <h1 className="flex justify-end text-4xl font-semibold text-indigo-600">
+            Email Findly
+          </h1>
+          <div className="profile-details flex relative items-center">
+            <div className="profile-content relative mr-4">
               <img
                 className="h-10 w-10 rounded-full"
                 src={user?.image}
                 alt="profileImg"
               />
             </div>
-            <div className="name-job">
-              <div className="profile_name">{user?.name}</div>
-              <div className="job">Web Dev</div>
-            </div>
-            <i className="bx bx-log-out" onClick={() => signOut()}></i>
+            <i
+              className="bx bx-chevron-down dropdown-icon cursor-pointer"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            ></i>
+            {dropdownOpen && (
+              <div className="dropdown-content absolute right-0 mt-40 w-36 bg-white rounded shadow-md py-1">
+                <div className="additional-info px-4 py-2 flex items-center justify-center flex-col">
+                  <div className="profile_name">{user?.name}</div>
+                  <div className="job text-gray-600">Web Dev</div>
+                  <i
+                    className="bx bx-log-out hover:text-red-500 px-4 py-2 cursor-pointer "
+                    onClick={() => signOut()}
+                  ></i>
+                </div>
+              </div>
+            )}
           </div>
-          {/* <span className="text">Drop Down Sidebar</span> */}
         </div>
+        {router.pathname !== "/dashboard/upload" && <BulkEmail />}
+        {router.pathname !== "/dashboard/emailFinder" && <BulkUpload />}
       </section>
-
+      {/* <h1>hello</h1> */}
       {/* <div className="one"></div> */}
     </div>
   );
