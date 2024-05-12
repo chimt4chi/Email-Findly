@@ -8,6 +8,7 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import BulkUpload from "./BulkUpload";
 import Hero from "./Hero";
 import BulkEmail from "./BulkEmail";
+import Link from "next/link";
 
 // Define the type for the menuStates object
 type MenuStates = {
@@ -78,40 +79,40 @@ const Sidebar2 = () => {
         </div>
         <ul className="nav-links">
           <li>
-            <a href="#">
+            <Link href="#">
               <i className="bx bx-grid-alt"></i>
               <span className="link_name">Dashboard</span>
-            </a>
+            </Link>
             <ul className="sub-menu blank">
               <li>
-                <a className="link_name" href="#">
+                <Link className="link_name" href="#">
                   Category
-                </a>
+                </Link>
               </li>
             </ul>
           </li>
           <li>
             <div className="iocn-link">
-              <a href="#">
+              <Link href="#">
                 <i className="bx bx-collection"></i>
                 <span className="link_name">Category</span>
-              </a>
+              </Link>
               <i className="bx bxs-chevron-down arrow"></i>
             </div>
             <ul className="sub-menu">
               <li>
-                <a className="link_name" href="#">
+                <Link className="link_name" href="#">
                   Products
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/dashboard/emailFinder#">Email Finder</a>
+                <Link href="/dashboard/emailFinder#">Email Finder</Link>
               </li>
               <li>
-                <a href="/dashboard/upload">Bulk Upload</a>
+                <Link href="/dashboard/upload">Bulk Upload</Link>
               </li>
               <li>
-                <a href="#">Email Verifier (coming soon)</a>
+                <Link href="#">Email Verifier (coming soon)</Link>
               </li>
             </ul>
           </li>
