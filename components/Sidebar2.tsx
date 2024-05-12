@@ -9,6 +9,7 @@ import BulkUpload from "./BulkUpload";
 import Hero from "./Hero";
 import BulkEmail from "./BulkEmail";
 import Link from "next/link";
+import Why from "./Why";
 
 // Define the type for the menuStates object
 type MenuStates = {
