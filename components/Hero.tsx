@@ -119,7 +119,7 @@ function Hero() {
             : `http://${inputText.trim()}`;
 
         const response = await axios.post<{ websites: WebsiteData[] }>(
-          "/api/apiData",
+          "/api/emailExtraction",
           {
             startingUrls: [`${processedUrlInput}${domainExtension}`],
           },
@@ -453,6 +453,7 @@ function Hero() {
                   <p className="text-red-500">{error}</p>
                 ) : (
                   <>
+                    {/* Email Data */}
                     {responseData.map((websiteData, index) => (
                       <div key={index} className="mb-8  p-4 mt-8">
                         <h2 className="text-2xl font-bold mb-4">
@@ -521,16 +522,24 @@ function Hero() {
                                               </p>
                                             </div>
                                             <div className="flex gap-2 items-center">
-                                              <Link
-                                                href={`mailto:${user?.email}`}
-                                                target="_blank"
-                                              >
+                                              {user ? (
+                                                <Link
+                                                  href={`mailto:${user.email}`}
+                                                  target="_blank"
+                                                >
+                                                  <SiGmail
+                                                    className="cursor-pointer hover:text-indigo-600"
+                                                    size={16}
+                                                    aria-placeholder="Send emails to your gmail"
+                                                  />
+                                                </Link>
+                                              ) : (
                                                 <SiGmail
-                                                  className="cursor-pointer hover:text-indigo-600"
+                                                  className="cursor-default text-gray-500"
                                                   size={16}
-                                                  aria-placeholder="Send emails to your gmail"
+                                                  aria-placeholder="No email available"
                                                 />
-                                              </Link>
+                                              )}
                                             </div>
                                           </div>
                                         </div>
@@ -544,6 +553,7 @@ function Hero() {
                         ))}
                       </div>
                     ))}
+                    {/* Linkedin Data */}
                     {linkedinResponseData.map((websiteData, index) => (
                       <div key={index} className="mb-8  p-4 mt-8">
                         <h2 className="text-2xl font-bold mb-4">
@@ -566,8 +576,13 @@ function Hero() {
                                       />
                                     </div>
                                     <div className="flex gap-2 flex-col items-start">
-                                      <p className="text-indigo-600 flex items-center gap-2">
-                                        {`${websiteData}`}
+                                      <p className="text-indigo-600 hover:text-violet-600  flex items-center gap-2">
+                                        <Link
+                                          href={`${websiteData}`}
+                                          target="_blank"
+                                        >
+                                          {`${websiteData}`}
+                                        </Link>
                                         {copiedEmail ? (
                                           <div className="cursor-pointer text-green-500 flex items-center gap-1">
                                             <MdCheckCircle
@@ -591,16 +606,24 @@ function Hero() {
                                       </p>
                                     </div>
                                     <div className="flex gap-2 items-center">
-                                      <Link
-                                        href={`mailto:${user?.email}`}
-                                        target="_blank"
-                                      >
+                                      {user ? (
+                                        <Link
+                                          href={`mailto:${user.email}`}
+                                          target="_blank"
+                                        >
+                                          <SiGmail
+                                            className="cursor-pointer hover:text-indigo-600"
+                                            size={16}
+                                            aria-placeholder="Send emails to your gmail"
+                                          />
+                                        </Link>
+                                      ) : (
                                         <SiGmail
-                                          className="cursor-pointer hover:text-indigo-600"
+                                          className="cursor-default text-gray-500"
                                           size={16}
-                                          aria-placeholder="Send emails to your gmail"
+                                          aria-placeholder="No email available"
                                         />
-                                      </Link>
+                                      )}
                                     </div>
                                   </div>
                                 </div>

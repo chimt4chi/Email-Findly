@@ -204,9 +204,9 @@ const Footer2: React.FC<FooterProps> = ({ showHeader }) => {
             </li>
           </ul>
           <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-            © 2021-2022{" "}
+            © 2024{" "}
             <a href="#" className="hover:underline">
-              Flowbite™
+              EmailFindly™
             </a>
             . All Rights Reserved.
           </span>
