@@ -21,13 +21,18 @@ interface FoundEmails {
   url: string;
   emails: string[];
   error?: string; // Add error field to FoundEmails interface
-  linkedinUrls?: string[];
 }
 
 interface WebsiteData {
   mainPageUrl: string;
   foundEmailsUrls: FoundEmails[];
   error?: string; // Add error field to WebsiteData interface
+}
+
+interface LinkedInData {
+  requestedUrl: string;
+  linkedinUrls: string[];
+  error?: string;
 }
 
 function Hero() {
@@ -38,7 +43,7 @@ function Hero() {
   const [domainExtension, setDomainExtension] = useState<string>("");
   const [responseData, setResponseData] = useState<WebsiteData[]>([]);
   const [linkedinResponseData, setLinkedinResponseData] = useState<
-    WebsiteData[]
+    LinkedInData[]
   >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +67,8 @@ function Hero() {
 
   useEffect(() => {
     console.log("responseData:", responseData);
-  }, [responseData]);
+    console.log("responseData:", linkedinResponseData);
+  }, [responseData, linkedinResponseData]);
 
   useEffect(() => {
     const storedRequestCount = localStorage.getItem("requestCount");
@@ -104,6 +110,7 @@ function Hero() {
       setLoading(true);
       setResponseData([]); // Clear previous result
       setLinkedinResponseData([]);
+      setError("");
       try {
         if (requestCount >= 100) {
           setError(
@@ -131,9 +138,7 @@ function Hero() {
         );
 
         if (response.data.websites.length === 0) {
-          setError(
-            "Please check the URL, Make sure the website is up an running."
-          );
+          setError("Unable to find. Please check the website url");
         } else {
           setResponseData(response.data.websites);
           setError(null);
@@ -165,6 +170,7 @@ function Hero() {
       setLoading(true);
       setResponseData([]);
       setLinkedinResponseData([]); // Clear previous result
+      setError("");
       try {
         const processedUrlInput =
           inputText.trim().startsWith("http://") ||
@@ -172,7 +178,7 @@ function Hero() {
             ? inputText.trim()
             : `http://${inputText.trim()}`;
 
-        const response = await axios.post<{ linkedinUrls: WebsiteData[] }>(
+        const response = await axios.post<LinkedInData>(
           "/api/linkedinExtraction",
           {
             url: processedUrlInput, // Pass the processed URL input
@@ -185,11 +191,14 @@ function Hero() {
         );
 
         if (response.data.linkedinUrls.length === 0) {
-          setError(
-            "Please check the URL, Make sure the website is up an running."
-          );
+          setError("Unable to find. Please check the website url.");
         } else {
-          setLinkedinResponseData(response.data.linkedinUrls);
+          // Map LinkedInData to WebsiteData
+          const websiteData: LinkedInData = {
+            requestedUrl: response.data.requestedUrl, // Assuming url is the main page URL
+            linkedinUrls: response.data.linkedinUrls, // You need to define FoundEmails interface and set appropriate value here
+          };
+          setLinkedinResponseData([websiteData]);
           setError(null);
           setShowSuggestions(false); // Close suggestions when data is fetched
         }
@@ -284,7 +293,6 @@ function Hero() {
                         "& .MuiButtonBase-root": {
                           color: "#3949AB",
                           fontWeight: "600",
-                          fontFamily: "poppins",
                         },
                         "& .MuiTabs-indicator": {
                           backgroundColor: "#3949AB",
@@ -300,7 +308,7 @@ function Hero() {
                       <div className="relative flex flex-col">
                         <input
                           type="text"
-                          onKeyDown={handleLinkedinKeyDown}
+                          onKeyDown={handleKeyDown}
                           disabled={loading || requestCount >= 100}
                           onChange={(e) => {
                             setEmailInput(e.target.value);
@@ -409,6 +417,26 @@ function Hero() {
                     </div>
                   )}
                 </div>
+                {/* <div className="relative">
+                  {showSuggestions && (
+                    <div className="absolute top-full left-0 bg-white w-full border border-gray-300 rounded-lg z-10">
+                      {suggestedTexts.map((text, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                          onClick={() => {
+                            setLinkedinInput(text);
+                            setShowSuggestions(false);
+                            sendLinkedinData(text);
+                          }}
+                          style={{ minWidth: "calc(100% - 8px)" }}
+                        >
+                          {text}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div> */}
               </Box>
             </div>
             <main>
@@ -450,7 +478,7 @@ function Hero() {
                 )}
 
                 {error ? (
-                  <p className="text-red-500">{error}</p>
+                  <p className="text-indigo-600">{error}</p>
                 ) : (
                   <>
                     {/* Email Data */}
@@ -475,11 +503,11 @@ function Hero() {
                                       >
                                         <div className="w-full p-2">
                                           <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
-                                            <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300 mb-4 md:mb-0">
+                                            <div className="h-12 w-12 flex items-center justify-center  mb-4 md:mb-0">
                                               <img
-                                                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                                                src={`https://www.google.com/s2/favicons?domain=${websiteData.mainPageUrl}&sz=128`}
                                                 alt=""
-                                                className="h-8 w-8 md:h-10 md:w-10"
+                                                className="h-8 w-8 md:h-10 md:w-10 rounded-full"
                                               />
                                             </div>
                                             <div className="flex gap-2 flex-col items-start">
@@ -568,20 +596,20 @@ function Hero() {
                               <div className="flex flex-wrap">
                                 <div className="w-full p-2">
                                   <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
-                                    <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300 mb-4 md:mb-0">
+                                    <div className="h-12 w-12 flex items-center justify-center  mb-4 md:mb-0">
                                       <img
-                                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                                        src={`https://www.google.com/s2/favicons?domain=${websiteData.requestedUrl}&sz=128`}
                                         alt=""
-                                        className="h-8 w-8 md:h-10 md:w-10"
+                                        className="h-8 w-8 md:h-10 md:w-10 rounded-full"
                                       />
                                     </div>
                                     <div className="flex gap-2 flex-col items-start">
                                       <p className="text-indigo-600 hover:text-violet-600  flex items-center gap-2">
                                         <Link
-                                          href={`${websiteData}`}
+                                          href={`${websiteData.linkedinUrls}`}
                                           target="_blank"
                                         >
-                                          {`${websiteData}`}
+                                          {`${websiteData.linkedinUrls}`}
                                         </Link>
                                         {copiedEmail ? (
                                           <div className="cursor-pointer text-green-500 flex items-center gap-1">
@@ -605,26 +633,7 @@ function Hero() {
                                         )}
                                       </p>
                                     </div>
-                                    <div className="flex gap-2 items-center">
-                                      {user ? (
-                                        <Link
-                                          href={`mailto:${user.email}`}
-                                          target="_blank"
-                                        >
-                                          <SiGmail
-                                            className="cursor-pointer hover:text-indigo-600"
-                                            size={16}
-                                            aria-placeholder="Send emails to your gmail"
-                                          />
-                                        </Link>
-                                      ) : (
-                                        <SiGmail
-                                          className="cursor-default text-gray-500"
-                                          size={16}
-                                          aria-placeholder="No email available"
-                                        />
-                                      )}
-                                    </div>
+                                    <div className="flex gap-2 items-center"></div>
                                   </div>
                                 </div>
                               </div>

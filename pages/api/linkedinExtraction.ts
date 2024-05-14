@@ -47,7 +47,7 @@ export default async function handler(
 
   try {
     const linkedinUrls = await findLinkedinUrls(url);
-    res.status(200).json({ linkedinUrls });
+    res.status(200).json({ requestedUrl: url, linkedinUrls });
   } catch (error) {
     console.error(`Error while extracting LinkedIn URLs from ${url}: ${error}`);
     res.status(500).json({ message: "Internal Server Error" });

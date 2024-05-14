@@ -93,6 +93,45 @@ const Sidebar2 = () => {
             </ul>
           </li>
           <li>
+            <Link href="#">
+              <i className="bx bx-grid-alt"></i>
+              <span className="link_name">Dashboard</span>
+            </Link>
+            <ul className="sub-menu blank">
+              <li>
+                <Link className="link_name" href="#">
+                  Category
+                </Link>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <Link href="#">
+              <i className="bx bx-grid-alt"></i>
+              <span className="link_name">Dashboard</span>
+            </Link>
+            <ul className="sub-menu blank">
+              <li>
+                <Link className="link_name" href="#">
+                  Category
+                </Link>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <Link href="#">
+              <i className="bx bx-grid-alt"></i>
+              <span className="link_name">Dashboard</span>
+            </Link>
+            <ul className="sub-menu blank">
+              <li>
+                <Link className="link_name" href="#">
+                  Category
+                </Link>
+              </li>
+            </ul>
+          </li>
+          <li>
             <div className="iocn-link">
               <Link href="#">
                 <i className="bx bx-collection"></i>
@@ -106,9 +145,7 @@ const Sidebar2 = () => {
                   Products
                 </Link>
               </li>
-              <li>
-                <Link href="/dashboard/emailFinder#">Email Finder</Link>
-              </li>
+
               <li>
                 <Link href="/dashboard/upload">Bulk Upload</Link>
               </li>
