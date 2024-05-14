@@ -128,9 +128,9 @@ export default async function handler(
 
   try {
     const allWebsitesData = await crawlWebsite(startingUrls);
-    res.status(200).json({ websites: allWebsitesData });
+    return res.status(200).json({ websites: allWebsitesData });
   } catch (error) {
     console.error(`Error while crawling websites: ${error}`);
-    res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 }
