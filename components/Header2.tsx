@@ -335,12 +335,12 @@ const Header2: React.FC<HeaderProps> = ({ showHeader }) => {
                 </a>
               </div>
               <div className="py-6">
-                <a
-                  href="#"
+                <Link
+                  href="/auth?variant=register"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Register
-                </a>
+                </Link>
                 <Link
                   href="/auth?variant=login"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
