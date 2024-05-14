@@ -7,11 +7,7 @@ import {
 
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
 import { ChartPieIcon, CursorArrowRaysIcon } from "@heroicons/react/24/outline";
-
-import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
-import { SiGmail } from "react-icons/si";
 import Link from "next/link";
-import { FaLinkedinIn } from "react-icons/fa";
 import { useRouter } from "next/router";
 
 interface HeaderProps {
@@ -346,7 +342,7 @@ const Header2: React.FC<HeaderProps> = ({ showHeader }) => {
                   Register
                 </a>
                 <a
-                  href="#"
+                  href="/auth?variant=login"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Log in
