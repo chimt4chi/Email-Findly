@@ -48,6 +48,7 @@ async function findEmailAddresses(url: string): Promise<string[]> {
           "@x.com",
           "@twitter.com",
           "@producthunt.com",
+          "linkedin.com",
         ];
         return !forbiddenExtensions.some((extension) =>
           email.endsWith(extension)
@@ -128,9 +129,9 @@ export default async function handler(
 
   try {
     const allWebsitesData = await crawlWebsite(startingUrls);
-    return res.status(200).json({ websites: allWebsitesData });
+    res.status(200).json({ websites: allWebsitesData });
   } catch (error) {
     console.error(`Error while crawling websites: ${error}`);
-    return res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
