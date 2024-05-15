@@ -28,7 +28,7 @@ export async function getServerSideProps(context: NextPageContext) {
   };
 }
 
-function dashboard() {
+function Index() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   useEffect(() => {
     const handleArrowClick = (e: MouseEvent) => {
@@ -169,4 +169,4 @@ function dashboard() {
   );
 }
 
-export default dashboard;
+export default Index;
