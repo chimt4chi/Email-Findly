@@ -108,13 +108,13 @@ function Index() {
         <section className="home-section">
           <div className="home-content flex justify-between">
             <i className="bx bx-menu "></i>
-            <h1 className="flex justify-end text-4xl font-semibold text-indigo-600">
+            <h1 className="flex justify-end lg:text-4xl text-sm font-semibold text-indigo-600">
               Email Findly
             </h1>
             <div className="profile-details flex relative items-center">
               <div className="profile-content relative mr-4">
                 <img
-                  className="h-10 w-10 rounded-full"
+                  className="lg:h-10 lg:w-10 h-5 w-5 rounded-full"
                   src={user?.image}
                   alt="profileImg"
                 />
