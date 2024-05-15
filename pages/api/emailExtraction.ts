@@ -118,13 +118,15 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method Not Allowed" });
+    res.status(405).json({ message: "Method Not Allowed" });
+    return;
   }
 
   const { startingUrls } = req.body;
 
   if (!startingUrls || !Array.isArray(startingUrls)) {
-    return res.status(400).json({ message: "Starting URLs are required" });
+    res.status(400).json({ message: "Starting URLs are required" });
+    return;
   }
 
   try {
