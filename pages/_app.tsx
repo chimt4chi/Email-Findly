@@ -13,8 +13,8 @@ export default function App({ Component, pageProps }: AppProps) {
     "/test",
     "/rough",
     "/dashboard",
-    "/dashboard/upload",
-    "/dashboard/emailFinder",
+    "/dashboard/bulkEmail",
+    "/dashboard/bulkLinkedin",
   ];
   const excludeFooterPages = ["/auth"]; // Add the path of the auth page here
   const showHeader = !excludeHeaderPages.includes(router.pathname);

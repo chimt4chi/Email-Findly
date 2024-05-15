@@ -6,24 +6,7 @@ import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import BulkUpload from "./BulkUpload";
-import Hero from "./Hero";
-import BulkEmail from "./BulkEmail";
 import Link from "next/link";
-import Why from "./Why";
-
-// Define the type for the menuStates object
-type MenuStates = {
-  [key: number]: boolean; // Index signature
-};
-
-// interface FooterProps {
-//   showHeader: boolean;
-// }
-
-// const Sidebar2: React.FC<FooterProps> = ({ showHeader }) => {
-//   if (!showHeader) {
-//     return null;
-//   }
 
 const Sidebar2 = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -147,7 +130,10 @@ const Sidebar2 = () => {
               </li>
 
               <li>
-                <Link href="/dashboard/upload">Bulk Upload</Link>
+                <Link href="/dashboard/bulkEmail">Bulk Email Upload</Link>
+              </li>
+              <li>
+                <Link href="/dashboard/bulkLinkedin">Bulk Linkedin Upload</Link>
               </li>
               <li>
                 <Link href="#">Email Verifier (coming soon)</Link>
@@ -200,7 +186,6 @@ const Sidebar2 = () => {
             )}
           </div>
         </div>
-        {router.pathname !== "/dashboard/upload" && <BulkEmail />}
         {router.pathname !== "/dashboard/emailFinder" && <BulkUpload />}
       </section>
       {/* <h1>hello</h1> */}
