@@ -1,3 +1,4 @@
+import BulkEmail from "@/components/BulkEmail";
 import BulkUpload from "@/components/BulkUpload";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
@@ -174,7 +175,7 @@ function Category2() {
     //   </div>
     // </div>
     <>
-      <BulkUpload />
+      <BulkEmail />
     </>
   );
 }

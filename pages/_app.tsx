@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const showFooter = !excludeFooterPages.includes(router.pathname);
   return (
     <>
-      {showHeader && <Header2 showHeader={showHeader} />}
+      {showHeader && <Header showHeader={showHeader} />}
       <Component {...pageProps} />
       {showFooter && <Footer2 showHeader={showHeader} />}
       {/* {showFooter && <Sidebar2 showHeader={showHeader} />} */}

@@ -462,7 +462,7 @@ function Hero() {
                 )}
 
                 {loading && (
-                  <div className="w-full mx-2">
+                  <div className="w-full mx-2 p-8 -mt-10">
                     <div className="mt-20 bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
                       <Skeleton className="bg-gray-400 h-12 w-12 rounded-full" />
                       <div className="space-y-2">
@@ -501,7 +501,7 @@ function Hero() {
                                         key={emailIndex}
                                         className="flex flex-wrap"
                                       >
-                                        <div className="w-full p-2">
+                                        <div className="w-full p-6">
                                           <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
                                             <div className="h-12 w-12 flex items-center justify-center  mb-4 md:mb-0">
                                               <img
