@@ -132,6 +132,9 @@ const Header: React.FC<HeaderProps> = ({ showHeader }) => {
           </Popover>
 
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+            Features
+          </a>
+          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
             Pricing{" "}
             <span className="text-gray-600 font-thin">(coming soon..)</span>
           </a>
