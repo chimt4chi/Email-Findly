@@ -8,6 +8,7 @@ import Head from "next/head";
 import BulkUpload from "@/components/BulkUpload";
 import BulkEmail from "@/components/BulkEmail";
 import { NextPageContext } from "next";
+import BulkLinkedin from "@/components/BulkLinkedin";
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
@@ -15,7 +16,7 @@ export async function getServerSideProps(context: NextPageContext) {
   if (!session) {
     return {
       redirect: {
-        destination: "/auth",
+        destination: "/auth?variant=login",
         permanent: false,
       },
     };
@@ -127,11 +128,11 @@ function Index() {
         <section className="home-section">
           <div className="home-content flex justify-between">
             <i className="bx bx-menu "></i>
-            <h1 className="flex justify-end lg:text-4xl text-sm font-semibold text-indigo-600">
+            {/* <h1 className="flex justify-end lg:text-4xl text-sm font-semibold text-indigo-600">
               Email Findly
-            </h1>
+            </h1> */}
             <div className="profile-details flex relative items-center">
-              <div className="profile-content relative mr-4">
+              <div className="profile-content relative mr-1">
                 <img
                   className="lg:h-10 lg:w-10 h-5 w-5 rounded-full"
                   src={user?.image}
@@ -156,7 +157,7 @@ function Index() {
               )}
             </div>
           </div>
-          {router.pathname !== "/dashboard/upload" && <BulkEmail />}
+          {router.pathname !== "/dashboard/upload" && <BulkLinkedin />}
         </section>
       </div>
     </div>

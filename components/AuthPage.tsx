@@ -27,7 +27,7 @@ function AuthPage() {
       await signIn("credentials", {
         email,
         password,
-        callbackUrl: "/dashboard",
+        callbackUrl: "/dashboard/bulkEmail",
       });
     } catch (error) {
       console.log(error);
@@ -108,11 +108,16 @@ function AuthPage() {
           </button>
           <div className="flex gap-4 mt-8 justify-center items-center">
             <div
-              onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+              onClick={() =>
+                signIn("google", { callbackUrl: "/dashboard/bulkEmail" })
+              }
               className="flex items-center justify-center cursor-pointer py-3 gap-x-2 text-black bg-white rounded-md w-full hover:opacity-80 transition"
             >
               <FcGoogle size={30} />
-              <span>Sign in with Google</span>
+              {variant === "login"
+                ? "Sign in with Google"
+                : "Sign up with Google"}
+              {/* <span>Sign in with Google</span> */}
             </div>
           </div>
           <p className="text-black font-semibold  mt-12 text-center">

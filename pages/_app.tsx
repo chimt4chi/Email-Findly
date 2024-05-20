@@ -1,4 +1,5 @@
 import Footer2 from "@/components/Footer2";
+import Footer3 from "@/components/Footer3";
 import Header from "@/components/Header";
 import Header2 from "@/components/Header2";
 import Sidebar2 from "@/components/Sidebar2";
@@ -23,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       {showHeader && <Header showHeader={showHeader} />}
       <Component {...pageProps} />
-      {showFooter && <Footer2 showHeader={showHeader} />}
+      {showFooter && <Footer3 showHeader={showHeader} />}
       {/* {showFooter && <Sidebar2 showHeader={showHeader} />} */}
     </>
   );

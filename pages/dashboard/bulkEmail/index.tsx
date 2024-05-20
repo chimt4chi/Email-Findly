@@ -1,12 +1,33 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import Link from "next/link";
 import Head from "next/head";
 import BulkUpload from "@/components/BulkUpload";
 import BulkEmail from "@/components/BulkEmail";
+import { NextPageContext } from "next";
+
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { VscVerifiedFilled } from "react-icons/vsc";
+
+export async function getServerSideProps(context: NextPageContext) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth?variant=login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
 
 function Index() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -60,7 +81,7 @@ function Index() {
         <div className="sidebar close">
           <div
             className="logo-details cursor-pointer"
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/dashboard")}
           >
             <i className="bx bxl-c-plus-plus"></i>
             <span className="logo_name">Email Findly</span>
@@ -74,20 +95,26 @@ function Index() {
             </li>
             <li>
               <Link href="/dashboard/bulkEmail">
-                <i className="bx bx-grid-alt"></i>
-                <span className="link_name">Bulk Email</span>
+                <div className="h-12 flex items-center">
+                  <FaCloudUploadAlt className="h-4 min-w-[78px] text-center leading-[50px] text-white text-lg cursor-pointer transition-all duration-300 ease-in-out" />
+                  <span className="link_name">Bulk Email</span>
+                </div>
               </Link>
             </li>
             <li>
               <Link href="/dashboard/bulkLinkedin">
-                <i className="bx bx-grid-alt"></i>
-                <span className="link_name">Bulk Linkedin</span>
+                <div className="h-12 flex items-center">
+                  <FaCloudUploadAlt className="h-4 min-w-[78px] text-center leading-[50px] text-white text-lg cursor-pointer transition-all duration-300 ease-in-out" />
+                  <span className="link_name">Bulk Linkedin</span>
+                </div>
               </Link>
             </li>
             <li>
               <Link href="#">
-                <i className="bx bx-grid-alt"></i>
-                <span className="link_name">Email Verifier</span>
+                <div className="h-12 flex items-center">
+                  <VscVerifiedFilled className="h-6 min-w-[78px] text-center leading-[50px] text-white text-lg cursor-pointer transition-all duration-300 ease-in-out" />
+                  <span className="link_name">Email Verifier</span>
+                </div>
               </Link>
             </li>
             <li>
@@ -97,7 +124,7 @@ function Index() {
                 </div>
                 <div className="name-job">
                   <div className="profile_name">{user?.name}</div>
-                  <div className="job">Web Dev</div>
+                  {/* <div className="job">Web Dev</div> */}
                 </div>
                 <i className="bx bx-log-out" onClick={() => signOut()}></i>
               </div>
@@ -106,12 +133,12 @@ function Index() {
         </div>
         <section className="home-section">
           <div className="home-content flex justify-between">
-            <i className="bx bx-menu "></i>
-            <h1 className="flex justify-end lg:text-4xl text-sm font-semibold text-indigo-600">
+            <i className="bx bx-menu z-50"></i>
+            {/* <h1 className="flex justify-end lg:text-4xl text-sm font-semibold text-indigo-600">
               Email Findly
-            </h1>
-            <div className="profile-details flex relative items-center">
-              <div className="profile-content relative mr-4">
+            </h1> */}
+            <div className="profile-details flex relative items-center  mr-2.5">
+              <div className="profile-content relative mr-1">
                 <img
                   className="lg:h-10 lg:w-10 h-5 w-5 rounded-full"
                   src={user?.image}
@@ -126,7 +153,7 @@ function Index() {
                 <div className="dropdown-content absolute right-0 mt-40 w-36 bg-white rounded shadow-md py-1">
                   <div className="additional-info px-4 py-2 flex items-center justify-center flex-col">
                     <div className="profile_name">{user?.name}</div>
-                    <div className="job text-gray-600">Web Dev</div>
+                    {/* <div className="job text-gray-600">Web Dev</div> */}
                     <i
                       className="bx bx-log-out hover:text-red-500 px-4 py-2 cursor-pointer "
                       onClick={() => signOut()}

@@ -1,3 +1,5 @@
+Updated
+
 import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import TestComp from "./TestComp";
@@ -5,13 +7,29 @@ import TestComp from "./TestComp";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
+
+interface FoundEmails {
+  url: string;
+  emails: string[];
+  error?: string; // Add error field to FoundEmails interface
+}
 
 interface WebsiteData {
   mainPageUrl: string;
-  foundEmailsUrls: { url: string; emails: string[] }[];
+  foundEmailsUrls: FoundEmails[];
+  error?: string; // Add error field to WebsiteData interface
 }
 
 function BulkEmail() {
+  const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
+
+  const copyToClipboard = (emailToCopy: string) => {
+    navigator.clipboard.writeText(emailToCopy);
+    setCopiedEmail(emailToCopy);
+    // Remove the animation class after 2 seconds
+    setTimeout(() => setCopiedEmail(null), 800); // Change the timeout to 3000 milliseconds (1 seconds)
+  };
   const handleUploadButtonClick = () => {
     const fileInput = document.getElementById("fileInput") as HTMLInputElement;
     fileInput.click();
@@ -61,8 +79,6 @@ function BulkEmail() {
   const sendData = useCallback(async (extractedWebsites: string[]) => {
     if (!extractedWebsites.length) return;
     setLoading(true);
-    setResponseWebsites([]);
-    setError(null);
 
     try {
       const response = await axios.post<{ websites: WebsiteData[] }>(
@@ -79,6 +95,7 @@ function BulkEmail() {
       console.log("Response:", response);
 
       setResponseWebsites(response.data.websites);
+      setError(null);
     } catch (error) {
       console.error("Error:", error);
       setError("An error occurred. Please try again.");
@@ -96,10 +113,7 @@ function BulkEmail() {
       <Head>
         <title>Email Finder | Home</title>
       </Head>
-      <div
-        className="min-h-screen flex flex-col"
-        style={{ marginTop: "-100px" }}
-      >
+      <div className="min-h-screen " style={{ marginTop: "-100px" }}>
         <div
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
           aria-hidden="true"
@@ -131,7 +145,7 @@ function BulkEmail() {
             </p> */}
           </div>
         </div>
-        <div className="" style={{ marginTop: "-90px" }}>
+        <div className="mb-64 " style={{ marginTop: "-90px" }}>
           <input
             type="file"
             accept=".xlsx, .xls"
@@ -171,38 +185,91 @@ function BulkEmail() {
                 <CircularProgress color="primary" />
               </div>
             )}
+
             {responseWebsites.map((websiteData, index) => (
-              <div
-                key={index}
-                className="mb-8 bg-gradient-to-t from-indigo-500/30 to-indigo-500/20 border border-black-500 rounded-lg shadow-md p-4 mt-8"
-              >
-                <h2 className="text-2xl font-bold mb-4 text-center">
-                  Main Page URL: {websiteData.mainPageUrl}
-                </h2>
-                {websiteData.foundEmailsUrls.map(
-                  (foundEmailsUrl, foundEmailsUrlIndex) => (
-                    <div key={foundEmailsUrlIndex} className="mb-4">
-                      <h3 className="text-lg font-semibold mb-2">
-                        {/* Found on: {foundEmailsUrl.url} */}
-                      </h3>
-                      {foundEmailsUrl.emails.map((email, emailIndex) => (
-                        <div
-                          key={emailIndex}
-                          className="bg-indigo-500/20 border border-black-500 rounded-lg shadow-md p-4 mb-4 flex flex-col items-center justify-between"
-                        >
-                          <p className="text-indigo-600 ">
-                            {email.includes("mailto:")
-                              ? email.split("mailto:")[1].split("?")[0]
-                              : email}
-                          </p>
-                          <span className="text-gray-500">
-                            {/* (Found on: {foundEmailsUrl.url}) */}
-                          </span>
+              <div key={index} className="mb-8  p-4">
+                <h2 className="text-2xl font-bold mb-4">{websiteData.error}</h2>
+                {responseWebsites.map((websiteData, index) => (
+                  <div key={index}>
+                    {websiteData.foundEmailsUrls.map(
+                      (foundEmailsUrl, foundEmailsUrlIndex) => (
+                        <div key={foundEmailsUrlIndex} className="mb-4">
+                          <h3 className="text-xl font-semibold mb-2">
+                            {foundEmailsUrl.error}
+                          </h3>
+                          {foundEmailsUrl.emails.map((email, emailIndex) => (
+                            <div key={emailIndex} className="flex flex-wrap">
+                              <div className="w-full py-2 px-6">
+                                <div className="bg-indigo-300/30 rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                                  <div className="h-12 w-12 flex items-center justify-center  mb-4 md:mb-0">
+                                    <img
+                                      src={`https://www.google.com/s2/favicons?domain=${websiteData.mainPageUrl}&sz=128`}
+                                      alt=""
+                                      className="h-8 w-8 md:h-10 md:w-10 rounded-full"
+                                    />
+                                  </div>
+                                  <div className="flex gap-2 flex-col items-start">
+                                    <p className="text-indigo-600 flex items-center gap-2">
+                                      {email.includes("mailto:")
+                                        ? email
+                                            .split("mailto:")[1]
+                                            .split("?")[0]
+                                        : email}
+                                      {copiedEmail ? (
+                                        <div className="cursor-pointer text-green-500 flex items-center gap-1">
+                                          <MdCheckCircle
+                                            aria-placeholder="Copy Url"
+                                            size={16}
+                                            onClick={() => setCopiedEmail(null)}
+                                          />
+                                          <span>copied</span>
+                                        </div>
+                                      ) : (
+                                        <MdOutlineContentCopy
+                                          className="cursor-pointer text-black hover:text-indigo-600"
+                                          size={16}
+                                          onClick={() =>
+                                            copyToClipboard(
+                                              email.includes("mailto:")
+                                                ? email
+                                                    .split("mailto:")[1]
+                                                    .split("?")[0]
+                                                : email
+                                            )
+                                          }
+                                        />
+                                      )}
+                                    </p>
+                                  </div>
+                                  <div className="flex gap-2 items-center">
+                                    {/* {user ? (
+                                      <Link
+                                        href={`mailto:${user.email}`}
+                                        target="_blank"
+                                      >
+                                        <SiGmail
+                                          className="cursor-pointer hover:text-indigo-600"
+                                          size={16}
+                                          aria-placeholder="Send emails to your gmail"
+                                        />
+                                      </Link>
+                                    ) : (
+                                      <SiGmail
+                                        className="cursor-default text-gray-500"
+                                        size={16}
+                                        aria-placeholder="No email available"
+                                      />
+                                    )} */}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  )
-                )}
+                      )
+                    )}
+                  </div>
+                ))}
               </div>
             ))}
           </div>
