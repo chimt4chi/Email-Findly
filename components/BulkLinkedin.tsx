@@ -5,10 +5,12 @@ import TestComp from "./TestComp";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import Link from "next/link";
 
 interface WebsiteData {
-  mainPageUrl: string;
-  foundEmailsUrls: { url: string; emails: string[] }[];
+  requestedUrl: string;
+  linkedinUrls: string[];
+  error?: string;
 }
 
 function BulkLinkedin() {
@@ -17,9 +19,16 @@ function BulkLinkedin() {
     fileInput.click();
   };
 
-  const isValidUrl = (url: string) => {
-    // Your URL validation logic goes here
-    return true; // Placeholder for demonstration
+  const isValidUrl = (value: string): boolean => {
+    const urlPattern = new RegExp(
+      "^(https?:\\/\\/)?" + // protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))" + // domain name and extension
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i" // fragment locator
+    );
+    return !!urlPattern.test(value);
   };
 
   const [websites, setWebsites] = useState<string[]>([]);
@@ -65,20 +74,29 @@ function BulkLinkedin() {
     setError(null);
 
     try {
-      const response = await axios.post<{ websites: WebsiteData[] }>(
-        "/api/emailExtraction",
-        {
-          startingUrls: extractedWebsites,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Response:", response);
+      const linkedinUrls = [];
 
-      setResponseWebsites(response.data.websites);
+      for (const website of extractedWebsites) {
+        const response = await axios.post<{
+          requestedUrl: string;
+          linkedinUrls: string[];
+        }>(
+          "/api/linkedinExtraction",
+          {
+            url: website,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        console.log("Response:", response);
+        linkedinUrls.push(response.data);
+      }
+
+      setResponseWebsites(linkedinUrls);
       setError(null);
     } catch (error) {
       console.error("Error:", error);
@@ -89,7 +107,7 @@ function BulkLinkedin() {
   }, []);
 
   useEffect(() => {
-    console.log(responseWebsites);
+    console.log(`Data -> ${responseWebsites}`);
   }, [responseWebsites]);
 
   return (
@@ -169,38 +187,38 @@ function BulkLinkedin() {
                 <CircularProgress color="primary" />
               </div>
             )}
+
             {responseWebsites.map((websiteData, index) => (
-              <div
-                key={index}
-                className="mb-8 bg-gradient-to-t from-indigo-500/30 to-indigo-500/20 border border-black-500 rounded-lg shadow-md p-4 mt-8"
-              >
-                <h2 className="text-2xl font-bold mb-4 text-center">
-                  Main Page URL: {websiteData.mainPageUrl}
-                </h2>
-                {websiteData.foundEmailsUrls.map(
-                  (foundEmailsUrl, foundEmailsUrlIndex) => (
-                    <div key={foundEmailsUrlIndex} className="mb-4">
-                      <h3 className="text-lg font-semibold mb-2">
-                        {/* Found on: {foundEmailsUrl.url} */}
-                      </h3>
-                      {foundEmailsUrl.emails.map((email, emailIndex) => (
-                        <div
-                          key={emailIndex}
-                          className="bg-indigo-500/20 border border-black-500 rounded-lg shadow-md p-4 mb-4 flex flex-col items-center justify-between"
-                        >
-                          <p className="text-purple-800 ">
-                            {email.includes("mailto:")
-                              ? email.split("mailto:")[1].split("?")[0]
-                              : email}
-                          </p>
-                          <span className="text-gray-500">
-                            {/* (Found on: {foundEmailsUrl.url}) */}
-                          </span>
+              <div key={index}>
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold mb-2">
+                    {websiteData.error}
+                  </h3>
+                  <div className="flex flex-wrap">
+                    <div className="w-full p-2">
+                      <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="h-12 w-12 flex items-center justify-center  mb-4 md:mb-0">
+                          <img
+                            src={`https://www.google.com/s2/favicons?domain=${websiteData.requestedUrl}&sz=128`}
+                            alt=""
+                            className="h-8 w-8 md:h-10 md:w-10 rounded-full"
+                          />
                         </div>
-                      ))}
+                        <div className="flex gap-2 flex-col items-start">
+                          <p className="text-indigo-600 hover:text-violet-600  flex items-center gap-2">
+                            <Link
+                              href={`${websiteData.linkedinUrls}`}
+                              target="_blank"
+                            >
+                              {`${websiteData.linkedinUrls}`}
+                            </Link>
+                          </p>
+                        </div>
+                        <div className="flex gap-2 items-center"></div>
+                      </div>
                     </div>
-                  )
-                )}
+                  </div>
+                </div>
               </div>
             ))}
           </div>

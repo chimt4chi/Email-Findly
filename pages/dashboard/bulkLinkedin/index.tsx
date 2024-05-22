@@ -9,6 +9,8 @@ import BulkUpload from "@/components/BulkUpload";
 import BulkEmail from "@/components/BulkEmail";
 import { NextPageContext } from "next";
 import BulkLinkedin from "@/components/BulkLinkedin";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { VscVerifiedFilled } from "react-icons/vsc";
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
@@ -95,20 +97,34 @@ function Index() {
             </li>
             <li>
               <Link href="/dashboard/bulkEmail">
-                <i className="bx bx-grid-alt"></i>
-                <span className="link_name">Bulk Email</span>
+                <div className="h-12 flex items-center">
+                  <FaCloudUploadAlt className="h-4 min-w-[78px] text-center leading-[50px] text-white text-lg cursor-pointer transition-all duration-300 ease-in-out" />
+                  <span className="link_name">Bulk Email</span>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link href="/product/emailFinder">
+                <div className="h-12 flex items-center">
+                  <FaCloudUploadAlt className="h-4 min-w-[78px] text-center leading-[50px] text-white text-lg cursor-pointer transition-all duration-300 ease-in-out" />
+                  <span className="link_name">Email Finder</span>
+                </div>
               </Link>
             </li>
             <li>
               <Link href="/dashboard/bulkLinkedin">
-                <i className="bx bx-grid-alt"></i>
-                <span className="link_name">Bulk Linkedin</span>
+                <div className="h-12 flex items-center">
+                  <FaCloudUploadAlt className="h-4 min-w-[78px] text-center leading-[50px] text-white text-lg cursor-pointer transition-all duration-300 ease-in-out" />
+                  <span className="link_name">Bulk Linkedin</span>
+                </div>
               </Link>
             </li>
             <li>
               <Link href="#">
-                <i className="bx bx-grid-alt"></i>
-                <span className="link_name">Email Verifier</span>
+                <div className="h-12 flex items-center">
+                  <VscVerifiedFilled className="h-6 min-w-[78px] text-center leading-[50px] text-white text-lg cursor-pointer transition-all duration-300 ease-in-out" />
+                  <span className="link_name">Email Verifier</span>
+                </div>
               </Link>
             </li>
             <li>
@@ -118,7 +134,7 @@ function Index() {
                 </div>
                 <div className="name-job">
                   <div className="profile_name">{user?.name}</div>
-                  <div className="job">Web Dev</div>
+                  {/* <div className="job">Web Dev</div> */}
                 </div>
                 <i className="bx bx-log-out" onClick={() => signOut()}></i>
               </div>

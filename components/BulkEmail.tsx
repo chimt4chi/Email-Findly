@@ -17,9 +17,16 @@ function BulkEmail() {
     fileInput.click();
   };
 
-  const isValidUrl = (url: string) => {
-    // Your URL validation logic goes here
-    return true; // Placeholder for demonstration
+  const isValidUrl = (value: string): boolean => {
+    const urlPattern = new RegExp(
+      "^(https?:\\/\\/)?" + // protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))" + // domain name and extension
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+        "(\\#[-a-z\\d_]*)?$",
+      "i" // fragment locator
+    );
+    return !!urlPattern.test(value);
   };
 
   const [websites, setWebsites] = useState<string[]>([]);
