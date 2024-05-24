@@ -1,6 +1,6 @@
 import Footer2 from "@/components/Footer2";
 import Footer3 from "@/components/Footer3";
-import Header from "@/components/Header";
+import Header from "@/components/Header2";
 import Header2 from "@/components/Header2";
 import Sidebar2 from "@/components/Sidebar2";
 import "@/styles/globals.css";

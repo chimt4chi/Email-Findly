@@ -97,7 +97,7 @@ function AuthPage() {
           <div className="flex flex-col gap-4">
             {variant === "register" && (
               <Input
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e: any) => setName(e.target.value)}
                 label="Username"
                 id="name"
                 type="name"
@@ -106,14 +106,14 @@ function AuthPage() {
             )}
             <Input
               label="Email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: any) => setEmail(e.target.value)}
               id="username"
               type="username"
               value={email}
             />
             <Input
               label="Password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e: any) => setPassword(e.target.value)}
               id="password"
               type="password"
               value={password}
