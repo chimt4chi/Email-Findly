@@ -8,12 +8,16 @@ import { FaGithub } from "react-icons/fa";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { CircularProgress } from "@mui/material";
 
 function AuthPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
+  const [loadingAction, setLoadingAction] = useState(false);
 
   const { variant } = router.query;
 
@@ -23,6 +27,7 @@ function AuthPage() {
   }, [variant, router]);
 
   const login = useCallback(async () => {
+    setLoading(true);
     try {
       await signIn("credentials", {
         email,
@@ -31,10 +36,13 @@ function AuthPage() {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }, [email, password]);
 
   const register = useCallback(async () => {
+    setLoadingAction(true);
     try {
       await axios.post("/api/register", {
         name,
@@ -44,8 +52,21 @@ function AuthPage() {
       login();
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoadingAction(false);
     }
   }, [name, email, password, login]);
+
+  const handleGoogleSignIn = useCallback(async () => {
+    setLoadingGoogle(true);
+    try {
+      await signIn("google", { callbackUrl: "/dashboard/bulkEmail" });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingGoogle(false);
+    }
+  }, []);
 
   return (
     <>
@@ -67,7 +88,7 @@ function AuthPage() {
           />
         </div>
         <div
-          className=" p-6 bg-gray-100 shadow-md rounded-lg"
+          className="p-6 bg-gray-100 shadow-md rounded-lg"
           style={{ width: "400px" }}
         >
           <h2 className="text-black tracking-tight text-4xl mb-10 font-semibold text-center">
@@ -76,7 +97,7 @@ function AuthPage() {
           <div className="flex flex-col gap-4">
             {variant === "register" && (
               <Input
-                onChange={(e: any) => setName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 label="Username"
                 id="name"
                 type="name"
@@ -85,14 +106,14 @@ function AuthPage() {
             )}
             <Input
               label="Email"
-              onChange={(e: any) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               id="username"
               type="username"
               value={email}
             />
             <Input
               label="Password"
-              onChange={(e: any) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               id="password"
               type="password"
               value={password}
@@ -100,33 +121,40 @@ function AuthPage() {
           </div>
           <button
             onClick={variant === "login" ? login : register}
-            className=" py-3 text-white rounded-md w-full mt-10   bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 p-2"
+            className="py-3 text-white rounded-md w-full mt-10 bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 p-2"
           >
-            <span className="">
-              {variant === "login" ? "Login" : "Register"}
-            </span>
+            {loading && variant === "login" ? (
+              <CircularProgress size={20} color="primary" />
+            ) : loadingAction && variant === "register" ? (
+              <CircularProgress size={20} color="primary" />
+            ) : (
+              <span>{variant === "login" ? "Login" : "Register"}</span>
+            )}
           </button>
           <div className="flex gap-4 mt-8 justify-center items-center">
             <div
-              onClick={() =>
-                signIn("google", { callbackUrl: "/dashboard/bulkEmail" })
-              }
+              onClick={handleGoogleSignIn}
               className="flex items-center justify-center cursor-pointer py-3 gap-x-2 text-black bg-white rounded-md w-full hover:opacity-80 transition"
             >
-              <FcGoogle size={30} />
-              {variant === "login"
+              {loadingGoogle ? (
+                <CircularProgress size={20} color="primary" />
+              ) : (
+                <FcGoogle size={30} />
+              )}
+              {loadingGoogle
+                ? null
+                : variant === "login"
                 ? "Sign in with Google"
                 : "Sign up with Google"}
-              {/* <span>Sign in with Google</span> */}
             </div>
           </div>
-          <p className="text-black font-semibold  mt-12 text-center">
+          <p className="text-black font-semibold mt-12 text-center">
             {variant === "login"
               ? "First time using Email Findly?"
-              : "Already have and account?"}
+              : "Already have an account?"}
             <span
               onClick={toggleVariant}
-              className="text-indigo-600 ml-1 hover:underline hover:underline-offset-8 cursor-pointer "
+              className="text-indigo-600 ml-1 hover:underline hover:underline-offset-8 cursor-pointer"
             >
               {variant === "login" ? "Create an Account" : "Login"}
             </span>

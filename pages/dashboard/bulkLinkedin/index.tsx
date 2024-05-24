@@ -104,7 +104,7 @@ function Index() {
               </Link>
             </li>
             <li>
-              <Link href="/product/emailFinder">
+              <Link href="/dashboard/emailFinder">
                 <div className="h-12 flex items-center">
                   <FaCloudUploadAlt className="h-4 min-w-[78px] text-center leading-[50px] text-white text-lg cursor-pointer transition-all duration-300 ease-in-out" />
                   <span className="link_name">Email Finder</span>
@@ -116,6 +116,14 @@ function Index() {
                 <div className="h-12 flex items-center">
                   <FaCloudUploadAlt className="h-4 min-w-[78px] text-center leading-[50px] text-white text-lg cursor-pointer transition-all duration-300 ease-in-out" />
                   <span className="link_name">Bulk Linkedin</span>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link href="/dashboard/linkedinFinder">
+                <div className="h-12 flex items-center">
+                  <FaCloudUploadAlt className="h-4 min-w-[78px] text-center leading-[50px] text-white text-lg cursor-pointer transition-all duration-300 ease-in-out" />
+                  <span className="link_name">Linkedin Finder</span>
                 </div>
               </Link>
             </li>
@@ -147,18 +155,21 @@ function Index() {
             {/* <h1 className="flex justify-end lg:text-4xl text-sm font-semibold text-indigo-600">
               Email Findly
             </h1> */}
-            <div className="profile-details flex relative items-center">
-              <div className="profile-content relative mr-1">
+            <div className="profile-details flex relative items-center  mr-2.5">
+              <div
+                className="profile-content relative mr-1 cursor-pointer"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
                 <img
                   className="lg:h-10 lg:w-10 h-5 w-5 rounded-full"
-                  src={user?.image}
+                  src={
+                    user?.image
+                      ? user.image
+                      : "https://upload.wikimedia.org/wikipedia/commons/5/59/User-avatar.svg"
+                  }
                   alt="profileImg"
                 />
               </div>
-              <i
-                className="bx bx-chevron-down dropdown-icon cursor-pointer"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              ></i>
               {dropdownOpen && (
                 <div className="dropdown-content absolute right-0 mt-40 w-36 bg-white rounded shadow-md py-1">
                   <div className="additional-info px-4 py-2 flex items-center justify-center flex-col">

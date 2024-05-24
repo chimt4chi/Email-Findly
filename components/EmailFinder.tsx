@@ -35,7 +35,7 @@ interface LinkedInData {
   error?: string;
 }
 
-function LinkedinFinder() {
+function EmailFinder() {
   const [urlInput, setUrlInput] = useState<string>("");
   const [emailInput, setEmailInput] = useState<string>("");
   const [linkedinInput, setLinkedinInput] = useState<string>("");
@@ -272,10 +272,10 @@ function LinkedinFinder() {
                 <div className="relative flex flex-col">
                   <input
                     type="text"
-                    onKeyDown={handleLinkedinKeyDown}
+                    onKeyDown={handleKeyDown}
                     disabled={loading || requestCount >= 100}
                     onChange={(e) => {
-                      setLinkedinInput(e.target.value);
+                      setEmailInput(e.target.value);
                       if (e.target.value.trim() === "") {
                         setShowSuggestions(false);
                       } else {
@@ -284,17 +284,17 @@ function LinkedinFinder() {
                     }}
                     onBlur={(e) => {
                       if (e.target.value.trim() === "") {
-                        setLinkedinInput("");
+                        setEmailInput("");
                         setShowSuggestions(false);
                       }
                     }}
-                    value={linkedinInput}
+                    value={emailInput}
                     className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
                     placeholder="Enter URL (e.g. http://example.com)"
                   />
                   {emailInput && (
                     <button
-                      onClick={() => setLinkedinInput("")}
+                      onClick={() => setEmailInput("")}
                       className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
                     >
                       <ClearIcon className="h-6 w-6 text-gray-500" />
@@ -302,7 +302,7 @@ function LinkedinFinder() {
                   )}
                   <button
                     onClick={() => {
-                      sendLinkedinData(linkedinInput);
+                      sendData(emailInput);
                       setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
                     }}
                     disabled={loading || requestCount >= 100}
@@ -314,7 +314,7 @@ function LinkedinFinder() {
                 </div>
               </div>
 
-              {/* <div className="relative">
+              <div className="relative">
                 {showSuggestions && (
                   <div className="absolute top-full left-0 bg-white w-full border border-gray-300 rounded-lg z-10">
                     {suggestedTexts.map((text, index) => (
@@ -333,7 +333,7 @@ function LinkedinFinder() {
                     ))}
                   </div>
                 )}
-              </div> */}
+              </div>
             </div>
             <main>
               <div className="mt-5 max-w-full">
@@ -377,62 +377,102 @@ function LinkedinFinder() {
                   <p className="text-indigo-600">{error}</p>
                 ) : (
                   <>
-                    {linkedinResponseData.map((websiteData, index) => (
+                    {/* Email Data */}
+                    {responseData.map((websiteData, index) => (
                       <div key={index} className="mb-8  p-4 mt-8">
                         <h2 className="text-2xl font-bold mb-4">
                           {websiteData.error}
                         </h2>
-                        {linkedinResponseData.map((websiteData, index) => (
+                        {responseData.map((websiteData, index) => (
                           <div key={index}>
-                            <div className="mb-4">
-                              <h3 className="text-xl font-semibold mb-2">
-                                {websiteData.error}
-                              </h3>
-                              <div className="flex flex-wrap">
-                                <div className="w-full p-2">
-                                  <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
-                                    <div className="h-12 w-12 flex items-center justify-center  mb-4 md:mb-0">
-                                      <img
-                                        src={`https://www.google.com/s2/favicons?domain=${websiteData.requestedUrl}&sz=128`}
-                                        alt=""
-                                        className="h-8 w-8 md:h-10 md:w-10 rounded-full"
-                                      />
-                                    </div>
-                                    <div className="flex gap-2 flex-col items-start">
-                                      <p className="text-indigo-600 hover:text-violet-600  flex items-center gap-2">
-                                        <Link
-                                          href={`${websiteData.linkedinUrls}`}
-                                          target="_blank"
-                                        >
-                                          {`${websiteData.linkedinUrls}`}
-                                        </Link>
-                                        {copiedEmail ? (
-                                          <div className="cursor-pointer text-green-500 flex items-center gap-1">
-                                            <MdCheckCircle
-                                              aria-placeholder="Copy Url"
-                                              size={16}
-                                              onClick={() =>
-                                                setCopiedEmail(null)
-                                              }
-                                            />
-                                            <span>copied</span>
+                            {websiteData.foundEmailsUrls.map(
+                              (foundEmailsUrl, foundEmailsUrlIndex) => (
+                                <div key={foundEmailsUrlIndex} className="mb-4">
+                                  <h3 className="text-xl font-semibold mb-2">
+                                    {foundEmailsUrl.error}
+                                  </h3>
+                                  {foundEmailsUrl.emails.map(
+                                    (email, emailIndex) => (
+                                      <div
+                                        key={emailIndex}
+                                        className="flex flex-wrap"
+                                      >
+                                        <div className="w-full py-2 px-6">
+                                          <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                                            <div className="h-12 w-12 flex items-center justify-center  mb-4 md:mb-0">
+                                              <img
+                                                src={`https://www.google.com/s2/favicons?domain=${websiteData.mainPageUrl}&sz=128`}
+                                                alt=""
+                                                className="h-8 w-8 md:h-10 md:w-10 rounded-full"
+                                              />
+                                            </div>
+                                            <div className="flex gap-2 flex-col items-start">
+                                              <p className="text-indigo-600 flex items-center gap-2">
+                                                {email.includes("mailto:")
+                                                  ? email
+                                                      .split("mailto:")[1]
+                                                      .split("?")[0]
+                                                  : email}
+                                                {copiedEmail ? (
+                                                  <div className="cursor-pointer text-green-500 flex items-center gap-1">
+                                                    <MdCheckCircle
+                                                      aria-placeholder="Copy Url"
+                                                      size={16}
+                                                      onClick={() =>
+                                                        setCopiedEmail(null)
+                                                      }
+                                                    />
+                                                    <span>copied</span>
+                                                  </div>
+                                                ) : (
+                                                  <MdOutlineContentCopy
+                                                    className="cursor-pointer text-black hover:text-indigo-600"
+                                                    size={16}
+                                                    onClick={() =>
+                                                      copyToClipboard(
+                                                        email.includes(
+                                                          "mailto:"
+                                                        )
+                                                          ? email
+                                                              .split(
+                                                                "mailto:"
+                                                              )[1]
+                                                              .split("?")[0]
+                                                          : email
+                                                      )
+                                                    }
+                                                  />
+                                                )}
+                                              </p>
+                                            </div>
+                                            <div className="flex gap-2 items-center">
+                                              {user ? (
+                                                <Link
+                                                  href={`mailto:${user.email}`}
+                                                  target="_blank"
+                                                >
+                                                  <SiGmail
+                                                    className="cursor-pointer hover:text-indigo-600"
+                                                    size={16}
+                                                    aria-placeholder="Send emails to your gmail"
+                                                  />
+                                                </Link>
+                                              ) : (
+                                                <SiGmail
+                                                  className="cursor-default text-gray-500"
+                                                  size={16}
+                                                  aria-placeholder="No email available"
+                                                />
+                                              )}
+                                            </div>
                                           </div>
-                                        ) : (
-                                          <MdOutlineContentCopy
-                                            className="cursor-pointer text-black hover:text-indigo-600"
-                                            size={16}
-                                            onClick={() =>
-                                              copyToClipboard(`${websiteData}`)
-                                            }
-                                          />
-                                        )}
-                                      </p>
-                                    </div>
-                                    <div className="flex gap-2 items-center"></div>
-                                  </div>
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
                                 </div>
-                              </div>
-                            </div>
+                              )
+                            )}
                           </div>
                         ))}
                       </div>
@@ -460,4 +500,4 @@ function LinkedinFinder() {
   );
 }
 
-export default LinkedinFinder;
+export default EmailFinder;

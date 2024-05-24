@@ -161,8 +161,8 @@ function BulkLinkedin() {
             style={{ maxWidth: "70%", margin: "0 auto" }}
           >
             <div
-              className="bg-indigo-300/30 rounded-lg p-8 text-center"
-              style={{ height: "170px" }}
+              className="bg-indigo-300/30 rounded-lg p-8 text-center mb-4"
+              style={{ height: "170px", marginBottom: "2.5rem" }}
             >
               <h5 className="mb-4">Upload or drop a file here</h5>
               <label htmlFor="fileInput" className="cursor-pointer">
@@ -178,7 +178,7 @@ function BulkLinkedin() {
                   )}
                 </button>
               </label>
-              <p className="text-sm text-black mt-4">
+              <p className="text-sm text-black mt-4 ">
                 Bulk website extraction supports .XLS, CSV and TXT file formats.
               </p>
             </div>
@@ -188,39 +188,42 @@ function BulkLinkedin() {
               </div>
             )}
 
-            {responseWebsites.map((websiteData, index) => (
-              <div key={index}>
-                <div className="mb-4">
-                  <h3 className="text-xl font-semibold mb-2">
-                    {websiteData.error}
-                  </h3>
-                  <div className="flex flex-wrap">
-                    <div className="w-full p-2">
-                      <div className="bg-[#efeeee] rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div className="h-12 w-12 flex items-center justify-center  mb-4 md:mb-0">
-                          <img
-                            src={`https://www.google.com/s2/favicons?domain=${websiteData.requestedUrl}&sz=128`}
-                            alt=""
-                            className="h-8 w-8 md:h-10 md:w-10 rounded-full"
-                          />
+            {responseWebsites.map(
+              (websiteData, index) =>
+                websiteData.linkedinUrls.length > 0 && (
+                  <div key={index}>
+                    <div className="mb-4">
+                      <h3 className="text-xl font-semibold mb-2">
+                        {websiteData.error}
+                      </h3>
+                      <div className="flex flex-wrap">
+                        <div className="w-full p-2">
+                          <div className="bg-indigo-300/30 rounded-lg shadow-md p-4 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                            <div className="h-12 w-12 flex items-center justify-center  mb-4 md:mb-0">
+                              <img
+                                src={`https://www.google.com/s2/favicons?domain=${websiteData.requestedUrl}&sz=128`}
+                                alt=""
+                                className="h-8 w-8 md:h-10 md:w-10 rounded-full"
+                              />
+                            </div>
+                            <div className="flex gap-2 flex-col items-start">
+                              <p className="text-indigo-600 hover:text-violet-600  flex items-center gap-2">
+                                <Link
+                                  href={`${websiteData.linkedinUrls}`}
+                                  target="_blank"
+                                >
+                                  {`${websiteData.linkedinUrls}`}
+                                </Link>
+                              </p>
+                            </div>
+                            <div className="flex gap-2 items-center"></div>
+                          </div>
                         </div>
-                        <div className="flex gap-2 flex-col items-start">
-                          <p className="text-indigo-600 hover:text-violet-600  flex items-center gap-2">
-                            <Link
-                              href={`${websiteData.linkedinUrls}`}
-                              target="_blank"
-                            >
-                              {`${websiteData.linkedinUrls}`}
-                            </Link>
-                          </p>
-                        </div>
-                        <div className="flex gap-2 items-center"></div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                )
+            )}
           </div>
         </div>
       </div>

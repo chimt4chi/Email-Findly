@@ -1,17 +1,18 @@
-import { NextPageContext } from "next";
-import { getSession } from "next-auth/react";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import Link from "next/link";
-import BulkEmail from "@/components/BulkEmail";
-
-// Icons
-
 import Head from "next/head";
-import { VscVerifiedFilled } from "react-icons/vsc";
+import BulkUpload from "@/components/BulkUpload";
+import BulkEmail from "@/components/BulkEmail";
+import { NextPageContext } from "next";
+
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { VscVerifiedFilled } from "react-icons/vsc";
+import Hero from "@/components/Hero";
+import LinkedinFinder from "@/components/LinkedinFinder";
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context);
@@ -72,13 +73,12 @@ function Index() {
   const { data: user } = useCurrentUser();
 
   const router = useRouter();
+
   return (
     <div>
-      <div>
-        <Head>
-          <title>Dashboard Home</title>
-        </Head>
-      </div>
+      <Head>
+        <title>Bulk Email Extraction</title>
+      </Head>
       <div>
         <div className="sidebar close">
           <div
@@ -196,11 +196,7 @@ function Index() {
             </div>
           </div>
 
-          {/* {router.pathname !== "/dashboard/upload" && <BulkEmail />} */}
-
-          <div className="min-h-screen flex items-center justify-center">
-            HOME
-          </div>
+          {router.pathname !== "/dashboard/upload" && <LinkedinFinder />}
         </section>
       </div>
     </div>
