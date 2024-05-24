@@ -6,7 +6,6 @@ import Sidebar2 from "@/components/Sidebar2";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import { Analytics } from "@vercel/analytics/react";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -29,7 +28,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <Component {...pageProps} />
       {showFooter && <Footer3 showHeader={showHeader} />}
       {/* {showFooter && <Sidebar2 showHeader={showHeader} />} */}
-      <Analytics />
     </>
   );
 }
