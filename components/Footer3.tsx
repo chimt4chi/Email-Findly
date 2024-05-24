@@ -131,6 +131,9 @@ const Footer3: React.FC<FooterProps> = ({ showHeader }) => {
               <a rel="noopener noreferrer" href="#">
                 <span>Terms of service</span>
               </a>
+              <a rel="noopener noreferrer" href="#">
+                <span>Last Updated - 16:34 24/05/24</span>
+              </a>
             </div>
             <div className="flex justify-center pt-4 space-x-4 lg:pt-0 lg:col-end-13">
               <a
