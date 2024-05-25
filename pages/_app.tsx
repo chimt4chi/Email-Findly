@@ -1,4 +1,3 @@
-import Footer2 from "@/components/Footer2";
 import Footer3 from "@/components/Footer3";
 import Header from "@/components/Header";
 import Header2 from "@/components/Header2";
