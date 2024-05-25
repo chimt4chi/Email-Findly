@@ -1,6 +1,5 @@
 import BulkEmail from "@/components/BulkEmail";
 import BulkUpload from "@/components/BulkUpload";
-import { Globe } from "@/components/Globe";
 import InputData from "@/components/InputData";
 import NewHero from "@/components/NewHero";
 import Sidebar2 from "@/components/Sidebar2";
