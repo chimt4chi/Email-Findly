@@ -268,116 +268,151 @@ function Hero() {
               for more sales and revenue.
             </p>
             <div className="mt-3  p-4">
-              <div>
-                <div className="relative flex flex-col">
-                  <input
-                    type="text"
-                    onKeyDown={handleKeyDown}
-                    disabled={loading || requestCount >= 100}
-                    onChange={(e) => {
-                      setEmailInput(e.target.value);
-                      if (e.target.value.trim() === "") {
-                        setShowSuggestions(false);
-                      } else {
-                        suggestTexts();
-                      }
+              <Box sx={{ width: "100%", typography: "body1" }}>
+                <TabContext value={value}>
+                  <Box
+                    sx={{
+                      textAlign: "center",
                     }}
-                    onBlur={(e) => {
-                      if (e.target.value.trim() === "") {
-                        setEmailInput("");
-                        setShowSuggestions(false);
-                      }
-                    }}
-                    value={emailInput}
-                    className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
-                    placeholder="Enter URL (e.g. http://example.com)"
-                  />
-                  {emailInput && (
-                    <button
-                      onClick={() => setEmailInput("")}
-                      className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
-                    >
-                      <ClearIcon className="h-6 w-6 text-gray-500" />
-                    </button>
-                  )}
-                  <button
-                    onClick={() => {
-                      sendData(emailInput);
-                      setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
-                    }}
-                    disabled={loading || requestCount >= 100}
-                    type="button"
-                    className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
                   >
-                    Find
-                  </button>
-                </div>
-                <div className="relative flex flex-col">
-                  <input
-                    type="text"
-                    onKeyDown={handleLinkedinKeyDown}
-                    disabled={loading || requestCount >= 100}
-                    onChange={(e) => {
-                      setLinkedinInput(e.target.value);
-                      if (e.target.value.trim() === "") {
-                        setShowSuggestions(false);
-                      } else {
-                        suggestTexts();
-                      }
-                    }}
-                    onBlur={(e) => {
-                      if (e.target.value.trim() === "") {
-                        setLinkedinInput("");
-                        setShowSuggestions(false);
-                      }
-                    }}
-                    value={linkedinInput}
-                    className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
-                    placeholder="Enter URL (e.g. http://example.com)"
-                  />
-                  {emailInput && (
-                    <button
-                      onClick={() => setLinkedinInput("")}
-                      className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
+                    <TabList
+                      onChange={handleChange}
+                      aria-label="lab API tabs example"
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        "& .MuiTabs-flexContainer": {
+                          justifyContent: "center",
+                        },
+                        "& .MuiButtonBase-root": {
+                          color: "#3949AB",
+                          fontWeight: "600",
+                        },
+                        "& .MuiTabs-indicator": {
+                          backgroundColor: "#3949AB",
+                        },
+                      }}
                     >
-                      <ClearIcon className="h-6 w-6 text-gray-500" />
-                    </button>
-                  )}
-                  <button
-                    onClick={() => {
-                      sendLinkedinData(linkedinInput);
-                      setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
-                    }}
-                    disabled={loading || requestCount >= 100}
-                    type="button"
-                    className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
-                  >
-                    Find
-                  </button>
-                </div>
-              </div>
-
-              <div className="relative">
-                {showSuggestions && (
-                  <div className="absolute top-full left-0 bg-white w-full border border-gray-300 rounded-lg z-10">
-                    {suggestedTexts.map((text, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                        onClick={() => {
-                          setEmailInput(text);
-                          setShowSuggestions(false);
-                          sendData(text);
-                        }}
-                        style={{ minWidth: "calc(100% - 8px)" }}
-                      >
-                        {text}
+                      <Tab label="Email" value="1" />
+                      <Tab label="Linkedin" value="2" />
+                    </TabList>
+                  </Box>
+                  <div>
+                    <TabPanel value="1">
+                      <div className="relative flex flex-col">
+                        <input
+                          type="text"
+                          onKeyDown={handleKeyDown}
+                          disabled={loading || requestCount >= 100}
+                          onChange={(e) => {
+                            setEmailInput(e.target.value);
+                            if (e.target.value.trim() === "") {
+                              setShowSuggestions(false);
+                            } else {
+                              suggestTexts();
+                            }
+                          }}
+                          onBlur={(e) => {
+                            if (e.target.value.trim() === "") {
+                              setEmailInput("");
+                              setShowSuggestions(false);
+                            }
+                          }}
+                          value={emailInput}
+                          className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
+                          placeholder="Enter URL (e.g. http://example.com)"
+                        />
+                        {emailInput && (
+                          <button
+                            onClick={() => setEmailInput("")}
+                            className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
+                          >
+                            <ClearIcon className="h-6 w-6 text-gray-500" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            sendData(emailInput);
+                            setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
+                          }}
+                          disabled={loading || requestCount >= 100}
+                          type="button"
+                          className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
+                        >
+                          Find
+                        </button>
                       </div>
-                    ))}
+                    </TabPanel>
+                    <TabPanel value="2">
+                      <div className="relative flex flex-col">
+                        <input
+                          type="text"
+                          onKeyDown={handleLinkedinKeyDown}
+                          disabled={loading || requestCount >= 100}
+                          onChange={(e) => {
+                            setLinkedinInput(e.target.value);
+                            if (e.target.value.trim() === "") {
+                              setShowSuggestions(false);
+                            } else {
+                              suggestTexts();
+                            }
+                          }}
+                          onBlur={(e) => {
+                            if (e.target.value.trim() === "") {
+                              setLinkedinInput("");
+                              setShowSuggestions(false);
+                            }
+                          }}
+                          value={linkedinInput}
+                          className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
+                          placeholder="Enter URL (e.g. http://example.com)"
+                        />
+                        {emailInput && (
+                          <button
+                            onClick={() => setLinkedinInput("")}
+                            className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
+                          >
+                            <ClearIcon className="h-6 w-6 text-gray-500" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            sendLinkedinData(linkedinInput);
+                            setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
+                          }}
+                          disabled={loading || requestCount >= 100}
+                          type="button"
+                          className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
+                        >
+                          Find
+                        </button>
+                      </div>
+                    </TabPanel>
                   </div>
-                )}
-              </div>
-              {/* <div className="relative">
+                </TabContext>
+
+                <div className="relative">
+                  {showSuggestions && (
+                    <div className="absolute top-full left-0 bg-white w-full border border-gray-300 rounded-lg z-10">
+                      {suggestedTexts.map((text, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                          onClick={() => {
+                            setEmailInput(text);
+                            setShowSuggestions(false);
+                            sendData(text);
+                          }}
+                          style={{ minWidth: "calc(100% - 8px)" }}
+                        >
+                          {text}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {/* <div className="relative">
                   {showSuggestions && (
                     <div className="absolute top-full left-0 bg-white w-full border border-gray-300 rounded-lg z-10">
                       {suggestedTexts.map((text, index) => (
@@ -397,6 +432,7 @@ function Hero() {
                     </div>
                   )}
                 </div> */}
+              </Box>
             </div>
             <main>
               <div className="mt-5 max-w-full">
@@ -509,7 +545,7 @@ function Hero() {
                                               </p>
                                             </div>
                                             <div className="flex gap-2 items-center">
-                                              {/* {user ? (
+                                              {user ? (
                                                 <Link
                                                   href={`mailto:${user.email}`}
                                                   target="_blank"
@@ -526,7 +562,7 @@ function Hero() {
                                                   size={16}
                                                   aria-placeholder="No email available"
                                                 />
-                                              )} */}
+                                              )}
                                             </div>
                                           </div>
                                         </div>
