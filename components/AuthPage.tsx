@@ -11,7 +11,7 @@ import { CircularProgress } from "@mui/material";
 function AuthPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
+  const [name, setName] = useState<string>("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingGoogle, setLoadingGoogle] = useState(false);
@@ -95,7 +95,9 @@ function AuthPage() {
           <div className="flex flex-col gap-4">
             {variant === "register" && (
               <Input
-                onChange={(e: any) => setName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setName(e.target.value)
+                }
                 label="Username"
                 id="name"
                 type="name"
@@ -104,14 +106,18 @@ function AuthPage() {
             )}
             <Input
               label="Email"
-              onChange={(e: any) => setEmail(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEmail(e.target.value)
+              }
               id="username"
               type="username"
               value={email}
             />
             <Input
               label="Password"
-              onChange={(e: any) => setPassword(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
               id="password"
               type="password"
               value={password}

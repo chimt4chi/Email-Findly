@@ -29,11 +29,8 @@ interface LinkedInData {
 }
 
 function EmailFinder() {
-  const [urlInput, setUrlInput] = useState<string>("");
   const [emailInput, setEmailInput] = useState<string>("");
-  const [linkedinInput, setLinkedinInput] = useState<string>("");
   const [suggestedTexts, setSuggestedTexts] = useState<string[]>([]);
-  const [domainExtension, setDomainExtension] = useState<string>("");
   const [responseData, setResponseData] = useState<WebsiteData[]>([]);
   const [linkedinResponseData, setLinkedinResponseData] = useState<
     LinkedInData[]
@@ -44,12 +41,6 @@ function EmailFinder() {
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false); // State for showing/hiding suggestions
 
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
-
-  const [value, setValue] = React.useState("1");
-
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
 
   const copyToClipboard = (emailToCopy: string) => {
     navigator.clipboard.writeText(emailToCopy);
@@ -99,7 +90,7 @@ function EmailFinder() {
 
   const sendData = useCallback(
     async (inputText: string) => {
-      if (!inputText.trim() && !domainExtension) return;
+      if (!inputText.trim()) return;
       setLoading(true);
       setResponseData([]); // Clear previous result
       setLinkedinResponseData([]);
@@ -121,7 +112,7 @@ function EmailFinder() {
         const response = await axios.post<{ websites: WebsiteData[] }>(
           "/api/emailExtraction",
           {
-            startingUrls: [`${processedUrlInput}${domainExtension}`],
+            startingUrls: [`${processedUrlInput}}`],
           },
           {
             headers: {
@@ -154,12 +145,12 @@ function EmailFinder() {
         setLoading(false);
       }
     },
-    [domainExtension, requestCount]
+    [requestCount]
   );
 
   const sendLinkedinData = useCallback(
     async (inputText: string) => {
-      if (!inputText.trim() && !domainExtension) return;
+      if (!inputText.trim()) return;
       setLoading(true);
       setResponseData([]);
       setLinkedinResponseData([]); // Clear previous result
@@ -202,7 +193,7 @@ function EmailFinder() {
         setLoading(false);
       }
     },
-    [domainExtension, requestCount]
+    [requestCount]
   );
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -211,22 +202,7 @@ function EmailFinder() {
     }
   };
 
-  const handleLinkedinKeyDown = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (event.key === "Enter") {
-      sendLinkedinData(linkedinInput);
-    }
-  };
-
   const router = useRouter();
-
-  const handleNavigate = (variant: string) => {
-    router.push({
-      pathname: "/auth",
-      query: { variant },
-    });
-  };
 
   const { data: user } = useCurrentUser();
 

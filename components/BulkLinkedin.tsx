@@ -30,9 +30,7 @@ function BulkLinkedin() {
     return !!urlPattern.test(value);
   };
 
-  const [websites, setWebsites] = useState<string[]>([]);
   const [responseWebsites, setResponseWebsites] = useState<WebsiteData[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +56,6 @@ function BulkLinkedin() {
             }
           });
 
-          setWebsites(extractedWebsites);
           sendData(extractedWebsites);
         }
       };
@@ -70,7 +67,6 @@ function BulkLinkedin() {
     if (!extractedWebsites.length) return;
     setLoading(true);
     setResponseWebsites([]);
-    setError(null);
 
     try {
       const linkedinUrls = [];
@@ -96,10 +92,8 @@ function BulkLinkedin() {
       }
 
       setResponseWebsites(linkedinUrls);
-      setError(null);
     } catch (error) {
       console.error("Error:", error);
-      setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }

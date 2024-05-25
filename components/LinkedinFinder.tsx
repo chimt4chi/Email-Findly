@@ -7,7 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import Link from "next/link";
 import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
-import useCurrentUser from "@/hooks/useCurrentUser";
 
 interface FoundEmails {
   url: string;
@@ -58,91 +57,6 @@ function LinkedinFinder() {
       setRequestCount(Number(storedRequestCount));
     }
   }, []);
-
-  const suggestTexts = useCallback(() => {
-    // Predefined list of suggestions
-    const predefinedSuggestions = [
-      "dtu.ac.in",
-      "aryabhattacollege.ac.in",
-      "google.com",
-      "growthsay.com",
-    ];
-
-    // Check if the input exactly matches any predefined suggestion
-    const isMatchingInput = predefinedSuggestions.some(
-      (text) => text.toLowerCase() === linkedinInput.toLowerCase()
-    );
-
-    // Set the filtered suggestions
-    setSuggestedTexts(
-      isMatchingInput
-        ? []
-        : predefinedSuggestions.filter((text) =>
-            text.toLowerCase().includes(linkedinInput.toLowerCase())
-          )
-    );
-
-    // Show suggestions only if there are filtered suggestions and the current input doesn't exactly match any suggestion
-  }, [linkedinInput, suggestedTexts]);
-
-  const sendData = useCallback(
-    async (inputText: string) => {
-      if (!inputText.trim()) return;
-      setLoading(true);
-      setResponseData([]); // Clear previous result
-      setLinkedinResponseData([]);
-      setError("");
-      try {
-        if (requestCount >= 100) {
-          setError(
-            "You have reached the request limit. Please login or register to continue."
-          );
-          return;
-        }
-
-        const processedUrlInput =
-          inputText.trim().startsWith("http://") ||
-          inputText.trim().startsWith("https://")
-            ? inputText.trim()
-            : `http://${inputText.trim()}`;
-
-        const response = await axios.post<{ websites: WebsiteData[] }>(
-          "/api/emailExtraction",
-          {
-            startingUrls: [`${processedUrlInput}}`],
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.data.websites.length === 0) {
-          setError("Unable to find. Please check the website url");
-        } else {
-          setResponseData(response.data.websites);
-          setError(null);
-          setRequestCount((prevCount) => {
-            if (prevCount < 2) {
-              const newCount = prevCount + 1;
-              if (typeof localStorage !== "undefined") {
-                localStorage.setItem("requestCount", String(newCount));
-              }
-              return newCount;
-            }
-            return prevCount;
-          });
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setError("An error occurred. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [requestCount]
-  );
 
   const sendLinkedinData = useCallback(
     async (inputText: string) => {

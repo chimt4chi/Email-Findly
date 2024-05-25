@@ -28,9 +28,7 @@ function BulkEmail() {
     return !!urlPattern.test(value);
   };
 
-  const [websites, setWebsites] = useState<string[]>([]);
   const [responseWebsites, setResponseWebsites] = useState<WebsiteData[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +54,6 @@ function BulkEmail() {
             }
           });
 
-          setWebsites(extractedWebsites);
           sendData(extractedWebsites);
         }
       };
@@ -68,7 +65,6 @@ function BulkEmail() {
     if (!extractedWebsites.length) return;
     setLoading(true);
     setResponseWebsites([]);
-    setError(null);
 
     try {
       const response = await axios.post<{ websites: WebsiteData[] }>(
@@ -87,7 +83,6 @@ function BulkEmail() {
       setResponseWebsites(response.data.websites);
     } catch (error) {
       console.error("Error:", error);
-      setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }

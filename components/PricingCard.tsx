@@ -1,7 +1,6 @@
 import React from "react";
 
 // Icons
-import { MdOutlineCancel, MdOutlineCheckCircleOutline } from "react-icons/md";
 import { BsCheck } from "react-icons/bs";
 
 interface PricingCardProps {

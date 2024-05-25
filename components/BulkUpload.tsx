@@ -22,12 +22,11 @@ interface WebsiteData {
 }
 
 function BulkUpload() {
-  const isValidUrl = (url: string) => {
+  const isValidUrl = () => {
     // Your URL validation logic goes here
     return true; // Placeholder for demonstration
   };
 
-  const [websites, setWebsites] = useState<string[]>([]);
   const [responseWebsites, setResponseWebsites] = useState<WebsiteData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -56,20 +55,19 @@ function BulkUpload() {
           const workbook = XLSX.read(data, { type: "binary" });
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
-          const parsedData: any[] = XLSX.utils.sheet_to_json(sheet);
+          const parsedData: object[] = XLSX.utils.sheet_to_json(sheet);
 
           const extractedWebsites: string[] = [];
 
           parsedData.forEach((obj) => {
             for (const key in obj) {
               const value = obj[key];
-              if (typeof value === "string" && isValidUrl(value)) {
+              if (typeof value === "string" && isValidUrl()) {
                 extractedWebsites.push(value);
               }
             }
           });
 
-          setWebsites(extractedWebsites);
           sendData(extractedWebsites);
         }
       };
