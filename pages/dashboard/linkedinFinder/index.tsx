@@ -1,17 +1,13 @@
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getSession, signOut } from "next-auth/react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import Link from "next/link";
 import Head from "next/head";
-import BulkUpload from "@/components/BulkUpload";
-import BulkEmail from "@/components/BulkEmail";
 import { NextPageContext } from "next";
 
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { VscVerifiedFilled } from "react-icons/vsc";
-import Hero from "@/components/Hero";
 import LinkedinFinder from "@/components/LinkedinFinder";
 
 export async function getServerSideProps(context: NextPageContext) {

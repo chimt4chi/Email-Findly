@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import Link from "next/link";
-import BulkEmail from "@/components/BulkEmail";
 
 // Icons
 

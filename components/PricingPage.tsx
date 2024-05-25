@@ -1,14 +1,8 @@
 import PricingCard from "@/components/PricingCard";
-import { FormControlLabel, Switch } from "@mui/material";
-import Head from "next/head";
 import React, { useState } from "react";
 
 function PricingPage() {
   const [plan, setPlan] = useState(true);
-
-  const togglePlan = () => {
-    setPlan((prev) => !prev);
-  };
 
   const showEmail = () => {
     setPlan(true);

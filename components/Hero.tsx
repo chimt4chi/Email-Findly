@@ -7,7 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { SiGmail } from "react-icons/si";
 import Link from "next/link";
-import { FaLinkedinIn } from "react-icons/fa";
 
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
@@ -36,11 +35,9 @@ interface LinkedInData {
 }
 
 function Hero() {
-  const [urlInput, setUrlInput] = useState<string>("");
   const [emailInput, setEmailInput] = useState<string>("");
   const [linkedinInput, setLinkedinInput] = useState<string>("");
   const [suggestedTexts, setSuggestedTexts] = useState<string[]>([]);
-  const [domainExtension, setDomainExtension] = useState<string>("");
   const [responseData, setResponseData] = useState<WebsiteData[]>([]);
   const [linkedinResponseData, setLinkedinResponseData] = useState<
     LinkedInData[]
@@ -106,7 +103,7 @@ function Hero() {
 
   const sendData = useCallback(
     async (inputText: string) => {
-      if (!inputText.trim() && !domainExtension) return;
+      if (!inputText.trim()) return;
       setLoading(true);
       setResponseData([]); // Clear previous result
       setLinkedinResponseData([]);
@@ -128,7 +125,7 @@ function Hero() {
         const response = await axios.post<{ websites: WebsiteData[] }>(
           "/api/emailExtraction",
           {
-            startingUrls: [`${processedUrlInput}${domainExtension}`],
+            startingUrls: [`${processedUrlInput}`],
           },
           {
             headers: {
@@ -161,12 +158,12 @@ function Hero() {
         setLoading(false);
       }
     },
-    [domainExtension, requestCount]
+    [requestCount]
   );
 
   const sendLinkedinData = useCallback(
     async (inputText: string) => {
-      if (!inputText.trim() && !domainExtension) return;
+      if (!inputText.trim()) return;
       setLoading(true);
       setResponseData([]);
       setLinkedinResponseData([]); // Clear previous result
@@ -209,7 +206,7 @@ function Hero() {
         setLoading(false);
       }
     },
-    [domainExtension, requestCount]
+    [requestCount]
   );
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -227,13 +224,6 @@ function Hero() {
   };
 
   const router = useRouter();
-
-  const handleNavigate = (variant: string) => {
-    router.push({
-      pathname: "/auth",
-      query: { variant },
-    });
-  };
 
   const { data: user } = useCurrentUser();
 

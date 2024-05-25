@@ -5,15 +5,7 @@ import { useRouter } from "next/router";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { SiGmail } from "react-icons/si";
 import Link from "next/link";
-import { FaLinkedinIn } from "react-icons/fa";
-
-import Box from "@mui/material/Box";
-import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
 import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
 import useCurrentUser from "@/hooks/useCurrentUser";
 
@@ -36,11 +28,8 @@ interface LinkedInData {
 }
 
 function LinkedinFinder() {
-  const [urlInput, setUrlInput] = useState<string>("");
-  const [emailInput, setEmailInput] = useState<string>("");
   const [linkedinInput, setLinkedinInput] = useState<string>("");
   const [suggestedTexts, setSuggestedTexts] = useState<string[]>([]);
-  const [domainExtension, setDomainExtension] = useState<string>("");
   const [responseData, setResponseData] = useState<WebsiteData[]>([]);
   const [linkedinResponseData, setLinkedinResponseData] = useState<
     LinkedInData[]
@@ -48,15 +37,8 @@ function LinkedinFinder() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [requestCount, setRequestCount] = useState<number>(0);
-  const [showSuggestions, setShowSuggestions] = useState<boolean>(false); // State for showing/hiding suggestions
 
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
-
-  const [value, setValue] = React.useState("1");
-
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
 
   const copyToClipboard = (emailToCopy: string) => {
     navigator.clipboard.writeText(emailToCopy);
@@ -88,7 +70,7 @@ function LinkedinFinder() {
 
     // Check if the input exactly matches any predefined suggestion
     const isMatchingInput = predefinedSuggestions.some(
-      (text) => text.toLowerCase() === emailInput.toLowerCase()
+      (text) => text.toLowerCase() === linkedinInput.toLowerCase()
     );
 
     // Set the filtered suggestions
@@ -96,17 +78,16 @@ function LinkedinFinder() {
       isMatchingInput
         ? []
         : predefinedSuggestions.filter((text) =>
-            text.toLowerCase().includes(emailInput.toLowerCase())
+            text.toLowerCase().includes(linkedinInput.toLowerCase())
           )
     );
 
     // Show suggestions only if there are filtered suggestions and the current input doesn't exactly match any suggestion
-    setShowSuggestions(isMatchingInput ? false : suggestedTexts.length > 0);
-  }, [emailInput, suggestedTexts]);
+  }, [linkedinInput, suggestedTexts]);
 
   const sendData = useCallback(
     async (inputText: string) => {
-      if (!inputText.trim() && !domainExtension) return;
+      if (!inputText.trim()) return;
       setLoading(true);
       setResponseData([]); // Clear previous result
       setLinkedinResponseData([]);
@@ -128,7 +109,7 @@ function LinkedinFinder() {
         const response = await axios.post<{ websites: WebsiteData[] }>(
           "/api/emailExtraction",
           {
-            startingUrls: [`${processedUrlInput}${domainExtension}`],
+            startingUrls: [`${processedUrlInput}}`],
           },
           {
             headers: {
@@ -152,7 +133,6 @@ function LinkedinFinder() {
             }
             return prevCount;
           });
-          setShowSuggestions(false); // Close suggestions when data is fetched
         }
       } catch (error) {
         console.error("Error:", error);
@@ -161,12 +141,12 @@ function LinkedinFinder() {
         setLoading(false);
       }
     },
-    [domainExtension, requestCount]
+    [requestCount]
   );
 
   const sendLinkedinData = useCallback(
     async (inputText: string) => {
-      if (!inputText.trim() && !domainExtension) return;
+      if (!inputText.trim()) return;
       setLoading(true);
       setResponseData([]);
       setLinkedinResponseData([]); // Clear previous result
@@ -200,7 +180,6 @@ function LinkedinFinder() {
           };
           setLinkedinResponseData([websiteData]);
           setError(null);
-          setShowSuggestions(false); // Close suggestions when data is fetched
         }
       } catch (error) {
         console.error("Error:", error);
@@ -209,14 +188,8 @@ function LinkedinFinder() {
         setLoading(false);
       }
     },
-    [domainExtension, requestCount]
+    [requestCount]
   );
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      sendData(emailInput);
-    }
-  };
 
   const handleLinkedinKeyDown = (
     event: React.KeyboardEvent<HTMLInputElement>
@@ -227,15 +200,6 @@ function LinkedinFinder() {
   };
 
   const router = useRouter();
-
-  const handleNavigate = (variant: string) => {
-    router.push({
-      pathname: "/auth",
-      query: { variant },
-    });
-  };
-
-  const { data: user } = useCurrentUser();
 
   return (
     <>
@@ -276,23 +240,17 @@ function LinkedinFinder() {
                     disabled={loading || requestCount >= 100}
                     onChange={(e) => {
                       setLinkedinInput(e.target.value);
-                      if (e.target.value.trim() === "") {
-                        setShowSuggestions(false);
-                      } else {
-                        suggestTexts();
-                      }
                     }}
                     onBlur={(e) => {
                       if (e.target.value.trim() === "") {
                         setLinkedinInput("");
-                        setShowSuggestions(false);
                       }
                     }}
                     value={linkedinInput}
                     className="form-input py-2 px-4 rounded-md border border-gray-300 focus:outline-none focus:border-indigo-500"
                     placeholder="Enter URL (e.g. http://example.com)"
                   />
-                  {emailInput && (
+                  {linkedinInput && (
                     <button
                       onClick={() => setLinkedinInput("")}
                       className="absolute right-2 top-5 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
@@ -303,7 +261,6 @@ function LinkedinFinder() {
                   <button
                     onClick={() => {
                       sendLinkedinData(linkedinInput);
-                      setShowSuggestions(false); // Add this line to hide suggestions when the button is clicked
                     }}
                     disabled={loading || requestCount >= 100}
                     type="button"

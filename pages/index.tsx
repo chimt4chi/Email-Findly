@@ -4,8 +4,6 @@ import Features from "@/components/Features";
 import Why from "@/components/Why";
 import WhoUses from "@/components/WhoUses";
 import { IndiaFirst } from "@/components/IndiaFirst";
-import { FAQ } from "@/components/FAQ";
-import Header2 from "@/components/Header2";
 
 export default function Home() {
   return (

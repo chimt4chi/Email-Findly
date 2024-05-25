@@ -89,7 +89,7 @@ async function findLinkedinUrls(url: string): Promise<string[]> {
 }
 
 async function crawlWebsite(startUrls: string[]) {
-  const allWebsitesData: any[] = [];
+  const allWebsitesData: object[] = [];
 
   for (const startUrl of startUrls) {
     const visited = new Set<string>();

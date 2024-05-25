@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
-import TestComp from "./TestComp";
 
 import { CircularProgress } from "@mui/material";
 import axios from "axios";

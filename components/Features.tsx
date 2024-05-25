@@ -1,9 +1,4 @@
-import {
-  CloudArrowUpIcon,
-  LockClosedIcon,
-  MagnifyingGlassIcon,
-  ServerIcon,
-} from "@heroicons/react/20/solid";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 const features = [
   {

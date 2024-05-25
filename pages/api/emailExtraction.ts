@@ -2,11 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import cheerio from "cheerio";
 
-function joinUrl(base: string, relative: string): string {
-  const url = new URL(relative, base);
-  return url.toString();
-}
-
 async function findEmailAddresses(url: string): Promise<string[]> {
   try {
     const response = await axios.get(url);
@@ -66,7 +61,7 @@ async function findEmailAddresses(url: string): Promise<string[]> {
 }
 
 async function crawlWebsite(startUrls: string[]) {
-  const allWebsitesData: any[] = [];
+  const allWebsitesData: object[] = [];
 
   for (const startUrl of startUrls) {
     const visited = new Set<string>();

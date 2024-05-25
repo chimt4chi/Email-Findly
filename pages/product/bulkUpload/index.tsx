@@ -1,8 +1,5 @@
 import BulkEmail from "@/components/BulkEmail";
-import BulkUpload from "@/components/BulkUpload";
-import { CircularProgress } from "@mui/material";
 import axios from "axios";
-import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 
@@ -12,79 +9,6 @@ interface WebsiteData {
 }
 
 function Category2() {
-  const isValidUrl = (url: string) => {
-    // Your URL validation logic goes here
-    return true; // Placeholder for demonstration
-  };
-
-  const [websites, setWebsites] = useState<string[]>([]);
-  const [responseWebsites, setResponseWebsites] = useState<WebsiteData[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const handleUploadButtonClick = () => {
-    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
-    fileInput.click();
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const data = event.target?.result;
-        if (typeof data === "string" || data instanceof ArrayBuffer) {
-          const workbook = XLSX.read(data, { type: "binary" });
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          const parsedData: any[] = XLSX.utils.sheet_to_json(sheet);
-
-          const extractedWebsites: string[] = [];
-
-          parsedData.forEach((obj) => {
-            for (const key in obj) {
-              const value = obj[key];
-              if (typeof value === "string" && isValidUrl(value)) {
-                extractedWebsites.push(value);
-              }
-            }
-          });
-
-          setWebsites(extractedWebsites);
-          sendData(extractedWebsites);
-        }
-      };
-      reader.readAsArrayBuffer(file);
-    }
-  };
-
-  const sendData = useCallback(async (extractedWebsites: string[]) => {
-    if (!extractedWebsites.length) return;
-    setLoading(true);
-
-    try {
-      const response = await axios.post<{ websites: WebsiteData[] }>(
-        "/api/apiData",
-        {
-          startingUrls: extractedWebsites,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("Response:", response);
-
-      setResponseWebsites(response.data.websites);
-      setError(null);
-    } catch (error) {
-      console.error("Error:", error);
-      setError("An error occurred. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
   return (
     // <div>
     //   <Head>

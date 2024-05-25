@@ -4,8 +4,6 @@ import React, { useCallback, useState } from "react";
 import { signIn } from "next-auth/react";
 
 import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
-import { RiArrowDropDownLine } from "react-icons/ri";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { CircularProgress } from "@mui/material";

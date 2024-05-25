@@ -1,5 +1,4 @@
 import React from "react";
-import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
