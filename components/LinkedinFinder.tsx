@@ -28,7 +28,6 @@ interface LinkedInData {
 
 function LinkedinFinder() {
   const [linkedinInput, setLinkedinInput] = useState<string>("");
-  const [suggestedTexts, setSuggestedTexts] = useState<string[]>([]);
   const [responseData, setResponseData] = useState<WebsiteData[]>([]);
   const [linkedinResponseData, setLinkedinResponseData] = useState<
     LinkedInData[]

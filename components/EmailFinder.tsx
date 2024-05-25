@@ -148,54 +148,6 @@ function EmailFinder() {
     [requestCount]
   );
 
-  const sendLinkedinData = useCallback(
-    async (inputText: string) => {
-      if (!inputText.trim()) return;
-      setLoading(true);
-      setResponseData([]);
-      setLinkedinResponseData([]); // Clear previous result
-      setError("");
-      try {
-        const processedUrlInput =
-          inputText.trim().startsWith("http://") ||
-          inputText.trim().startsWith("https://")
-            ? inputText.trim()
-            : `http://${inputText.trim()}`;
-
-        const response = await axios.post<LinkedInData>(
-          "/api/linkedinExtraction",
-          {
-            url: processedUrlInput, // Pass the processed URL input
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.data.linkedinUrls.length === 0) {
-          setError("Unable to find. Please check the website url.");
-        } else {
-          // Map LinkedInData to WebsiteData
-          const websiteData: LinkedInData = {
-            requestedUrl: response.data.requestedUrl, // Assuming url is the main page URL
-            linkedinUrls: response.data.linkedinUrls, // You need to define FoundEmails interface and set appropriate value here
-          };
-          setLinkedinResponseData([websiteData]);
-          setError(null);
-          setShowSuggestions(false); // Close suggestions when data is fetched
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setError("An error occurred. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [requestCount]
-  );
-
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       sendData(emailInput);

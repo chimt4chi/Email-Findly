@@ -41,7 +41,7 @@ function BulkEmail() {
           const workbook = XLSX.read(data, { type: "binary" });
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
-          const parsedData: any[] = XLSX.utils.sheet_to_json(sheet);
+          const parsedData: object[] = XLSX.utils.sheet_to_json(sheet);
 
           const extractedWebsites: string[] = [];
 

@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import Head from "next/head";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import * as XLSX from "xlsx";
 import Link from "next/link";
 import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";

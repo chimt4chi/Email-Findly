@@ -4,7 +4,7 @@ function InputData() {
   const [inputData, setInput] = useState("" as string);
   const [finalResponse, setFinalResponse] = useState("" as string);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const response = await fetch("/api/processData", {
       method: "POST",
@@ -29,21 +29,20 @@ function InputData() {
         action="get"
       > */}
       <div className="flex  justify-center gap-1">
-        <input
-          className="border border-neutral-500 px-4 rounded-md"
-          onChange={(e) => setInput(e.target.value)}
-          value={inputData}
-          type="text"
-          placeholder="Name"
-        />
-        <br />
-        <button
-          onClick={handleSubmit}
-          className="bg-red-500 p-4 rounded-md"
-          type="submit"
-        >
-          Send
-        </button>
+        <form onSubmit={handleSubmit}>
+          <input
+            className="border border-neutral-500 px-4 rounded-md"
+            onChange={(e) => setInput(e.target.value)}
+            value={inputData}
+            type="text"
+            placeholder="Name"
+          />
+          <br />
+          <button className="bg-red-500 p-4 rounded-md" type="submit">
+            Send
+          </button>
+        </form>
+
         {/* </form> */}
       </div>
       <p className="flex items-center text-center">{finalResponse}</p>
