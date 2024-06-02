@@ -19,13 +19,13 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 interface FoundEmails {
   url: string;
   emails: string[];
-  error?: string; // Add error field to FoundEmails interface
+  error?: string;
 }
 
 interface WebsiteData {
   mainPageUrl: string;
   foundEmailsUrls: FoundEmails[];
-  error?: string; // Add error field to WebsiteData interface
+  error?: string;
 }
 
 interface LinkedInData {
@@ -45,11 +45,9 @@ function Hero() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [requestCount, setRequestCount] = useState<number>(0);
-  const [showSuggestions, setShowSuggestions] = useState<boolean>(false); // State for showing/hiding suggestions
-
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
-
-  const [value, setValue] = React.useState("1");
+  const [value, setValue] = useState<string>("1");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -58,13 +56,12 @@ function Hero() {
   const copyToClipboard = (emailToCopy: string) => {
     navigator.clipboard.writeText(emailToCopy);
     setCopiedEmail(emailToCopy);
-    // Remove the animation class after 2 seconds
-    setTimeout(() => setCopiedEmail(null), 800); // Change the timeout to 3000 milliseconds (1 seconds)
+    setTimeout(() => setCopiedEmail(null), 800);
   };
 
   useEffect(() => {
     console.log("responseData:", responseData);
-    console.log("responseData:", linkedinResponseData);
+    console.log("linkedinResponseData:", linkedinResponseData);
   }, [responseData, linkedinResponseData]);
 
   useEffect(() => {
@@ -75,7 +72,6 @@ function Hero() {
   }, []);
 
   const suggestTexts = useCallback(() => {
-    // Predefined list of suggestions
     const predefinedSuggestions = [
       "dtu.ac.in",
       "aryabhattacollege.ac.in",
@@ -83,12 +79,10 @@ function Hero() {
       "growthsay.com",
     ];
 
-    // Check if the input exactly matches any predefined suggestion
     const isMatchingInput = predefinedSuggestions.some(
       (text) => text.toLowerCase() === emailInput.toLowerCase()
     );
 
-    // Set the filtered suggestions
     setSuggestedTexts(
       isMatchingInput
         ? []
@@ -97,7 +91,6 @@ function Hero() {
           )
     );
 
-    // Show suggestions only if there are filtered suggestions and the current input doesn't exactly match any suggestion
     setShowSuggestions(isMatchingInput ? false : suggestedTexts.length > 0);
   }, [emailInput, suggestedTexts]);
 
@@ -105,7 +98,7 @@ function Hero() {
     async (inputText: string) => {
       if (!inputText.trim()) return;
       setLoading(true);
-      setResponseData([]); // Clear previous result
+      setResponseData([]);
       setLinkedinResponseData([]);
       setError("");
       try {
@@ -140,16 +133,13 @@ function Hero() {
           setResponseData(response.data.websites);
           setError(null);
           setRequestCount((prevCount) => {
-            if (prevCount < 2) {
-              const newCount = prevCount + 1;
-              if (typeof localStorage !== "undefined") {
-                localStorage.setItem("requestCount", String(newCount));
-              }
-              return newCount;
+            const newCount = prevCount + 1;
+            if (typeof localStorage !== "undefined") {
+              localStorage.setItem("requestCount", String(newCount));
             }
-            return prevCount;
+            return newCount;
           });
-          setShowSuggestions(false); // Close suggestions when data is fetched
+          setShowSuggestions(false);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -166,7 +156,7 @@ function Hero() {
       if (!inputText.trim()) return;
       setLoading(true);
       setResponseData([]);
-      setLinkedinResponseData([]); // Clear previous result
+      setLinkedinResponseData([]);
       setError("");
       try {
         const processedUrlInput =
@@ -178,7 +168,7 @@ function Hero() {
         const response = await axios.post<LinkedInData>(
           "/api/linkedinExtraction",
           {
-            url: processedUrlInput, // Pass the processed URL input
+            url: processedUrlInput,
           },
           {
             headers: {
@@ -190,14 +180,13 @@ function Hero() {
         if (response.data.linkedinUrls.length === 0) {
           setError("Unable to find. Please check the website url.");
         } else {
-          // Map LinkedInData to WebsiteData
           const websiteData: LinkedInData = {
-            requestedUrl: response.data.requestedUrl, // Assuming url is the main page URL
-            linkedinUrls: response.data.linkedinUrls, // You need to define FoundEmails interface and set appropriate value here
+            requestedUrl: response.data.requestedUrl,
+            linkedinUrls: response.data.linkedinUrls,
           };
           setLinkedinResponseData([websiteData]);
           setError(null);
-          setShowSuggestions(false); // Close suggestions when data is fetched
+          setShowSuggestions(false);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -224,8 +213,6 @@ function Hero() {
   };
 
   const router = useRouter();
-
-  const { data: user } = useCurrentUser();
 
   return (
     <>
@@ -535,7 +522,7 @@ function Hero() {
                                               </p>
                                             </div>
                                             <div className="flex gap-2 items-center">
-                                              {user ? (
+                                              {/* {user ? (
                                                 <Link
                                                   href={`mailto:${user.email}`}
                                                   target="_blank"
@@ -552,7 +539,7 @@ function Hero() {
                                                   size={16}
                                                   aria-placeholder="No email available"
                                                 />
-                                              )}
+                                              )} */}
                                             </div>
                                           </div>
                                         </div>
