@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { SiGmail } from "react-icons/si";
 import Link from "next/link";
 
 import Box from "@mui/material/Box";
@@ -14,7 +13,6 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
-import useCurrentUser from "@/hooks/useCurrentUser";
 
 interface FoundEmails {
   url: string;
