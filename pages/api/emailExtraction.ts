@@ -3,9 +3,14 @@ import axios from "axios";
 import cheerio from "cheerio";
 import { URL } from "url";
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function findEmailAddresses(url: string): Promise<string[]> {
   try {
     const response = await axios.get(url);
+    console.log(`Fetched HTML for ${url}`);
     const html = response.data;
     const $ = cheerio.load(html);
     const emailAddresses: string[] = [];
@@ -17,6 +22,8 @@ async function findEmailAddresses(url: string): Promise<string[]> {
         [];
       emailAddresses.push(...extractedEmails);
     });
+
+    console.log(`Found emails at ${url}:`, emailAddresses);
 
     const forbiddenExtensions = [
       ".png",
@@ -59,7 +66,7 @@ async function findEmailAddresses(url: string): Promise<string[]> {
   }
 }
 
-async function crawlWebsite(startUrls: string[]) {
+async function crawlWebsite(startUrls: string[], delay: number) {
   const allWebsitesData: object[] = [];
 
   for (const startUrl of startUrls) {
@@ -98,17 +105,26 @@ async function crawlWebsite(startUrls: string[]) {
               }
             } catch (e) {
               // Invalid URL, skip it
-              console.log(`please check the URL ${e}`);
             }
           }
         });
       } catch (error) {
         console.error(`Error while processing ${currentUrl}: ${error}`);
       }
+      await sleep(delay); // Add delay between requests
     }
   }
 
   return allWebsitesData;
+}
+
+async function testNetworkAccess(url: string) {
+  try {
+    const response = await axios.get(url);
+    console.log(response.data);
+  } catch (error) {
+    console.error(`Error accessing ${url}: ${error}`);
+  }
 }
 
 export default async function handler(
@@ -130,8 +146,12 @@ export default async function handler(
     return;
   }
 
+  // Test network access to the first URL in the list
+  await testNetworkAccess(startingUrls[0]);
+
   try {
-    const allWebsitesData = await crawlWebsite(startingUrls);
+    const delay = 2000; // 2 seconds delay between requests
+    const allWebsitesData = await crawlWebsite(startingUrls, delay);
     res.status(200).json({ websites: allWebsitesData });
   } catch (error) {
     console.error(`Error while crawling websites: ${error}`);
