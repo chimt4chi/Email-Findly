@@ -68,9 +68,9 @@ async function findEmailAddresses(url: string): Promise<string[]> {
 
 async function crawlWebsite(startUrls: string[], delay: number) {
   const allWebsitesData: object[] = [];
+  const visited = new Set<string>();
 
   for (const startUrl of startUrls) {
-    const visited = new Set<string>();
     const queue: string[] = [startUrl];
 
     while (queue.length > 0) {
@@ -79,6 +79,7 @@ async function crawlWebsite(startUrls: string[], delay: number) {
         continue;
       }
       visited.add(currentUrl);
+
       try {
         const emailAddresses = await findEmailAddresses(currentUrl);
 
@@ -95,6 +96,7 @@ async function crawlWebsite(startUrls: string[], delay: number) {
         const html = response.data;
         const $ = cheerio.load(html);
         const links = $("a[href]");
+
         links.each((index, element) => {
           const href = $(element).attr("href");
           if (href) {
