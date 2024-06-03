@@ -1,16 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import cheerio from "cheerio";
-import { URL } from "url";
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 async function findEmailAddresses(url: string): Promise<string[]> {
   try {
-    const response = await axios.get(url);
-    console.log(`Fetched HTML for ${url}`);
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      },
+    });
     const html = response.data;
     const $ = cheerio.load(html);
     const emailAddresses: string[] = [];
@@ -23,38 +22,38 @@ async function findEmailAddresses(url: string): Promise<string[]> {
       emailAddresses.push(...extractedEmails);
     });
 
-    console.log(`Found emails at ${url}:`, emailAddresses);
-
-    const forbiddenExtensions = [
-      ".png",
-      ".jpeg",
-      ".jpg",
-      ".pdf",
-      ".webp",
-      ".gif",
-      "github.com",
-      "fb.com",
-      "email.com",
-      "Email.com",
-      "company.com",
-      "acme.com",
-      "mysite.com",
-      "domain.com",
-      ".wixpress.com",
-      "gmail.com",
-      "example.com",
-      ".mov",
-      ".webm",
-      "sentry.io",
-      "@x.com",
-      "@twitter.com",
-      "@producthunt.com",
-      "linkedin.com",
-    ];
-
-    const filteredEmailAddresses = emailAddresses.filter(
-      (email) =>
-        !forbiddenExtensions.some((extension) => email.endsWith(extension))
+    const filteredEmailAddresses = Array.from(emailAddresses).filter(
+      (email) => {
+        const forbiddenExtensions = [
+          ".png",
+          ".jpeg",
+          ".jpg",
+          ".pdf",
+          ".webp",
+          ".gif",
+          "github.com",
+          "fb.com",
+          "email.com",
+          "Email.com",
+          "company.com",
+          "acme.com",
+          "mysite.com",
+          "domain.com",
+          ".wixpress.com",
+          "gmail.com",
+          "example.com",
+          ".mov",
+          ".webm",
+          "sentry.io",
+          "@x.com",
+          "@twitter.com",
+          "@producthunt.com",
+          "linkedin.com",
+        ];
+        return !forbiddenExtensions.some((extension) =>
+          email.endsWith(extension)
+        );
+      }
     );
 
     return Array.from(new Set(filteredEmailAddresses));
@@ -66,11 +65,11 @@ async function findEmailAddresses(url: string): Promise<string[]> {
   }
 }
 
-async function crawlWebsite(startUrls: string[], delay: number) {
+async function crawlWebsite(startUrls: string[]) {
   const allWebsitesData: object[] = [];
-  const visited = new Set<string>();
 
   for (const startUrl of startUrls) {
+    const visited = new Set<string>();
     const queue: string[] = [startUrl];
 
     while (queue.length > 0) {
@@ -79,54 +78,47 @@ async function crawlWebsite(startUrls: string[], delay: number) {
         continue;
       }
       visited.add(currentUrl);
-
       try {
         const emailAddresses = await findEmailAddresses(currentUrl);
 
         if (emailAddresses.length > 0) {
           const websiteData = {
             mainPageUrl: startUrl,
-            foundEmailsUrls: [{ url: currentUrl, emails: emailAddresses }],
+            foundEmailsUrls: [
+              {
+                url: currentUrl,
+                emails: emailAddresses,
+              },
+            ],
           };
           allWebsitesData.push(websiteData);
           break; // Stop crawling this website after finding emails
         }
 
-        const response = await axios.get(currentUrl);
+        const response = await axios.get(currentUrl, {
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+          },
+        });
         const html = response.data;
         const $ = cheerio.load(html);
         const links = $("a[href]");
-
         links.each((index, element) => {
-          const href = $(element).attr("href");
-          if (href) {
-            try {
-              const absoluteUrl = new URL(href, currentUrl).href;
-              if (!visited.has(absoluteUrl)) {
-                queue.push(absoluteUrl);
-              }
-            } catch (e) {
-              // Invalid URL, skip it
-            }
-          }
+          const absoluteUrl = new URL($(element).attr("href")!, currentUrl)
+            .href;
+          queue.push(absoluteUrl);
         });
+
+        // Add delay to avoid rate limiting
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (error) {
         console.error(`Error while processing ${currentUrl}: ${error}`);
       }
-      await sleep(delay); // Add delay between requests
     }
   }
 
   return allWebsitesData;
-}
-
-async function testNetworkAccess(url: string) {
-  try {
-    const response = await axios.get(url);
-    console.log(response.data);
-  } catch (error) {
-    console.error(`Error accessing ${url}: ${error}`);
-  }
 }
 
 export default async function handler(
@@ -134,7 +126,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
     res.status(405).json({ message: "Method Not Allowed" });
     return;
   }
@@ -142,18 +133,12 @@ export default async function handler(
   const { startingUrls } = req.body;
 
   if (!startingUrls || !Array.isArray(startingUrls)) {
-    res
-      .status(400)
-      .json({ message: "Starting URLs are required and must be an array" });
+    res.status(400).json({ message: "Starting URLs are required" });
     return;
   }
 
-  // Test network access to the first URL in the list
-  await testNetworkAccess(startingUrls[0]);
-
   try {
-    const delay = 2000; // 2 seconds delay between requests
-    const allWebsitesData = await crawlWebsite(startingUrls, delay);
+    const allWebsitesData = await crawlWebsite(startingUrls);
     res.status(200).json({ websites: allWebsitesData });
   } catch (error) {
     console.error(`Error while crawling websites: ${error}`);
