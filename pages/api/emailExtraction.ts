@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import cheerio from "cheerio";
+import { URL } from "url";
 
 async function findEmailAddresses(url: string): Promise<string[]> {
   try {
@@ -17,38 +18,36 @@ async function findEmailAddresses(url: string): Promise<string[]> {
       emailAddresses.push(...extractedEmails);
     });
 
-    const filteredEmailAddresses = Array.from(emailAddresses).filter(
-      (email) => {
-        const forbiddenExtensions = [
-          ".png",
-          ".jpeg",
-          ".jpg",
-          ".pdf",
-          ".webp",
-          ".gif",
-          "github.com",
-          "fb.com",
-          "email.com",
-          "Email.com",
-          "company.com",
-          "acme.com",
-          "mysite.com",
-          "domain.com",
-          ".wixpress.com",
-          "gmail.com",
-          "example.com",
-          ".mov",
-          ".webm",
-          "sentry.io",
-          "@x.com",
-          "@twitter.com",
-          "@producthunt.com",
-          "linkedin.com",
-        ];
-        return !forbiddenExtensions.some((extension) =>
-          email.endsWith(extension)
-        );
-      }
+    const forbiddenExtensions = [
+      ".png",
+      ".jpeg",
+      ".jpg",
+      ".pdf",
+      ".webp",
+      ".gif",
+      "github.com",
+      "fb.com",
+      "email.com",
+      "Email.com",
+      "company.com",
+      "acme.com",
+      "mysite.com",
+      "domain.com",
+      ".wixpress.com",
+      "gmail.com",
+      "example.com",
+      ".mov",
+      ".webm",
+      "sentry.io",
+      "@x.com",
+      "@twitter.com",
+      "@producthunt.com",
+      "linkedin.com",
+    ];
+
+    const filteredEmailAddresses = emailAddresses.filter(
+      (email) =>
+        !forbiddenExtensions.some((extension) => email.endsWith(extension))
     );
 
     return Array.from(new Set(filteredEmailAddresses));
@@ -79,12 +78,7 @@ async function crawlWebsite(startUrls: string[]) {
         if (emailAddresses.length > 0) {
           const websiteData = {
             mainPageUrl: startUrl,
-            foundEmailsUrls: [
-              {
-                url: currentUrl,
-                emails: emailAddresses,
-              },
-            ],
+            foundEmailsUrls: [{ url: currentUrl, emails: emailAddresses }],
           };
           allWebsitesData.push(websiteData);
           break; // Stop crawling this website after finding emails
@@ -95,9 +89,18 @@ async function crawlWebsite(startUrls: string[]) {
         const $ = cheerio.load(html);
         const links = $("a[href]");
         links.each((index, element) => {
-          const absoluteUrl = new URL($(element).attr("href")!, currentUrl)
-            .href;
-          queue.push(absoluteUrl);
+          const href = $(element).attr("href");
+          if (href) {
+            try {
+              const absoluteUrl = new URL(href, currentUrl).href;
+              if (!visited.has(absoluteUrl)) {
+                queue.push(absoluteUrl);
+              }
+            } catch (e) {
+              // Invalid URL, skip it
+              console.log(`please check the URL ${e}`);
+            }
+          }
         });
       } catch (error) {
         console.error(`Error while processing ${currentUrl}: ${error}`);
@@ -113,6 +116,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== "POST") {
+    res.setHeader("Allow", ["POST"]);
     res.status(405).json({ message: "Method Not Allowed" });
     return;
   }
@@ -120,7 +124,9 @@ export default async function handler(
   const { startingUrls } = req.body;
 
   if (!startingUrls || !Array.isArray(startingUrls)) {
-    res.status(400).json({ message: "Starting URLs are required" });
+    res
+      .status(400)
+      .json({ message: "Starting URLs are required and must be an array" });
     return;
   }
 
