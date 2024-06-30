@@ -4,7 +4,7 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 import path from "path";
 
-var web_brower = null;
+let web_brower = null;
 async function web_tab(url: string, browser) {
   const start = new Date().getTime();
   const page = await browser.newPage();
