@@ -32,6 +32,7 @@ async function web_tab(url: string, browser) {
     );
     return html;
   } catch (error) {
+    console.error(`unexpected error puppeteer: ${error}`);
   } finally {
     await page.close();
   }
