@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import cheerio from "cheerio";
 import puppeteer from "puppeteer";
-import fs from "fs";
 import path from "path";
 
 let web_browser = null;
+
 async function web_tab(url: string, browser) {
   const start = new Date().getTime();
   const page = await browser.newPage();
@@ -27,13 +27,12 @@ async function web_tab(url: string, browser) {
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20000 });
     const html = await page.content();
     const end = new Date().getTime();
-    await writeToFile(
-      "web_driver processed page: " + url + " time " + (end - start) / 60000.0
+    console.log(
+      `web_driver processed page: ${url} time ${(end - start) / 60000.0}`
     );
     return html;
   } catch (error) {
     console.error(`unexpected error puppeteer: ${error}`);
-    await writeToFile(`unexpected error puppeteer: ${error}`);
   } finally {
     await page.close();
   }
@@ -49,7 +48,6 @@ async function web_driver() {
     return browser;
   } catch (error) {
     console.error(error);
-    await writeToFile(`web_driver error: ${error}`);
   }
   return "";
 }
@@ -102,7 +100,6 @@ async function findEmailAddresses($, url): Promise<string[]> {
     return Array.from(new Set(filteredEmailAddresses));
   } catch (error) {
     console.error(`Error while processing ${url}: ${error}`);
-    await writeToFile(`Error while processing ${url}: ${error}`);
     throw new Error(
       `Error while processing ${url}: ${(error as Error).message}`
     );
@@ -113,16 +110,7 @@ async function writeToFile(text: string) {
   const currentDate = new Date();
   const formattedDate = currentDate.toISOString().split("T")[0];
 
-  const filePath = path.join(process.cwd(), "logs", `log_${formattedDate}.txt`);
-
-  const dir = path.dirname(filePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  const currentTime = new Date().toISOString();
-  const logEntry = `[${currentTime}] : ${text}\n`;
-  fs.appendFileSync(filePath, logEntry, "utf8");
+  console.log(`[${currentDate.toISOString()}] : ${text}`);
 }
 
 async function crawlWebsite(startUrls: string[]) {
@@ -162,15 +150,13 @@ async function crawlWebsite(startUrls: string[]) {
         });
 
         const end = new Date().getTime();
-        await writeToFile(
-          "cheerio processed page: " +
-            currentUrl +
-            " time " +
+        console.log(
+          `cheerio processed page: ${currentUrl} time ${
             (end - start) / 60000.0
+          }`
         );
       } catch (error) {
         console.error(`Error while processing ${currentUrl}: ${error}`);
-        await writeToFile(`Error while processing ${currentUrl}: ${error}`);
       }
     }
   }
@@ -199,15 +185,13 @@ export default async function handler(
     const allWebsitesData = await crawlWebsite(startingUrls);
     res.status(200).json({ websites: allWebsitesData });
     const end = new Date().getTime();
-    await writeToFile(
-      "process complete for page: " +
-        startingUrls +
-        " time " +
+    console.log(
+      `process complete for page: ${startingUrls} time ${
         (end - start) / 60000.0
+      }`
     );
   } catch (error) {
     console.error(`Error while crawling websites: ${error}`);
-    await writeToFile(`Error while crawling websites: ${error}`);
     res.status(500).json({ message: "Internal Server Error" });
   } finally {
     if (web_browser) await web_browser.close();
