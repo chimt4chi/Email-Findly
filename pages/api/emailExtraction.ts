@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import cheerio from "cheerio";
 import puppeteer from "puppeteer";
-import path from "path";
 
 let web_browser = null;
 
@@ -106,12 +105,12 @@ async function findEmailAddresses($, url): Promise<string[]> {
   }
 }
 
-async function writeToFile(text: string) {
-  const currentDate = new Date();
-  const formattedDate = currentDate.toISOString().split("T")[0];
+// async function writeToFile(text: string) {
+//   const currentDate = new Date();
+//   const formattedDate = currentDate.toISOString().split("T")[0];
 
-  console.log(`[${currentDate.toISOString()}] : ${text}`);
-}
+//   console.log(`[${currentDate.toISOString()}] : ${text}`);
+// }
 
 async function crawlWebsite(startUrls: string[]) {
   const allWebsitesData: object[] = [];
