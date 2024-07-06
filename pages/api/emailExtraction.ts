@@ -34,6 +34,7 @@ async function web_tab(url: string, browser) {
     );
     return html;
   } catch (error) {
+    console.error(error);
   } finally {
     await page.close();
   }
