@@ -1,13 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
-// import axios from "axios";
 import cheerio from "cheerio";
-import puppeteer from "puppeteer";
+import puppeteer, { Browser } from "puppeteer";
 import fs from "fs";
 import path from "path";
-// import { time } from "console";
 
-let web_brower = null;
-async function web_tab(url: string, browser) {
+let web_browser: Browser | null = null;
+
+async function web_tab(
+  url: string,
+  browser: Browser
+): Promise<string | undefined> {
   const start = new Date().getTime();
   const page = await browser.newPage();
   try {
@@ -39,12 +41,10 @@ async function web_tab(url: string, browser) {
     await page.close();
   }
 }
-async function web_driver() {
-  let browser;
+
+async function web_driver(): Promise<Browser | null> {
   try {
-    //  this launch new instance browser \
-    // { waitUntil: 'networkidle0' }
-    browser = await puppeteer.launch({
+    const browser = await puppeteer.launch({
       headless: false,
       args: ["--no-sandbox"],
       devtools: true,
@@ -53,22 +53,14 @@ async function web_driver() {
   } catch (error) {
     console.error(error);
   }
-
-  return "";
+  return null;
 }
 
-async function findEmailAddresses($, url): Promise<string[]> {
+async function findEmailAddresses(
+  $: cheerio.Root,
+  url: string
+): Promise<string[]> {
   try {
-    // const response = await axios.get(url, {
-    //   headers: {
-    //     "User-Agent":
-    //       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-    //   },
-    // });
-    // const html = response.data;
-    //  const demo = await  web_tab(url,web_brower);
-    //  const start = new Date().getTime();
-    //   const $ = cheerio.load( demo);
     const emailAddresses: string[] = [];
 
     $("a[href], p, span, li, td").each((index, element) => {
@@ -79,39 +71,37 @@ async function findEmailAddresses($, url): Promise<string[]> {
       emailAddresses.push(...extractedEmails);
     });
 
-    const filteredEmailAddresses = Array.from(emailAddresses).filter(
-      (email) => {
-        const forbiddenExtensions = [
-          ".png",
-          ".jpeg",
-          ".jpg",
-          ".pdf",
-          ".webp",
-          ".gif",
-          "github.com",
-          "fb.com",
-          "email.com",
-          "Email.com",
-          "company.com",
-          "acme.com",
-          "mysite.com",
-          "domain.com",
-          ".wixpress.com",
-          "gmail.com",
-          "example.com",
-          ".mov",
-          ".webm",
-          "sentry.io",
-          "@x.com",
-          "@twitter.com",
-          "@producthunt.com",
-          "linkedin.com",
-        ];
-        return !forbiddenExtensions.some((extension) =>
-          email.endsWith(extension)
-        );
-      }
-    );
+    const filteredEmailAddresses = emailAddresses.filter((email) => {
+      const forbiddenExtensions = [
+        ".png",
+        ".jpeg",
+        ".jpg",
+        ".pdf",
+        ".webp",
+        ".gif",
+        "github.com",
+        "fb.com",
+        "email.com",
+        "Email.com",
+        "company.com",
+        "acme.com",
+        "mysite.com",
+        "domain.com",
+        ".wixpress.com",
+        "gmail.com",
+        "example.com",
+        ".mov",
+        ".webm",
+        "sentry.io",
+        "@x.com",
+        "@twitter.com",
+        "@producthunt.com",
+        "linkedin.com",
+      ];
+      return !forbiddenExtensions.some((extension) =>
+        email.endsWith(extension)
+      );
+    });
 
     return Array.from(new Set(filteredEmailAddresses));
   } catch (error) {
@@ -124,26 +114,29 @@ async function findEmailAddresses($, url): Promise<string[]> {
 
 async function writeToFile(text: string) {
   const currentDate = new Date();
-  const formattedDate = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
+  const formattedDate = currentDate.toISOString().split("T")[0];
 
   const filePath = path.join(process.cwd(), "logs", `log_${formattedDate}.txt`);
 
-  const dir = path.dirname(filePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+  try {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
 
-  const currentTime = new Date().toISOString();
-  const logEntry = `[${currentTime}] : ${text}\n`;
-  fs.appendFileSync(filePath, logEntry, "utf8");
+    const currentTime = new Date().toISOString();
+    const logEntry = `[${currentTime}] : ${text}\n`;
+    fs.appendFileSync(filePath, logEntry, "utf8");
+  } catch (error) {
+    console.error(`Failed to write to log file: ${error}`);
+  }
 }
 
-async function crawlWebsite(startUrls: string[]) {
+async function crawlWebsite(startUrls: string[]): Promise<object[]> {
   const allWebsitesData: object[] = [];
 
   for (const startUrl of startUrls) {
     const visited = new Set<string>();
-
     const queue: string[] = [startUrl];
 
     while (queue.length > 0) {
@@ -156,8 +149,9 @@ async function crawlWebsite(startUrls: string[]) {
       visited.add(currentUrl);
 
       try {
-        const demo = await web_tab(currentUrl, web_brower);
-        if (demo === "") continue;
+        const demo = await web_tab(currentUrl, web_browser!);
+        if (!demo) continue;
+
         const start = new Date().getTime();
         const $ = cheerio.load(demo);
         const emailAddresses = await findEmailAddresses($, currentUrl);
@@ -173,17 +167,9 @@ async function crawlWebsite(startUrls: string[]) {
             ],
           };
           allWebsitesData.push(websiteData);
-          break; // Stop crawling this website after finding emails
+          break;
         }
 
-        // const response = await axios.get(currentUrl, {
-        //   headers: {
-        //     "User-Agent":
-        //       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        //   },
-        // });
-        // const html = response.data;
-        // const $ = cheerio.load(html);
         const links = $("a[href]");
         links.each((index, element) => {
           const absoluteUrl = new URL($(element).attr("href")!, currentUrl)
@@ -192,15 +178,12 @@ async function crawlWebsite(startUrls: string[]) {
         });
 
         const end = new Date().getTime();
-
         await writeToFile(
           "cheerio processed page: " +
             currentUrl +
             " time " +
             (end - start) / 60000.0
         );
-        // Add delay to avoid rate limiting
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (error) {
         console.error(`Error while processing ${currentUrl}: ${error}`);
       }
@@ -228,13 +211,16 @@ export default async function handler(
 
   try {
     const start = new Date().getTime();
-    web_brower = await web_driver();
+    web_browser = await web_driver();
+    if (!web_browser) {
+      throw new Error("Failed to launch the web browser");
+    }
     const allWebsitesData = await crawlWebsite(startingUrls);
     res.status(200).json({ websites: allWebsitesData });
     const end = new Date().getTime();
 
     await writeToFile(
-      "process complete for  page: " +
+      "process complete for page: " +
         startingUrls +
         " time " +
         (end - start) / 60000.0
@@ -243,6 +229,8 @@ export default async function handler(
     console.error(`Error while crawling websites: ${error}`);
     res.status(500).json({ message: "Internal Server Error" });
   } finally {
-    web_brower.close();
+    if (web_browser) {
+      await web_browser.close();
+    }
   }
 }
