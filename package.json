@@ -25,6 +25,7 @@
     "@radix-ui/react-accordion": "^1.1.2",
     "@react-three/drei": "^9.105.4",
     "@react-three/fiber": "^8.16.2",
+    "@sparticuz/chromium": "^123.0.1",
     "@types/cheerio": "^0.22.35",
     "@types/puppeteer": "^7.0.4",
     "axios": "^1.6.8",

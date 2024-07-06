@@ -1311,3 +1311,33 @@
 [2024-07-06T16:32:07.672Z] : cheerio processed page: http://collegedunia.com/ time 0.004966666666666667
 [2024-07-06T16:32:08.546Z] : web_driver processed page: http://collegedunia.com/write-review?utm_source=desktop&utm_medium=top_header&utm_campaing=review_acquisition time 0.01455
 [2024-07-06T16:32:09.012Z] : process complete for page: http://collegedunia.com time 0.08903333333333334
+[2024-07-06T16:49:24.943Z] : web_driver processed page: http://collegedunia.com time 0.0077666666666666665
+[2024-07-06T16:49:24.970Z] : cheerio processed page: http://collegedunia.com time 0.00015
+[2024-07-06T16:49:24.972Z] : process complete for page: http://collegedunia.com time 0.015333333333333332
+[2024-07-06T16:49:36.886Z] : web_driver processed page: http://growthsay.com time 0.027016666666666668
+[2024-07-06T16:49:37.010Z] : cheerio processed page: http://growthsay.com time 0.0015666666666666667
+[2024-07-06T16:49:37.751Z] : web_driver processed page: https://growthsay.com/ time 0.01235
+[2024-07-06T16:49:37.800Z] : cheerio processed page: https://growthsay.com/ time 0.0005666666666666667
+[2024-07-06T16:49:38.497Z] : web_driver processed page: https://growthsay.com/#services time 0.0116
+[2024-07-06T16:49:38.532Z] : cheerio processed page: https://growthsay.com/#services time 0.0003
+[2024-07-06T16:49:39.069Z] : web_driver processed page: http://growthsay.com/#googleranking time 0.00895
+[2024-07-06T16:49:39.096Z] : cheerio processed page: http://growthsay.com/#googleranking time 0.0002
+[2024-07-06T16:49:39.635Z] : web_driver processed page: http://growthsay.com/# time 0.008983333333333333
+[2024-07-06T16:49:39.665Z] : cheerio processed page: http://growthsay.com/# time 0.00025
+[2024-07-06T16:49:40.751Z] : web_driver processed page: https://mailverifier.netlify.app/ time 0.018083333333333333
+[2024-07-06T16:49:40.766Z] : cheerio processed page: https://mailverifier.netlify.app/ time 0.000016666666666666667
+[2024-07-06T16:49:41.590Z] : web_driver processed page: https://growthsay.com/blog/ time 0.013716666666666667
+[2024-07-06T16:49:41.618Z] : cheerio processed page: https://growthsay.com/blog/ time 0.00018333333333333334
+[2024-07-06T16:49:42.159Z] : web_driver processed page: https://growthsay.com/pricing/ time 0.009016666666666666
+[2024-07-06T16:49:42.188Z] : cheerio processed page: https://growthsay.com/pricing/ time 0.00023333333333333333
+[2024-07-06T16:49:43.000Z] : web_driver processed page: https://growthsay.com/contact-us time 0.013516666666666666
+[2024-07-06T16:49:43.028Z] : process complete for page: http://growthsay.com time 0.13633333333333333
+[2024-07-06T16:49:58.638Z] : web_driver processed page: http://collegedunia.com time 0.04203333333333333
+[2024-07-06T16:49:59.039Z] : cheerio processed page: http://collegedunia.com time 0.003416666666666667
+[2024-07-06T16:50:00.235Z] : web_driver processed page: http://collegedunia.com/ time 0.019916666666666666
+[2024-07-06T16:50:00.516Z] : cheerio processed page: http://collegedunia.com/ time 0.0029
+[2024-07-06T16:50:01.206Z] : web_driver processed page: http://collegedunia.com/write-review?utm_source=desktop&utm_medium=top_header&utm_campaing=review_acquisition time 0.011483333333333333
+[2024-07-06T16:50:01.445Z] : process complete for page: http://collegedunia.com time 0.09753333333333333
+[2024-07-06T16:50:12.931Z] : web_driver processed page: http://collegedunia.com time 0.00815
+[2024-07-06T16:50:12.954Z] : cheerio processed page: http://collegedunia.com time 0.000016666666666666667
+[2024-07-06T16:50:12.955Z] : process complete for page: http://collegedunia.com time 0.016
