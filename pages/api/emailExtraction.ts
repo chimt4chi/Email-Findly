@@ -3,6 +3,7 @@ import cheerio from "cheerio";
 import puppeteer, { Browser } from "puppeteer";
 import fs from "fs";
 import path from "path";
+import chromium from "chrome-aws-lambda";
 
 let web_browser: Browser | null = null;
 
@@ -62,9 +63,13 @@ async function web_driver() {
   try {
     console.log("Launching Puppeteer");
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      executablePath: await puppeteer.executablePath(),
+      // executablePath: await puppeteer.executablePath(),
+
+      // args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
     });
     console.log("Puppeteer launched");
     return browser;
