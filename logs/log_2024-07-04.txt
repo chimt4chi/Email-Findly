@@ -882,3 +882,12 @@
 [2024-07-04T05:01:23.688Z] : web_driver processed page: http://collegedunia.com time 0.0052833333333333335
 [2024-07-04T05:01:23.736Z] : cheerio processed page: http://collegedunia.com time 0.0001
 [2024-07-04T05:01:23.738Z] : process complete for page: http://collegedunia.com time 0.012583333333333334
+[2024-07-04T05:39:05.446Z] : web_driver processed page: http://collegedunia.com time 0.009366666666666667
+[2024-07-04T05:39:05.481Z] : cheerio processed page: http://collegedunia.com time 0.0003333333333333333
+[2024-07-04T05:39:05.484Z] : process complete for page: http://collegedunia.com time 0.016883333333333334
+[2024-07-04T05:39:42.906Z] : web_driver processed page: http://collegedunia.com time 0.039716666666666664
+[2024-07-04T05:39:43.428Z] : cheerio processed page: http://collegedunia.com time 0.007166666666666667
+[2024-07-04T05:39:44.916Z] : web_driver processed page: http://collegedunia.com/ time 0.0248
+[2024-07-04T05:39:45.423Z] : cheerio processed page: http://collegedunia.com/ time 0.00505
+[2024-07-04T05:39:46.200Z] : web_driver processed page: http://collegedunia.com/write-review?utm_source=desktop&utm_medium=top_header&utm_campaing=review_acquisition time 0.012933333333333333
+[2024-07-04T05:39:46.664Z] : process complete for  page: http://collegedunia.com time 0.11186666666666667
