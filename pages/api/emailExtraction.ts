@@ -42,20 +42,36 @@ async function web_tab(
   }
 }
 
-async function web_driver(): Promise<Browser | null> {
+// async function web_driver(): Promise<Browser | null> {
+//   try {
+//     const browser = await puppeteer.launch({
+//       headless: false,
+//       args: ["--no-sandbox"],
+//       devtools: true,
+//       // executablePath:
+//       //   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+//     });
+//     return browser;
+//   } catch (error) {
+//     console.error(error);
+//   }
+//   return null;
+// }
+
+async function web_driver() {
   try {
+    console.log("Launching Puppeteer");
     const browser = await puppeteer.launch({
       headless: false,
-      args: ["--no-sandbox"],
-      devtools: true,
-      // executablePath:
-      //   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      executablePath: await puppeteer.executablePath(),
     });
+    console.log("Puppeteer launched");
     return browser;
   } catch (error) {
-    console.error(error);
+    console.error(`Error launching Puppeteer: ${error}`);
+    return null;
   }
-  return null;
 }
 
 async function findEmailAddresses(
