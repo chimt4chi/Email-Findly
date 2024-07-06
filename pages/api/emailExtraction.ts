@@ -48,6 +48,8 @@ async function web_driver(): Promise<Browser | null> {
       headless: false,
       args: ["--no-sandbox"],
       devtools: true,
+      // executablePath:
+      //   "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     });
     return browser;
   } catch (error) {
