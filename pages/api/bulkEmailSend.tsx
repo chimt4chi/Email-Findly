@@ -3,9 +3,20 @@ import cheerio from "cheerio";
 import puppeteer, { Browser } from "puppeteer";
 import fs from "fs";
 import path from "path";
+import nodemailer from "nodemailer";
+
+interface EmailData {
+  url: string;
+  emails: string[];
+}
+
+interface WebsiteData {
+  mainPageUrl: string;
+  foundEmailsUrls: EmailData[];
+}
 
 let web_browser: Browser | null = null;
-const cache: { [key: string]: { data: object; expiry: number } } = {};
+const cache: { [key: string]: { data: WebsiteData[]; expiry: number } } = {};
 const CACHE_TTL = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
 async function launchBrowser(): Promise<Browser | null> {
@@ -85,9 +96,9 @@ async function findEmailAddresses($: cheerio.Root): Promise<string[]> {
   ];
 
   $("a[href], p, span, li, td").each((_, element) => {
-    if (emailAddresses.length >= 5) {
-      return false; // Exit loop if 5 emails are found
-    }
+    // if (emailAddresses.length >= 5) {
+    //   return false; // Exit loop if 5 emails are found
+    // }
     const text = $(element).text();
     const emails =
       text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g) || [];
@@ -99,7 +110,14 @@ async function findEmailAddresses($: cheerio.Root): Promise<string[]> {
     );
   });
 
-  return Array.from(new Set(emailAddresses)).slice(0, 5);
+  return Array.from(
+    new Set(
+      emailAddresses.filter(
+        (email) =>
+          !forbiddenExtensions.some((extension) => email.endsWith(extension))
+      )
+    )
+  );
 }
 
 async function logToFile(text: string) {
@@ -118,8 +136,8 @@ async function logToFile(text: string) {
   }
 }
 
-async function crawlWebsite(startUrls: string[]): Promise<object[]> {
-  const allWebsitesData: object[] = [];
+async function crawlWebsite(startUrls: string[]): Promise<WebsiteData[]> {
+  const allWebsitesData: WebsiteData[] = [];
 
   for (const startUrl of startUrls) {
     const visited = new Set<string>();
@@ -154,6 +172,32 @@ async function crawlWebsite(startUrls: string[]): Promise<object[]> {
   return allWebsitesData;
 }
 
+async function sendEmail(emailAddresses: string[]) {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.RECEIVER_EMAIL,
+      subject: "Extracted Email Addresses",
+      text: `Here are the extracted email addresses:\n\n${emailAddresses.join(
+        "\n"
+      )}`,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+  } catch (error) {
+    console.error("Error sending email: ", error);
+  }
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -186,6 +230,11 @@ export default async function handler(
       data: allWebsitesData,
       expiry: Date.now() + CACHE_TTL,
     };
+
+    const emailAddresses = allWebsitesData.flatMap((website) =>
+      website.foundEmailsUrls.flatMap((emailsUrl) => emailsUrl.emails)
+    );
+    await sendEmail(emailAddresses);
 
     res.status(200).json({ websites: allWebsitesData });
   } catch (error) {

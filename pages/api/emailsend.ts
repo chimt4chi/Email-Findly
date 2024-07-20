@@ -3,6 +3,7 @@ import cheerio from "cheerio";
 import puppeteer, { Browser } from "puppeteer";
 import fs from "fs";
 import path from "path";
+import nodemailer from "nodemailer";
 
 let web_browser: Browser | null = null;
 const cache: { [key: string]: { data: object; expiry: number } } = {};
@@ -162,9 +163,15 @@ export default async function handler(
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
-  const { startingUrls } = req.body;
+  const { startingUrls, email, subject, text } = req.body;
   if (!Array.isArray(startingUrls)) {
     return res.status(400).json({ message: "Starting URLs are required" });
+  }
+
+  if (!email || !subject || !text) {
+    return res
+      .status(400)
+      .json({ message: "Email, subject, and text are required" });
   }
 
   try {
@@ -186,6 +193,23 @@ export default async function handler(
       data: allWebsitesData,
       expiry: Date.now() + CACHE_TTL,
     };
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail", // Use your email service provider
+      auth: {
+        user: process.env.EMAIL, // Your email
+        pass: process.env.EMAIL_PASSWORD, // Your email password or application-specific password
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject,
+      text,
+    };
+
+    await transporter.sendMail(mailOptions);
 
     res.status(200).json({ websites: allWebsitesData });
   } catch (error) {

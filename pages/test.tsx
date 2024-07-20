@@ -1,4 +1,5 @@
 import BulkEmail from "@/components/BulkEmail";
+import TestComp from "@/components/TestComp";
 
 import React from "react";
 
@@ -16,7 +17,8 @@ function test() {
       {/* <BulkUpload /> */}
       {/* <h1>hey</h1> */}
       {/* <NewHero /> */}
-      <BulkEmail />
+      {/* <BulkEmail /> */}
+      <TestComp />
     </>
   );
 }

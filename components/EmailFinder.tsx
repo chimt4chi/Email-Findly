@@ -4,22 +4,22 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
 
 import { SiGmail } from "react-icons/si";
-import Link from "next/link";
-import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import Link from "next/link";
 
 interface FoundEmails {
   url: string;
   emails: string[];
-  error?: string; // Add error field to FoundEmails interface
+  error?: string;
 }
 
 interface WebsiteData {
   mainPageUrl: string;
   foundEmailsUrls: FoundEmails[];
-  error?: string; // Add error field to WebsiteData interface
+  error?: string;
 }
 
 interface LinkedInData {
@@ -28,8 +28,9 @@ interface LinkedInData {
   error?: string;
 }
 
-function EmailFinder() {
+function Hero() {
   const [emailInput, setEmailInput] = useState<string>("");
+  const [linkedinInput, setLinkedinInput] = useState<string>("");
   const [suggestedTexts, setSuggestedTexts] = useState<string[]>([]);
   const [responseData, setResponseData] = useState<WebsiteData[]>([]);
   const [linkedinResponseData, setLinkedinResponseData] = useState<
@@ -38,20 +39,24 @@ function EmailFinder() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [requestCount, setRequestCount] = useState<number>(0);
-  const [showSuggestions, setShowSuggestions] = useState<boolean>(false); // State for showing/hiding suggestions
-
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
+  const [value, setValue] = useState<string>("1");
+  const [userEmail, setUserEmail] = useState("");
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
 
   const copyToClipboard = (emailToCopy: string) => {
     navigator.clipboard.writeText(emailToCopy);
     setCopiedEmail(emailToCopy);
-    // Remove the animation class after 2 seconds
-    setTimeout(() => setCopiedEmail(null), 800); // Change the timeout to 3000 milliseconds (1 seconds)
+    setTimeout(() => setCopiedEmail(null), 800);
   };
 
   useEffect(() => {
     console.log("responseData:", responseData);
-    console.log("responseData:", linkedinResponseData);
+    console.log("linkedinResponseData:", linkedinResponseData);
   }, [responseData, linkedinResponseData]);
 
   useEffect(() => {
@@ -62,7 +67,6 @@ function EmailFinder() {
   }, []);
 
   const suggestTexts = useCallback(() => {
-    // Predefined list of suggestions
     const predefinedSuggestions = [
       "dtu.ac.in",
       "aryabhattacollege.ac.in",
@@ -70,12 +74,10 @@ function EmailFinder() {
       "growthsay.com",
     ];
 
-    // Check if the input exactly matches any predefined suggestion
     const isMatchingInput = predefinedSuggestions.some(
       (text) => text.toLowerCase() === emailInput.toLowerCase()
     );
 
-    // Set the filtered suggestions
     setSuggestedTexts(
       isMatchingInput
         ? []
@@ -84,7 +86,6 @@ function EmailFinder() {
           )
     );
 
-    // Show suggestions only if there are filtered suggestions and the current input doesn't exactly match any suggestion
     setShowSuggestions(isMatchingInput ? false : suggestedTexts.length > 0);
   }, [emailInput, suggestedTexts]);
 
@@ -92,7 +93,7 @@ function EmailFinder() {
     async (inputText: string) => {
       if (!inputText.trim()) return;
       setLoading(true);
-      setResponseData([]); // Clear previous result
+      setResponseData([]);
       setLinkedinResponseData([]);
       setError("");
       try {
@@ -110,9 +111,9 @@ function EmailFinder() {
             : `http://${inputText.trim()}`;
 
         const response = await axios.post<{ websites: WebsiteData[] }>(
-          "/api/emailExtraction",
+          "/api/emailsend",
           {
-            startingUrls: [`${processedUrlInput}}`],
+            startingUrls: [`${processedUrlInput}`],
           },
           {
             headers: {
@@ -127,16 +128,13 @@ function EmailFinder() {
           setResponseData(response.data.websites);
           setError(null);
           setRequestCount((prevCount) => {
-            if (prevCount < 2) {
-              const newCount = prevCount + 1;
-              if (typeof localStorage !== "undefined") {
-                localStorage.setItem("requestCount", String(newCount));
-              }
-              return newCount;
+            const newCount = prevCount + 1;
+            if (typeof localStorage !== "undefined") {
+              localStorage.setItem("requestCount", String(newCount));
             }
-            return prevCount;
+            return newCount;
           });
-          setShowSuggestions(false); // Close suggestions when data is fetched
+          setShowSuggestions(false);
         }
       } catch (error) {
         console.error("Error:", error);
@@ -154,9 +152,27 @@ function EmailFinder() {
     }
   };
 
+  const sendEmail = useCallback(async () => {
+    if (!userEmail.trim() || !responseData.length) return;
+    try {
+      const subject = "Extracted Email Data";
+      const text = JSON.stringify(responseData, null, 2);
+
+      await axios.post("/api/sendEmail", {
+        email: userEmail,
+        subject,
+        text,
+      });
+      alert("Email sent successfully");
+    } catch (error) {
+      console.error("Error sending email:", error);
+      alert("Error sending email. Please try again.");
+    }
+  }, [userEmail, responseData]);
+
   const router = useRouter();
 
-  const { data: user } = useCurrentUser();
+  const user = useCurrentUser();
 
   return (
     <>
@@ -294,6 +310,22 @@ function EmailFinder() {
                   </div>
                 )}
 
+                <div>
+                  <input
+                    type="email"
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="form-input py-2 px-4 rounded-md border border-gray-300"
+                  />
+                  <button
+                    onClick={sendEmail}
+                    className="rounded-md bg-indigo-600 text-sm font-semibold py-2 px-4 text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mt-4"
+                  >
+                    Send Extracted Data to My Email
+                  </button>
+                </div>
+
                 {error ? (
                   <p className="text-indigo-600">{error}</p>
                 ) : (
@@ -368,17 +400,17 @@ function EmailFinder() {
                                             </div>
                                             <div className="flex gap-2 items-center">
                                               {user ? (
-                                                <Link
-                                                  href={`mailto:${user.email}`}
-                                                  target="_blank"
-                                                >
-                                                  <SiGmail
-                                                    className="cursor-pointer hover:text-indigo-600"
-                                                    size={16}
-                                                    aria-placeholder="Send emails to your gmail"
-                                                  />
-                                                </Link>
+                                                // <Link
+                                                //   href={`mailto:${user?.email}`}
+                                                //   target="_blank"
+                                                // >
+                                                <SiGmail
+                                                  className="cursor-pointer hover:text-indigo-600"
+                                                  size={16}
+                                                  aria-placeholder="Send emails to your gmail"
+                                                />
                                               ) : (
+                                                // </Link>
                                                 <SiGmail
                                                   className="cursor-default text-gray-500"
                                                   size={16}
@@ -421,4 +453,4 @@ function EmailFinder() {
   );
 }
 
-export default EmailFinder;
+export default Hero;

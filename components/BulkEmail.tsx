@@ -5,9 +5,14 @@ import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import * as XLSX from "xlsx";
 
+interface EmailData {
+  url: string;
+  emails: string[];
+}
+
 interface WebsiteData {
   mainPageUrl: string;
-  foundEmailsUrls: { url: string; emails: string[] }[];
+  foundEmailsUrls: EmailData[];
 }
 
 function BulkEmail() {
@@ -45,14 +50,20 @@ function BulkEmail() {
 
           const extractedWebsites: string[] = [];
 
-          parsedData.forEach((obj) => {
+          for (const obj of parsedData) {
             for (const key in obj) {
+              if (extractedWebsites.length >= 100) {
+                break;
+              }
               const value = obj[key];
               if (typeof value === "string" && isValidUrl(value)) {
                 extractedWebsites.push(value);
               }
             }
-          });
+            if (extractedWebsites.length >= 100) {
+              break;
+            }
+          }
 
           sendData(extractedWebsites);
         }
@@ -68,7 +79,7 @@ function BulkEmail() {
 
     try {
       const response = await axios.post<{ websites: WebsiteData[] }>(
-        "/api/emailExtraction",
+        "/api/bulkEmailSend",
         {
           startingUrls: extractedWebsites,
         },
@@ -78,7 +89,7 @@ function BulkEmail() {
           },
         }
       );
-      console.log("Response:", response);
+      // console.log("Response:", response.data.websites);
 
       setResponseWebsites(response.data.websites);
     } catch (error) {
@@ -89,7 +100,11 @@ function BulkEmail() {
   }, []);
 
   useEffect(() => {
-    console.log(responseWebsites);
+    console.log(
+      responseWebsites.map((email) =>
+        email.foundEmailsUrls.map((emails) => emails.emails)
+      )
+    );
   }, [responseWebsites]);
 
   return (
