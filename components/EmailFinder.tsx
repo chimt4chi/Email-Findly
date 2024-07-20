@@ -8,7 +8,7 @@ import { MdCheckCircle, MdOutlineContentCopy } from "react-icons/md";
 
 import { SiGmail } from "react-icons/si";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import Link from "next/link";
+// import Link from "next/link";
 
 interface FoundEmails {
   url: string;
@@ -30,7 +30,7 @@ interface LinkedInData {
 
 function Hero() {
   const [emailInput, setEmailInput] = useState<string>("");
-  const [linkedinInput, setLinkedinInput] = useState<string>("");
+  // const [linkedinInput, setLinkedinInput] = useState<string>("");
   const [suggestedTexts, setSuggestedTexts] = useState<string[]>([]);
   const [responseData, setResponseData] = useState<WebsiteData[]>([]);
   const [linkedinResponseData, setLinkedinResponseData] = useState<
@@ -41,12 +41,12 @@ function Hero() {
   const [requestCount, setRequestCount] = useState<number>(0);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
-  const [value, setValue] = useState<string>("1");
+  // const [value, setValue] = useState<string>("1");
   const [userEmail, setUserEmail] = useState("");
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
+  // const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  //   setValue(newValue);
+  // };
 
   const copyToClipboard = (emailToCopy: string) => {
     navigator.clipboard.writeText(emailToCopy);

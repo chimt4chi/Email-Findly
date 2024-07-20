@@ -175,7 +175,7 @@ async function crawlWebsite(startUrls: string[]): Promise<WebsiteData[]> {
 async function sendEmail(emailAddresses: string[]) {
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      // server: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD,

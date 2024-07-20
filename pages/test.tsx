@@ -1,4 +1,4 @@
-import BulkEmail from "@/components/BulkEmail";
+// import BulkEmail from "@/components/BulkEmail";
 import TestComp from "@/components/TestComp";
 
 import React from "react";
